@@ -1,0 +1,57 @@
+project:
+  type: book
+  output-dir: docs
+
+book:
+  title: "RNA-seq: Patógenos associados a hospedeiros"
+  author: "Dalmolin Systems Biology Group"
+  chapters:
+    - index.qmd
+    - analysis/01_preprocessing.qmd
+    - analysis/02_quantification.qmd
+    - analysis/03_differential_expression.qmd
+    - analysis/04_downstream_analyses.qmd
+  downloads: [pdf]
+  reader-mode: true
+  favicon: content/images/dalmolin_icon.svg
+  site-url: https://dalmolingroup.imd.ufrn.br/rnaseq_pathogen/
+  repo-url: https://github.com/dalmolingroup/rnaseq_pathogen
+  page-footer:
+      RNA-seq - Patógenos associados a hospedeiros é um curso construído por membros do
+      <a href="https://dalmolingroup.imd.ufrn.br/">Dalmolin Systems Biology Group</a>.
+
+knitr:
+  opts_chunk:
+    message: false
+    warning: false
+    results: false
+
+format:
+  pdf:
+    keep-tex: true
+    include-in-header: 
+      text: |
+         \usepackage{fvextra}
+         \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+    include-before-body:
+      text: |
+        \RecustomVerbatimEnvironment{verbatim}{Verbatim}{
+          showspaces = false,
+          showtabs = false,
+          breaksymbolleft={},
+          breaklines
+          % Note: setting commandchars=\\\{\} here will cause an error 
+        }
+    theme:
+      light: flatly
+      dark: darkly
+  html:
+    theme:
+      light: flatly
+      dark: darkly
+    callout-appearance: simple
+    code-link: true
+    code-overflow: wrap
+    code-block-bg: true
+    code-block-border-left: "#b19cd9"
+    highlight-style: github

@@ -1,0 +1,41 @@
+---
+title: "RNA-seq: Patógenos associados a hospedeiros"
+format: html
+---
+
+# Visão geral da aula
+
+🔒 **Licença:** [Creative Commons Attribution Share Alike 4.0 International License](https://creativecommons.org/licenses/by-sa/4.0/deed.en)
+
+👥 **Público-alvo:** Pesquisadores, estudantes de pós-graduação e bioinformatas interessados em transcriptômica de interação patógeno-hospedeiro.
+
+📶 **Nível:** Intermediário
+
+⬅️ **Pré-requisitos**
+Para acompanhar este curso, os alunos devem ter conhecimentos em:
+
+1.  **R & Python Básico:** Capacidade de carregar bibliotecas, manipular data frames e executar scripts.
+2.  **Biologia Molecular:** Conceitos fundamentais de RNA-seq, expressão gênica e biologia de fungos/mamíferos.
+3.  **Ambiente:** Familiaridade com o uso do RStudio.
+
+📖 **Descrição**
+Este repositório contém os materiais para o curso **"RNA-seq: Patógenos associados a hospedeiros"**, com foco no modelo de *Paracoccidioides brasiliensis* infectando *Mus musculus*. Organizado pelo Dalmolin's Systems Biology Group (BioME-UFRN), o workshop aborda as etapas críticas de limpeza de dados contaminados pelo hospedeiro utilizando o **nf-core/detaxizer**, a quantificação de leituras do patógeno com o **nf-core/rnaseq**, e a execução de análise de expressão diferencial e enriquecimento funcional.
+
+➡️ **Resultados de Aprendizagem:**
+Ao final do curso, os alunos serão capazes de:
+
+1.  **Compreender** a descontaminação *in silico* de leituras do hospedeiro através do pipeline nf-core/detaxizer. [Compreender]
+2.  **Delinear** a configuração e execução do pipeline nf-core/rnaseq especificamente para a quantificação de patógenos fúngicos. [Aplicar]
+3.  **Realizar** análise de expressão diferencial (DGE) utilizando **DESeq2** para identificar genes-chave no processo de infecção. [Analisar]
+4.  **Interpretar** assinaturas biológicas por meio de análise de enriquecimento funcional (GO/KEGG). [Avaliar]
+5.  **Visualizar** dados complexos através de PCA, heatmaps e volcano plots para interpretação biológica. [Criar]
+
+⌛ **Tempo estimado**: 180 minutos
+
+⚙️ **Requisitos:** Os participantes devem ter acesso a um notebook com R e RStudio instalados para a etapa de análise estatística.
+
+🙏 **Agradecimentos**:
+
+* Dalmolin Systems Biology Group
+* Bioinformática Multidisciplinar (BioME - IMD/UFRN)
+* Programa de Pós-Graduação em Bioinformática (PPg-Bioinfo - UFRN)
