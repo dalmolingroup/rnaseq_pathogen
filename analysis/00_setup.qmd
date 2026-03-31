@@ -29,7 +29,7 @@ library(dplyr)
 library(knitr)
 
 # Ajuste do caminho caso necessário, assumindo que o diretório de trabalho é analysis/
-sra_table <- read_csv("../data/SraRunTable.csv")
+sra_table <- read_csv(here::here("data/SraRunTable.csv"))
 filtered_table <- sra_table %>% 
   filter(stimulus == "Candida albicans") %>%
   select(Run, stimulus, treatment, cell_type)

@@ -1,0 +1,132 @@
+[
+  {
+    "objectID": "analysis/03_differential_expression.html",
+    "href": "analysis/03_differential_expression.html",
+    "title": "5  Differential Expression Analysis",
+    "section": "",
+    "text": "6 Differential Expression Analysis",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Differential Expression Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "RNA-seq: Patógenos associados a hospedeiros",
+    "section": "",
+    "text": "1 Visão geral da aula\n🔒 Licença: Creative Commons Attribution Share Alike 4.0 International License\n👥 Público-alvo: Pesquisadores, estudantes de pós-graduação e bioinformatas interessados em transcriptômica de interação patógeno-hospedeiro.\n📶 Nível: Intermediário\n⬅️ Pré-requisitos Para acompanhar este curso, os alunos devem ter conhecimentos em:\n\nR Básico: Capacidade de carregar bibliotecas, manipular data frames e executar scripts.\nBiologia Molecular: Conceitos fundamentais de RNA-seq, expressão gênica e biologia de fungos/mamíferos.\nAmbiente: Familiaridade com o uso do RStudio.\n\n📖 Descrição Este repositório contém os materiais para o curso “RNA-seq: Patógenos associados a hospedeiros”, com foco no modelo de Candida albicans infectando macrófagos de Mus musculus tratados com vancomicina. Organizado pelo Dalmolin’s Systems Biology Group (BioME-UFRN), o workshop aborda as etapas críticas de limpeza de dados contaminados pelo hospedeiro utilizando o nf-core/detaxizer, a quantificação de leituras do patógeno com o nf-core/rnaseq, e a execução de análise de expressão diferencial e enriquecimento funcional.\nA vancomicina é um antibiótico amplamente prescrito para o tratamento de infecções bacterianas Gram-positivas. Já foi mostrado que este antibiótico pode romper as respostas imunológicas antifúngicas protetoras via disbiose do microbioma, aumentando a suscetibilidade à candidíase invasiva. Antibióticos são um fator de risco independente para o desenvolvimento desta infecção fúngica potencialmente fatal, mas não está claro se mecanismos independentes da microbiota também impulsionam esta associação. Aqui, comparamos as respostas transcricionais de macrófagos derivados da medula óssea de camundongos em um ponto temporal inicial pós-infecção (2 horas), comparando com a linha de base, usando macrófagos não tratados ou tratados com vancomicina. Os dados brutos deste estudo estão disponíveis sob o BioProject PRJNA1120019.\n⚠️ Importante: Para as análises realizadas neste curso, estamos considerando apenas as amostras que foram estimuladas com Candida albicans (conforme @data/SraRunTable.csv).\n➡️ Resultados de Aprendizagem: Ao final do curso, os alunos serão capazes de:\n\nCompreender a descontaminação in silico de leituras do hospedeiro através do pipeline nf-core/detaxizer. [Compreender]\nDelinear a configuração e execução do pipeline nf-core/rnaseq especificamente para a quantificação de patógenos fúngicos. [Aplicar]\nRealizar análise de expressão diferencial (DGE) utilizando DESeq2 para identificar genes-chave no processo de infecção. [Analisar]\nInterpretar assinaturas biológicas por meio de análise de enriquecimento funcional (GO/KEGG). [Avaliar]\nVisualizar dados complexos através de PCA, heatmaps e volcano plots para interpretação biológica. [Criar]\n\n⌛ Tempo estimado: 180 minutos\n⚙️ Requisitos: Os participantes devem ter acesso a um notebook com R e RStudio instalados para a etapa de análise estatística.\n🙏 Agradecimentos:\n\nDalmolin Systems Biology Group\nBioinformática Multidisciplinar (BioME - IMD/UFRN)\nPrograma de Pós-Graduação em Bioinformática (PPg-Bioinfo - UFRN)",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>RNA-seq: Patógenos associados a hospedeiros</span>"
+    ]
+  },
+  {
+    "objectID": "analysis/00_setup.html",
+    "href": "analysis/00_setup.html",
+    "title": "2  Configuração e Descrição do Conjunto de Dados",
+    "section": "",
+    "text": "2.1 Conjunto de Dados\nOs dados utilizados nestas análises provêm do BioProject PRJNA1120019. Este estudo investiga os mecanismos pelos quais o antibiótico vancomicina afeta a resposta imune antifúngica em macrófagos.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Configuração e Descrição do Conjunto de Dados</span>"
+    ]
+  },
+  {
+    "objectID": "analysis/00_setup.html#conjunto-de-dados",
+    "href": "analysis/00_setup.html#conjunto-de-dados",
+    "title": "2  Configuração e Descrição do Conjunto de Dados",
+    "section": "",
+    "text": "2.1.1 Descrição do Experimento\n\nOrganismo: Mus musculus (Macrófagos derivados da medula óssea - BMDMs)\nPatógeno: Candida albicans (cepa SC5413)\nTratamento: Vancomicina vs. Não tratado (Controle)\nPonto Temporal: 2 horas pós-infecção\n\nO desenho experimental envolveu a diferenciação de macrófagos na presença ou ausência de vancomicina, seguida de infecção por Candida albicans.\n\n\n2.1.2 Seleção de Amostras\nPara as análises realizadas ao longo deste curso, selecionamos especificamente as amostras estimuladas com Candida albicans. É importante notar que cada amostra (identificada pelo prefixo GSM) pode conter múltiplos arquivos de sequenciamento (Run SRR), os quais devem ser combinados para a análise final.\nA tabela abaixo apresenta as amostras consideradas, extraídas do arquivo @data/SraRunTable.csv:\n\n\n\n\n\n\n\n\n\n\n\nRun\nstimulus\ntreatment\ncell_type\n\n\n\n\nSRR29279085\nCandida albicans\nVancomycin\nBone-marrow Macrophage\n\n\nSRR29279093\nCandida albicans\nUntreated (control)\nBone-marrow Macrophage\n\n\nSRR29279101\nCandida albicans\nVancomycin\nBone-marrow Macrophage\n\n\nSRR29279109\nCandida albicans\nUntreated (control)\nBone-marrow Macrophage\n\n\nSRR29279117\nCandida albicans\nVancomycin\nBone-marrow Macrophage\n\n\nSRR29279125\nCandida albicans\nUntreated (control)\nBone-marrow Macrophage\n\n\nSRR29279133\nCandida albicans\nVancomycin\nBone-marrow Macrophage\n\n\nSRR29279141\nCandida albicans\nUntreated (control)\nBone-marrow Macrophage\n\n\nSRR29279149\nCandida albicans\nVancomycin\nBone-marrow Macrophage\n\n\nSRR29279157\nCandida albicans\nUntreated (control)\nBone-marrow Macrophage\n\n\nSRR29279165\nCandida albicans\nVancomycin\nBone-marrow Macrophage\n\n\nSRR29279173\nCandida albicans\nUntreated (control)\nBone-marrow Macrophage\n\n\nSRR29279086\nCandida albicans\nVancomycin\nBone-marrow Macrophage\n\n\nSRR29279087\nCandida albicans\nVancomycin\nBone-marrow Macrophage\n\n\nSRR29279088\nCandida albicans\nVancomycin\nBone-marrow Macrophage\n\n\nSRR29279094\nCandida albicans\nUntreated (control)\nBone-marrow Macrophage\n\n\nSRR29279095\nCandida albicans\nUntreated (control)\nBone-marrow Macrophage\n\n\nSRR29279096\nCandida albicans\nUntreated (control)\nBone-marrow Macrophage\n\n\nSRR29279102\nCandida albicans\nVancomycin\nBone-marrow Macrophage\n\n\nSRR29279103\nCandida albicans\nVancomycin\nBone-marrow Macrophage\n\n\nSRR29279104\nCandida albicans\nVancomycin\nBone-marrow Macrophage\n\n\nSRR29279110\nCandida albicans\nUntreated (control)\nBone-marrow Macrophage\n\n\nSRR29279111\nCandida albicans\nUntreated (control)\nBone-marrow Macrophage\n\n\nSRR29279112\nCandida albicans\nUntreated (control)\nBone-marrow Macrophage\n\n\nSRR29279118\nCandida albicans\nVancomycin\nBone-marrow Macrophage\n\n\nSRR29279119\nCandida albicans\nVancomycin\nBone-marrow Macrophage\n\n\nSRR29279120\nCandida albicans\nVancomycin\nBone-marrow Macrophage\n\n\nSRR29279126\nCandida albicans\nUntreated (control)\nBone-marrow Macrophage\n\n\nSRR29279127\nCandida albicans\nUntreated (control)\nBone-marrow Macrophage\n\n\nSRR29279128\nCandida albicans\nUntreated (control)\nBone-marrow Macrophage\n\n\nSRR29279134\nCandida albicans\nVancomycin\nBone-marrow Macrophage\n\n\nSRR29279135\nCandida albicans\nVancomycin\nBone-marrow Macrophage\n\n\nSRR29279136\nCandida albicans\nVancomycin\nBone-marrow Macrophage\n\n\nSRR29279142\nCandida albicans\nUntreated (control)\nBone-marrow Macrophage\n\n\nSRR29279143\nCandida albicans\nUntreated (control)\nBone-marrow Macrophage\n\n\nSRR29279144\nCandida albicans\nUntreated (control)\nBone-marrow Macrophage\n\n\nSRR29279150\nCandida albicans\nVancomycin\nBone-marrow Macrophage\n\n\nSRR29279151\nCandida albicans\nVancomycin\nBone-marrow Macrophage\n\n\nSRR29279152\nCandida albicans\nVancomycin\nBone-marrow Macrophage\n\n\nSRR29279158\nCandida albicans\nUntreated (control)\nBone-marrow Macrophage\n\n\nSRR29279159\nCandida albicans\nUntreated (control)\nBone-marrow Macrophage\n\n\nSRR29279160\nCandida albicans\nUntreated (control)\nBone-marrow Macrophage\n\n\nSRR29279166\nCandida albicans\nVancomycin\nBone-marrow Macrophage\n\n\nSRR29279167\nCandida albicans\nVancomycin\nBone-marrow Macrophage\n\n\nSRR29279168\nCandida albicans\nVancomycin\nBone-marrow Macrophage\n\n\nSRR29279174\nCandida albicans\nUntreated (control)\nBone-marrow Macrophage\n\n\nSRR29279175\nCandida albicans\nUntreated (control)\nBone-marrow Macrophage\n\n\nSRR29279176\nCandida albicans\nUntreated (control)\nBone-marrow Macrophage\n\n\n\n\n\nNosso interesse aqui será ver a expressão de Candida albicans frente a exposição de vancomicina, em macrófagos.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Configuração e Descrição do Conjunto de Dados</span>"
+    ]
+  },
+  {
+    "objectID": "analysis/01_preprocessing.html",
+    "href": "analysis/01_preprocessing.html",
+    "title": "3  Pré-processamento",
+    "section": "",
+    "text": "4 Pré-processamento e Descontaminação\nEsta seção do curso foca na preparação dos dados brutos. Como discutimos, em experimentos de interação patógeno-hospedeiro (como Candida em macrófagos), a maior parte das sequências obtidas pertencerá ao hospedeiro. O pré-processamento é a etapa onde garantimos que estamos analisando apenas o que nos interessa: o transcriptoma do patógeno.\nNesta etapa teórica, vamos entender como saímos das amostras biológicas para os arquivos de sequências limpas, prontos para a quantificação.",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Pré-processamento</span>"
+    ]
+  },
+  {
+    "objectID": "analysis/01_preprocessing.html#o-ciclo-do-sequenciamento-das-células-às-reads",
+    "href": "analysis/01_preprocessing.html#o-ciclo-do-sequenciamento-das-células-às-reads",
+    "title": "3  Pré-processamento",
+    "section": "4.1 1. O Ciclo do Sequenciamento: Das Células às “Reads”",
+    "text": "4.1 1. O Ciclo do Sequenciamento: Das Células às “Reads”\nO processo começa com a extração do RNA total da amostra (macrófagos infectados). Esse RNA é convertido em cDNA e fragmentado para a construção de uma biblioteca de sequenciamento.\n\n\n\nUm exemplo de uma sequência de um arquivo FASTQ, com os índices de qualidade abaixo\n\n\nAs máquinas de sequenciamento (como as da Illumina) leem esses fragmentos e geram arquivos no formato FASTQ. Cada arquivo FASTQ contém milhões de sequências curtas chamadas reads, acompanhadas de índices de qualidade (Phred Score) para cada base identificada. No entanto, esses arquivos brutos contêm:\n\nAdaptadores de sequenciamento.\nBases de baixa qualidade nas extremidades.\nContaminação do Hospedeiro: Em modelos de infecção, até 95-99% das reads podem ser do hospedeiro (Mus musculus), mascarando o sinal da Candida albicans.",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Pré-processamento</span>"
+    ]
+  },
+  {
+    "objectID": "analysis/01_preprocessing.html#o-pipeline-nf-coredetaxizer",
+    "href": "analysis/01_preprocessing.html#o-pipeline-nf-coredetaxizer",
+    "title": "3  Pré-processamento",
+    "section": "4.2 2. O Pipeline nf-core/detaxizer",
+    "text": "4.2 2. O Pipeline nf-core/detaxizer\nPara resolver o problema da contaminação, utilizamos o pipeline nf-core/detaxizer. Ele é projetado especificamente para verificar a presença de táxons específicos e filtrá-los de arquivos FASTQ.\nO fluxo de trabalho do detaxizer segue estas etapas principais:\n\nControle de Qualidade (FastQC): Avaliação inicial da qualidade das reads brutas.\nPré-processamento Opcional (fastp): Corte de adaptadores e filtragem de reads por tamanho ou qualidade.\nClassificação Taxonômica (Kraken2 e/ou bbduk): As reads são comparadas contra bancos de dados genômicos para identificar sua origem. O Kraken2 usa k-mers para uma atribuição rápida, enquanto o bbduk pode ser usado para pareamento direto contra sequências de referência.\nValidação Opcional (BLASTN): Para maior rigor, as reads classificadas podem ser validadas via alinhamento BLAST contra bancos de dados de nucleotídeos.\nFiltragem: O pipeline remove as reads associadas ao táxon indesejado (neste caso, Mammalia).\nRelatório (MultiQC): Consolida todos os resultados em um único arquivo HTML, permitindo visualizar quantas reads foram removidas e a qualidade final dos dados.",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Pré-processamento</span>"
+    ]
+  },
+  {
+    "objectID": "analysis/01_preprocessing.html#automação-com-nextflow",
+    "href": "analysis/01_preprocessing.html#automação-com-nextflow",
+    "title": "3  Pré-processamento",
+    "section": "4.3 3. Automação com Nextflow",
+    "text": "4.3 3. Automação com Nextflow\nA execução de todas essas ferramentas manualmente seria propensa a erros e difícil de reproduzir. Para isso, utilizamos o Nextflow, um motor de fluxo de trabalho que gerencia a instalação de ferramentas (via Docker/Singularity) e a execução paralela das tarefas.\n\n\n\n\n\n\nNotePonto Importante\n\n\n\nPara utilizar o Nextflow, é necessário ter o Java instalado e o comando curl -s https://get.nextflow.io | bash. O Nextflow organiza cada ferramenta em “processos” que são conectados em uma “pipeline”.\n\n\n\n4.3.1 O Script de Execução\nPara o nosso conjunto de dados de Candida e macrófagos, o comando utilizado para a descontaminação foi:\nnextflow run nf-core/detaxizer \\\n   -profile docker \\\n   --input samplesheet.csv \\\n   --preprocessing \\\n   --kraken2db db/k2_pluspf_20260226.tar.gz \\\n   --classification_kraken2_post_filtering \\\n   --filter_trimmed \\\n   --save_intermediates \\\n   --classification_bbduk \\\n   --classification_kraken2 \\\n   --tax2filter 'Mammalia' \\\n   --outdir results/decontaminated/\n\n\n4.3.2 Entendendo os Parâmetros:\n\n-profile docker: Garante que todas as ferramentas (Kraken2, FastQC, etc.) rodem dentro de containers, sem necessidade de instalação manual.\n--tax2filter 'Mammalia': O ponto crucial. Instruímos o pipeline a identificar e remover tudo o que for classificado como mamífero (o hospedeiro Mus musculus e qualquer outra leitura humana).\n--kraken2db: Aponta para o banco de dados taxonômico usado para a identificação.\n--filter_trimmed: Aplica a filtragem nas reads já processadas pelo fastp.\n\n\n\n\n\n\n\nSobre o Banco de Dados Kraken2 (PlusPF)\nO banco de dados utilizado, k2_pluspf, é a versão Standard plus Refseq protozoa & fungi. Ele contém o genoma humano, genomas de bactérias, archaea, vírus e, crucialmente para este curso, o RefSeq de protozoários e fungos.\nIsso é fundamental porque, para filtrar o que é Mammalia com segurança, o software precisa saber diferenciar o que é hospedeiro do que é patógeno. Sem as sequências de fungos no banco, o Kraken2 poderia classificar erroneamente reads da Candida como sendo de origem desconhecida ou até atribuí-las falsamente a outros grupos. Para mais informações sobre as referências do Kraken2, consulte https://benlangmead.github.io/aws-indexes/k2\n\n\n\nAo final deste processo, obtemos arquivos FASTQ “limpos”, contendo predominantemente sequências da Candida albicans, prontos para a próxima etapa: a Quantificação.\n\n\n\n\n\n\nNotePonto Importante\n\n\n\nUma estratégia igualmente válida seria remover as leituras de Fungi e analisar a partir das leituras removidas ao invés das filtradas. Talvez um de vocês possa tentar isso depois!",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Pré-processamento</span>"
+    ]
+  },
+  {
+    "objectID": "analysis/02_quantification.html",
+    "href": "analysis/02_quantification.html",
+    "title": "4  Quantificação",
+    "section": "",
+    "text": "4.1 1. Alinhamento e Quantificação\nCom os dados descontaminados, o próximo passo é identificar a quais genes da Candida albicans essas sequências pertencem e contar quantas vezes cada gene aparece em nossas amostras. Este processo é conhecido como Quantificação.\nO processo de quantificação geralmente envolve duas etapas principais:",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Quantificação</span>"
+    ]
+  },
+  {
+    "objectID": "analysis/02_quantification.html#fontes-de-dados-ensembl-fungi",
+    "href": "analysis/02_quantification.html#fontes-de-dados-ensembl-fungi",
+    "title": "4  Quantificação",
+    "section": "4.3 3. Fontes de Dados: Ensembl Fungi",
+    "text": "4.3 3. Fontes de Dados: Ensembl Fungi\nPara organismos não-modelos ou patógenos fúngicos, a fonte para genomas e anotações é o Ensembl Fungi.\nPara este curso, utilizamos a linhagem de referência SC5314 da Candida albicans. As referências foram adquiridas nos seguintes links:\n\nGenoma (Fasta): C. albicans DNA Toplevel\nAnotação (GTF): C. albicans Gene Annotation\n\n\n\n\n\n\n\nImportantPor que usar o Ensembl Fungi?\n\n\n\nDiferente do Ensembl principal (focado em vertebrados), o Ensembl Fungi mantém curadoria específica para as complexidades de genomas fúngicos, como estruturas de íntrons compactas e polimorfismos frequentes, garantindo que a nossa quantificação seja a mais precisa possível.\n\n\n\nAgora que temos nossa matriz de contagens pronta, podemos finalmente abrir o R e perguntar: quais genes mudaram sua expressão devido ao tratamento com vancomicina? Veremos isso na nossa primeira parte prática com o DESeq2.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Quantificação</span>"
+    ]
+  },
+  {
+    "objectID": "analysis/02_quantification.html#alinhamento-e-quantificação",
+    "href": "analysis/02_quantification.html#alinhamento-e-quantificação",
+    "title": "4  Quantificação",
+    "section": "",
+    "text": "Alinhamento (Mapping): As reads (sequências curtas) são comparadas contra um genoma de referência ou transcriptoma. É como montar um quebra-cabeça onde usamos o genoma como o guia para saber de onde cada peça veio.\nContagem (Counting): Uma vez que sabemos onde a read se encaixa, verificamos se ela caiu em uma região anotada como um “gene”. O resultado final é uma Matriz de Contagens, onde cada linha é um gene e cada coluna é uma amostra.\n\n\n\n\nEsquema simplificado de alinhamento de reads contra um genoma de referência e a geração da matriz de contagens.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Quantificação</span>"
+    ]
+  },
+  {
+    "objectID": "analysis/02_quantification.html#o-pipeline-nf-corernaseq",
+    "href": "analysis/02_quantification.html#o-pipeline-nf-corernaseq",
+    "title": "4  Quantificação",
+    "section": "4.2 2. O Pipeline nf-core/rnaseq",
+    "text": "4.2 2. O Pipeline nf-core/rnaseq\nPara esta etapa, utilizamos o nf-core/rnaseq, um dos pipelines mais robustos e utilizados no mundo para análise de transcriptômica. Ele automatiza desde o controle de qualidade final até a geração das matrizes de expressão.\n\n4.2.1 O Script de Execução\nO comando utilizado para quantificar o transcriptoma da Candida albicans foi:\nnextflow run nf-core/rnaseq \\\n    --input rnaseq_samplesheet.csv \\\n    --outdir rnaseq_results \\\n    --gtf db/Candida_albicans.GCA000182965v3.62.gtf.gz \\\n    --fasta db/Candida_albicans.GCA000182965v3.dna.toplevel.fa.gz \\\n    -profile docker \\\n    -resume -with-tower\n\n\n4.2.2 Entendendo os Parâmetros:\n\n--fasta: O arquivo de sequência genômica (o “dicionário” de DNA) da Candida.\n--gtf: O arquivo de anotação, que diz ao software as coordenadas exatas de onde cada gene começa e termina no genoma.\n-with-tower: Permite o monitoramento remoto da execução via Nextflow Tower.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Quantificação</span>"
+    ]
+  },
+  {
+    "objectID": "analysis/01_preprocessing.html#visualizando-a-composição-taxonômica-kraken2",
+    "href": "analysis/01_preprocessing.html#visualizando-a-composição-taxonômica-kraken2",
+    "title": "3  Pré-processamento",
+    "section": "4.4 Visualizando a Composição Taxonômica (Kraken2)",
+    "text": "4.4 Visualizando a Composição Taxonômica (Kraken2)\nPara avaliar a eficiência da nossa estratégia de descontaminação e entender a composição das nossas amostras brutas, analisamos a distribuição taxonômica das reads antes da filtragem. O gráfico abaixo, gerado pelo MultiQC, resume os principais táxons identificados pelo Kraken2.\n\nComo interpretar este gráfico:\n\nPredomínio de Metazoa (Azul): Como esperado em um modelo de infecção de macrófagos, a grande maioria dos fragmentos é classificada como Metazoa (neste caso, representando o hospedeiro, Mus musculus). Isso ilustra o desafio da “contaminação do hospedeiro”: o sinal do camundongo é ordens de grandeza maior que o do patógeno.\nO Nosso Alvo - Fungi (Cinza Escuro): Os segmentos em cinza escuro representam o reino Fungi, especificamente a Candida albicans. Observe que a proporção de reads fúngicas varia entre as amostras.\n\n\n\n\n\n\n\nPor que isso é importante?\nAo utilizarmos o pipeline nf-core/detaxizer com o parâmetro –tax2filter ‘Mammalia’, estamos essencialmente “removendo” a parte azul dessas barras e mantendo apenas a parte cinza escuro. Isso garante que, na etapa de Quantificação, o software não perca tempo processando sequências do hospedeiro que não nos interessam para este estudo específico do patógeno.\n\n\n\n\nCom os dados descontaminados, como podemos saber exatamente quantos genes da Candida estão presentes em cada amostra? Veremos isso na próxima seção sobre o nf-core/rnaseq.",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Pré-processamento</span>"
+    ]
+  }
+]

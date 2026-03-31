@@ -1,7 +1,62 @@
 ---
-title: "Quantification"
+title: "Quantificação"
 author: "Dalmolin Systems Biology Group"
 format: html
 execute:
   cache: true
 ---
+
+Com os dados descontaminados, o próximo passo é identificar a quais genes da *Candida albicans* essas sequências pertencem e contar quantas vezes cada gene aparece em nossas amostras. Este processo é conhecido como **Quantificação**.
+
+## 1. Alinhamento e Quantificação
+
+O processo de quantificação geralmente envolve duas etapas principais:
+
+1.  **Alinhamento (Mapping):** As reads (sequências curtas) são comparadas contra um genoma de referência ou transcriptoma. É como montar um quebra-cabeça onde usamos o genoma como o guia para saber de onde cada peça veio.
+2.  **Contagem (Counting):** Uma vez que sabemos onde a read se encaixa, verificamos se ela caiu em uma região anotada como um "gene". O resultado final é uma **Matriz de Contagens**, onde cada linha é um gene e cada coluna é uma amostra.
+
+![Esquema simplificado de alinhamento de reads contra um genoma de referência e a geração da matriz de contagens.](../content/images/rnaseq_alignment_scheme.png)
+
+## 2. O Pipeline nf-core/rnaseq
+
+Para esta etapa, utilizamos o [**nf-core/rnaseq**](https://nf-co.re/rnaseq), um dos pipelines mais robustos e utilizados no mundo para análise de transcriptômica. Ele automatiza desde o controle de qualidade final até a geração das matrizes de expressão.
+
+### O Script de Execução
+
+O comando utilizado para quantificar o transcriptoma da *Candida albicans* foi:
+
+```bash
+nextflow run nf-core/rnaseq \
+    --input rnaseq_samplesheet.csv \
+    --outdir rnaseq_results \
+    --gtf db/Candida_albicans.GCA000182965v3.62.gtf.gz \
+    --fasta db/Candida_albicans.GCA000182965v3.dna.toplevel.fa.gz \
+    -profile docker \
+    -resume -with-tower
+```
+
+### Entendendo os Parâmetros:
+
+  * `--fasta`: O arquivo de sequência genômica (o "dicionário" de DNA) da *Candida*.
+  * `--gtf`: O arquivo de anotação, que diz ao software as coordenadas exatas de onde cada gene começa e termina no genoma.
+  * `-with-tower`: Permite o monitoramento remoto da execução via [Nextflow Tower](https://tower.nf/).
+
+## 3\. Fontes de Dados: Ensembl Fungi
+
+Para organismos não-modelos ou patógenos fúngicos, a fonte para genomas e anotações é o [**Ensembl Fungi**](https://fungi.ensembl.org/).
+
+Para este curso, utilizamos a linhagem de referência **SC5314** da *Candida albicans*. As referências foram adquiridas nos seguintes links:
+
+  * **Genoma (Fasta):** [C. albicans DNA Toplevel](https://fungi.ensembl.org/Candida_albicans_sc5314_gca_000784655/Info/Index)
+  * **Anotação (GTF):** [C. albicans Gene Annotation](https://fungi.ensembl.org/Candida_albicans_sc5314_gca_000784655/Info/Index)
+
+::: {.callout-important}
+
+## Por que usar o Ensembl Fungi?
+
+Diferente do Ensembl principal (focado em vertebrados), o Ensembl Fungi mantém curadoria específica para as complexidades de genomas fúngicos, como estruturas de íntrons compactas e polimorfismos frequentes, garantindo que a nossa quantificação seja a mais precisa possível.
+:::
+
+-----
+
+**Agora que temos nossa matriz de contagens pronta, podemos finalmente abrir o R e perguntar: quais genes mudaram sua expressão devido ao tratamento com vancomicina? Veremos isso na nossa primeira parte prática com o DESeq2.**

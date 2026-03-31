@@ -11,7 +11,7 @@
 ⬅️ **Pré-requisitos**
 Para acompanhar este curso, os alunos devem ter conhecimentos em:
 
-1.  **R & Python Básico:** Capacidade de carregar bibliotecas, manipular data frames e executar scripts.
+1.  **R Básico:** Capacidade de carregar bibliotecas, manipular data frames e executar scripts.
 2.  **Biologia Molecular:** Conceitos fundamentais de RNA-seq, expressão gênica e biologia de fungos/mamíferos.
 3.  **Ambiente:** Familiaridade com o uso do RStudio.
 
