@@ -19,7 +19,11 @@ Para acompanhar este curso, os alunos devem ter conhecimentos em:
 3.  **Ambiente:** Familiaridade com o uso do RStudio.
 
 📖 **Descrição**
-Este repositório contém os materiais para o curso **"RNA-seq: Patógenos associados a hospedeiros"**, com foco no modelo de *Paracoccidioides brasiliensis* infectando *Mus musculus*. Organizado pelo Dalmolin's Systems Biology Group (BioME-UFRN), o workshop aborda as etapas críticas de limpeza de dados contaminados pelo hospedeiro utilizando o **nf-core/detaxizer**, a quantificação de leituras do patógeno com o **nf-core/rnaseq**, e a execução de análise de expressão diferencial e enriquecimento funcional.
+Este repositório contém os materiais para o curso **"RNA-seq: Patógenos associados a hospedeiros"**, com foco no modelo de *Candida albicans* infectando macrófagos de *Mus musculus* tratados com vancomicina. Organizado pelo Dalmolin's Systems Biology Group (BioME-UFRN), o workshop aborda as etapas críticas de limpeza de dados contaminados pelo hospedeiro utilizando o **nf-core/detaxizer**, a quantificação de leituras do patógeno com o **nf-core/rnaseq**, e a execução de análise de expressão diferencial e enriquecimento funcional.
+
+A vancomicina é um antibiótico amplamente prescrito para o tratamento de infecções bacterianas Gram-positivas. Já foi mostrado que este antibiótico pode romper as respostas imunológicas antifúngicas protetoras via disbiose do microbioma, aumentando a suscetibilidade à candidíase invasiva. Antibióticos são um fator de risco independente para o desenvolvimento desta infecção fúngica potencialmente fatal, mas não está claro se mecanismos independentes da microbiota também impulsionam esta associação. Aqui, comparamos as respostas transcricionais de macrófagos derivados da medula óssea de camundongos em um ponto temporal inicial pós-infecção (2 horas), comparando com a linha de base, usando macrófagos não tratados ou tratados com vancomicina. Os dados brutos deste estudo estão disponíveis sob o BioProject **PRJNA1120019**.
+
+⚠️ **Importante:** Para as análises realizadas neste curso, estamos considerando apenas as amostras que foram estimuladas com *Candida albicans* (conforme @data/SraRunTable.csv).
 
 ➡️ **Resultados de Aprendizagem:**
 Ao final do curso, os alunos serão capazes de:

@@ -1,0 +1,40 @@
+---
+title: "Configuração e Descrição do Conjunto de Dados"
+---
+
+## Conjunto de Dados
+
+Os dados utilizados nestas análises provêm do BioProject **PRJNA1120019**. Este estudo investiga os mecanismos pelos quais o antibiótico vancomicina afeta a resposta imune antifúngica em macrófagos.
+
+### Descrição do Experimento
+
+- **Organismo:** *Mus musculus* (Macrófagos derivados da medula óssea - BMDMs)
+- **Patógeno:** *Candida albicans* (cepa SC5413)
+- **Tratamento:** Vancomicina vs. Não tratado (Controle)
+- **Ponto Temporal:** 2 horas pós-infecção
+
+O desenho experimental envolveu a diferenciação de macrófagos na presença ou ausência de vancomicina, seguida de infecção por *Candida albicans*.
+
+### Seleção de Amostras
+
+Para as análises realizadas ao longo deste curso, selecionamos especificamente as amostras estimuladas com *Candida albicans*. É importante notar que cada amostra (identificada pelo prefixo GSM) pode conter múltiplos arquivos de sequenciamento (Run SRR), os quais devem ser combinados para a análise final. 
+
+A tabela abaixo apresenta as amostras consideradas, extraídas do arquivo `@data/SraRunTable.csv`:
+
+```{r}
+#| echo: false
+#| message: false
+library(readr)
+library(dplyr)
+library(knitr)
+
+# Ajuste do caminho caso necessário, assumindo que o diretório de trabalho é analysis/
+sra_table <- read_csv("../data/SraRunTable.csv")
+filtered_table <- sra_table %>% 
+  filter(stimulus == "Candida albicans") %>%
+  select(Run, stimulus, treatment, cell_type)
+
+kable(filtered_table)
+```
+
+Nosso interesse aqui será ver a expressão de *Candida albicans* frente a exposição de vancomicina, em macrófagos.

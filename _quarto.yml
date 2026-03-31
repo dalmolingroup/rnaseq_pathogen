@@ -7,6 +7,7 @@ book:
   author: "Dalmolin Systems Biology Group"
   chapters:
     - index.qmd
+    - analysis/00_setup.qmd
     - analysis/01_preprocessing.qmd
     - analysis/02_quantification.qmd
     - analysis/03_differential_expression.qmd
