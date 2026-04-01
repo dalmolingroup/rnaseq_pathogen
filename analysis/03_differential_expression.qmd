@@ -351,16 +351,22 @@ O DESeq2 atribui `NA` ao `padj` de genes com contagens muito baixas ou com dispe
 
 ## 12. Definindo os Genes Diferencialmente Expressos
 
-Para identificar os genes significativos, vamos utilizar o critério de **padj ≤ 0.05**. Além disso, vamos classificar cada gene como *Upregulated*, *Downregulated* de acordo com o log2FC ou *Not significant*:
+Para identificar os genes significativos, vamos utilizar o critério de **padj ≤ 0.1**. Além disso, vamos classificar cada gene como *Upregulated*, *Downregulated* de acordo com o log2FC ou *Not significant*:
+
+::: {.callout-warning}
+## Nota Didática
+
+Em publicações científicas, o corte mais comumente utilizado é **padj ≤ 0.05**. Neste minicurso, utilizamos um limiar mais permissivo (**padj ≤ 0.1**) para fins didáticos, permitindo que tenhamos um número maior de genes diferencialmente expressos para demonstrar as análises downstream (enriquecimento funcional e visualizações). Em um cenário de pesquisa real, recomendamos utilizar padj ≤ 0.05.
+:::
 
 ```{r}
 res_dge <- res_dge %>%
   mutate(
     padj = ifelse(is.na(padj), 1, padj),
     signif = case_when(
-      padj <= 0.05 & log2FoldChange > 0 ~ "Upregulated",
-      padj <= 0.05 & log2FoldChange < 0 ~ "Downregulated",
-      padj > 0.05 ~ "Not significant"
+      padj <= 0.1 & log2FoldChange > 0 ~ "Upregulated",
+      padj <= 0.1 & log2FoldChange < 0 ~ "Downregulated",
+      padj > 0.1 ~ "Not significant"
     )
   )
 
@@ -418,7 +424,7 @@ O **Volcano Plot** é o gráfico mais utilizado para visualizar resultados de ex
 #| fig-height: 6
 library(ggrepel)
 
-padj_cutoff <- 0.05
+padj_cutoff <- 0.1  # Limiar didático (em pesquisa, use 0.05)
 
 # Selecionar os top 10 genes mais significativos para rotular
 genes_to_label <- res_dge %>%
@@ -471,7 +477,7 @@ ggplot(res_dge, aes(x = log2FoldChange, y = -log10(padj), color = signif)) +
 ### Como interpretar o Volcano Plot:
 
 * **Eixo X (log2FC)**: genes à direita estão upregulados sob o tratamento de vancomicina; genes à esquerda estão downregulados.
-* **Eixo Y (-log10 padj)**: quanto mais alto o ponto, mais significativa é a mudança. A linha tracejada marca o threshold de padj = `0.05`.
+* **Eixo Y (-log10 padj)**: quanto mais alto o ponto, mais significativa é a mudança. A linha tracejada marca o threshold de padj = `r padj_cutoff`.
 * Os **genes rotulados** são os top 10 mais significativos.
 
 ::: {.callout-tip}
