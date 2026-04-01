@@ -15,9 +15,13 @@ Os dados utilizados nestas análises provêm do BioProject **PRJNA1120019**. Est
 
 O desenho experimental envolveu a diferenciação de macrófagos na presença ou ausência de vancomicina, seguida de infecção por *Candida albicans*.
 
+### Estrutura de Lotes (Batches)
+
+O experimento foi conduzido em **6 lotes independentes** (`experiment_group` 1 a 6). Cada lote contém: 4 tratadas com vancomicina e 4 controles (não tratada). Essa replicação em lotes é importante porque variações técnicas entre dias de cultivo, preparo de reagentes ou extração de RNA podem introduzir diferenças que não são biológicas. Na etapa de Análise de Expressão Diferencial, veremos como levar esses lotes em consideração no modelo estatístico para não confundir efeito de *batch* com efeito do tratamento.
+
 ### Seleção de Amostras
 
-Para as análises realizadas ao longo deste curso, selecionamos especificamente as amostras estimuladas com *Candida albicans*. É importante notar que cada amostra (identificada pelo prefixo GSM) pode conter múltiplos arquivos de sequenciamento (Run SRR), os quais devem ser combinados para a análise final. 
+Para as análises realizadas ao longo deste curso, selecionamos especificamente as amostras estimuladas com *Candida albicans*. É importante notar que cada amostra biológica pode conter múltiplos arquivos de sequenciamento (Run SRR), os quais devem ser combinados para a análise final.
 
 A tabela abaixo apresenta as amostras consideradas, extraídas do arquivo `@data/SraRunTable.csv`:
 

@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
-<meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.14">
-
+<meta charset="UTF-8">
+<meta name="generator" content="quarto-1.9.36">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
 <meta name="author" content="Dalmolin Systems Biology Group">
-
-<title>5&nbsp; Differential Expression Analysis – RNA-seq: Patógenos associados a hospedeiros</title>
+<title>5&nbsp; Análise de Expressão Diferencial – RNA-seq: Patógenos associados a hospedeiros</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -21,8 +20,42 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
-
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../site_libs/quarto-nav/headroom.min.js"></script>
@@ -36,20 +69,18 @@ ul.task-list li input[type="checkbox"] {
 <link href="../content/images/dalmolin_icon.svg" rel="icon" type="image/svg+xml">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-3485b2d93be123e8f777e710cba6c06e.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-59ef0155341c95c0b31ded8cf1727339.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-3485b2d93be123e8f777e710cba6c06e.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-a06763021a52c43c40a351ac8b799b8f.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-dbc92dda8186f57fa2e333fbb71d6a9d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-a06763021a52c43c40a351ac8b799b8f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-9bbd077d4201944d018d0c4cb6950598.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-19bb26631b5c8e2903ac015273b5d5f6.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-9bbd077d4201944d018d0c4cb6950598.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
-<script id="quarto-search-options" type="application/json">{
+<link href="../site_libs/bootstrap/bootstrap-49fd1f1441fd54ec71df2da41e3b08e6.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-9082959d1594bdca9ab86728af60ead1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-49fd1f1441fd54ec71df2da41e3b08e6.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -76,10 +107,7 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-
-
 </head>
-
 <body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
@@ -245,26 +273,20 @@ ul.task-list li input[type="checkbox"] {
   </script>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav">
-    <div class="container-fluid d-flex">
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/03_differential_expression.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Differential Expression Analysis</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/03_differential_expression.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Análise de Expressão Diferencial</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
-  </nav>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="../">RNA-seq: Patógenos associados a hospedeiros</a> 
         <div class="sidebar-tools-main tools-wide">
@@ -286,7 +308,7 @@ ul.task-list li input[type="checkbox"] {
         </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">RNA-seq: Patógenos associados a hospedeiros</span></span></a>
@@ -301,48 +323,98 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../analysis/01_preprocessing.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Pre-processing</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Pré-processamento</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../analysis/02_quantification.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Quantification</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Quantificação</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../analysis/03_differential_expression.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Differential Expression Analysis</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Análise de Expressão Diferencial</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../analysis/04_downstream_analyses.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Downstream Analyses</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Análises Downstream</span></span></a>
   </div>
 </li>
     </ul>
-    </div>
-</nav>
-<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#differential-expression-analysis" id="toc-differential-expression-analysis" class="nav-link active" data-scroll-target="#differential-expression-analysis"><span class="header-section-number">6</span> Differential Expression Analysis</a></li>
+<li><a href="#nas-etapas-anteriores-descontaminamos-as-reads-do-hospedeiro-mus-musculus-e-quantificamos-o-transcriptoma-de-candida-albicans-com-o-nf-corernaseq.-o-resultado-final-desse-pipeline-%C3%A9-uma-matriz-de-contagens-onde-cada-linha-representa-um-gene-e-cada-coluna-uma-amostra.-a-partir-dessa-matriz-podemos-realizar-a-an%C3%A1lise-de-express%C3%A3o-diferencial-para-identificar-quais-genes-da-candida-foram-regulados-upregulados-ou-downregulados-em-resposta-ao-tratamento-com-vancomicina." id="toc-nas-etapas-anteriores-descontaminamos-as-reads-do-hospedeiro-mus-musculus-e-quantificamos-o-transcriptoma-de-candida-albicans-com-o-nf-corernaseq.-o-resultado-final-desse-pipeline-é-uma-matriz-de-contagens-onde-cada-linha-representa-um-gene-e-cada-coluna-uma-amostra.-a-partir-dessa-matriz-podemos-realizar-a-análise-de-expressão-diferencial-para-identificar-quais-genes-da-candida-foram-regulados-upregulados-ou-downregulados-em-resposta-ao-tratamento-com-vancomicina." class="nav-link active" data-scroll-target="#nas-etapas-anteriores-descontaminamos-as-reads-do-hospedeiro-mus-musculus-e-quantificamos-o-transcriptoma-de-candida-albicans-com-o-nf-corernaseq.-o-resultado-final-desse-pipeline-%C3%A9-uma-matriz-de-contagens-onde-cada-linha-representa-um-gene-e-cada-coluna-uma-amostra.-a-partir-dessa-matriz-podemos-realizar-a-an%C3%A1lise-de-express%C3%A3o-diferencial-para-identificar-quais-genes-da-candida-foram-regulados-upregulados-ou-downregulados-em-resposta-ao-tratamento-com-vancomicina."><span class="header-section-number">5.1</span> Nas etapas anteriores, descontaminamos as reads do hospedeiro (<em>Mus musculus</em>) e quantificamos o transcriptoma de <em>Candida albicans</em> com o nf-core/rnaseq. O resultado final desse pipeline é uma <strong>matriz de contagens</strong>, onde cada linha representa um gene e cada coluna uma amostra. A partir dessa matriz, podemos realizar a análise de expressão diferencial para identificar quais genes da <em>Candida</em> foram regulados (upregulados ou downregulados) em resposta ao tratamento com vancomicina.</a></li>
+  <li>
+<a href="#sanidade-de-dados" id="toc-sanidade-de-dados" class="nav-link" data-scroll-target="#sanidade-de-dados"><span class="header-section-number">6</span> Sanidade de Dados</a>
+  <ul class="collapse">
+<li><a href="#carregando-os-pacotes" id="toc-carregando-os-pacotes" class="nav-link" data-scroll-target="#carregando-os-pacotes"><span class="header-section-number">6.1</span> 1. Carregando os Pacotes</a></li>
+  <li><a href="#importando-a-matriz-de-contagens" id="toc-importando-a-matriz-de-contagens" class="nav-link" data-scroll-target="#importando-a-matriz-de-contagens"><span class="header-section-number">6.2</span> 2. Importando a Matriz de Contagens</a></li>
+  <li><a href="#importando-os-metadados" id="toc-importando-os-metadados" class="nav-link" data-scroll-target="#importando-os-metadados"><span class="header-section-number">6.3</span> 3. Importando os Metadados</a></li>
+  <li><a href="#preparando-a-matriz-de-contagens" id="toc-preparando-a-matriz-de-contagens" class="nav-link" data-scroll-target="#preparando-a-matriz-de-contagens"><span class="header-section-number">6.4</span> 4. Preparando a Matriz de Contagens</a></li>
+  <li><a href="#criando-o-objeto-deseq2" id="toc-criando-o-objeto-deseq2" class="nav-link" data-scroll-target="#criando-o-objeto-deseq2"><span class="header-section-number">6.5</span> 5. Criando o Objeto DESeq2</a></li>
+  <li>
+<a href="#an%C3%A1lise-de-componentes-principais-pca" id="toc-análise-de-componentes-principais-pca" class="nav-link" data-scroll-target="#an%C3%A1lise-de-componentes-principais-pca"><span class="header-section-number">6.6</span> 6. Análise de Componentes Principais (PCA)</a>
+  <ul class="collapse">
+<li><a href="#como-interpretar-o-biplot" id="toc-como-interpretar-o-biplot" class="nav-link" data-scroll-target="#como-interpretar-o-biplot"><span class="header-section-number">6.6.1</span> Como interpretar o biplot:</a></li>
   </ul>
-</nav>
+</li>
+  <li>
+<a href="#scree-plot" id="toc-scree-plot" class="nav-link" data-scroll-target="#scree-plot"><span class="header-section-number">6.7</span> 7. Scree Plot</a>
+  <ul class="collapse">
+<li><a href="#pca-dentro-de-um-%C3%BAnico-lote" id="toc-pca-dentro-de-um-único-lote" class="nav-link" data-scroll-target="#pca-dentro-de-um-%C3%BAnico-lote"><span class="header-section-number">6.7.1</span> PCA dentro de um único lote</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#clusteriza%C3%A7%C3%A3o-hier%C3%A1rquica" id="toc-clusterização-hierárquica" class="nav-link" data-scroll-target="#clusteriza%C3%A7%C3%A3o-hier%C3%A1rquica"><span class="header-section-number">6.8</span> 8. Clusterização Hierárquica</a>
+  <ul class="collapse">
+<li><a href="#como-interpretar-o-dendrograma" id="toc-como-interpretar-o-dendrograma" class="nav-link" data-scroll-target="#como-interpretar-o-dendrograma"><span class="header-section-number">6.8.1</span> Como interpretar o dendrograma:</a></li>
+  </ul>
+</li>
+  <li><a href="#an%C3%A1lise-de-covari%C3%A1veis" id="toc-análise-de-covariáveis" class="nav-link" data-scroll-target="#an%C3%A1lise-de-covari%C3%A1veis"><span class="header-section-number">6.9</span> 9. Análise de Covariáveis</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#an%C3%A1lise-de-express%C3%A3o-diferencial-de-genes-dge" id="toc-análise-de-expressão-diferencial-de-genes-dge" class="nav-link" data-scroll-target="#an%C3%A1lise-de-express%C3%A3o-diferencial-de-genes-dge"><span class="header-section-number">7</span> Análise de Expressão Diferencial de Genes (DGE)</a>
+  <ul class="collapse">
+<li><a href="#rodando-o-deseq2" id="toc-rodando-o-deseq2" class="nav-link" data-scroll-target="#rodando-o-deseq2"><span class="header-section-number">7.1</span> 10. Rodando o DESeq2</a></li>
+  <li><a href="#extraindo-os-resultados" id="toc-extraindo-os-resultados" class="nav-link" data-scroll-target="#extraindo-os-resultados"><span class="header-section-number">7.2</span> 11. Extraindo os Resultados</a></li>
+  <li><a href="#definindo-os-genes-diferencialmente-expressos" id="toc-definindo-os-genes-diferencialmente-expressos" class="nav-link" data-scroll-target="#definindo-os-genes-diferencialmente-expressos"><span class="header-section-number">7.3</span> 12. Definindo os Genes Diferencialmente Expressos</a></li>
+  <li>
+<a href="#ma-plot" id="toc-ma-plot" class="nav-link" data-scroll-target="#ma-plot"><span class="header-section-number">7.4</span> 13. MA Plot</a>
+  <ul class="collapse">
+<li><a href="#como-interpretar-o-ma-plot" id="toc-como-interpretar-o-ma-plot" class="nav-link" data-scroll-target="#como-interpretar-o-ma-plot"><span class="header-section-number">7.4.1</span> Como interpretar o MA Plot:</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#volcano-plot" id="toc-volcano-plot" class="nav-link" data-scroll-target="#volcano-plot"><span class="header-section-number">7.5</span> 14. Volcano Plot</a>
+  <ul class="collapse">
+<li><a href="#como-interpretar-o-volcano-plot" id="toc-como-interpretar-o-volcano-plot" class="nav-link" data-scroll-target="#como-interpretar-o-volcano-plot"><span class="header-section-number">7.5.1</span> Como interpretar o Volcano Plot:</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#heatmap-dos-genes-diferencialmente-expressos" id="toc-heatmap-dos-genes-diferencialmente-expressos" class="nav-link" data-scroll-target="#heatmap-dos-genes-diferencialmente-expressos"><span class="header-section-number">7.6</span> 15. Heatmap dos Genes Diferencialmente Expressos</a>
+  <ul class="collapse">
+<li><a href="#como-interpretar-o-heatmap" id="toc-como-interpretar-o-heatmap" class="nav-link" data-scroll-target="#como-interpretar-o-heatmap"><span class="header-section-number">7.6.1</span> Como interpretar o heatmap:</a></li>
+  </ul>
+</li>
+  </ul>
+</li>
+  </ul></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Differential Expression Analysis</span></h1>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">
+<span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Análise de Expressão Diferencial</span>
+</h1>
 </div>
 
 
@@ -362,17 +434,661 @@ ul.task-list li input[type="checkbox"] {
   
 
 
-</header>
+</header><section id="nas-etapas-anteriores-descontaminamos-as-reads-do-hospedeiro-mus-musculus-e-quantificamos-o-transcriptoma-de-candida-albicans-com-o-nf-corernaseq.-o-resultado-final-desse-pipeline-é-uma-matriz-de-contagens-onde-cada-linha-representa-um-gene-e-cada-coluna-uma-amostra.-a-partir-dessa-matriz-podemos-realizar-a-análise-de-expressão-diferencial-para-identificar-quais-genes-da-candida-foram-regulados-upregulados-ou-downregulados-em-resposta-ao-tratamento-com-vancomicina." class="level2" data-number="5.1"><h2 data-number="5.1" class="anchored" data-anchor-id="nas-etapas-anteriores-descontaminamos-as-reads-do-hospedeiro-mus-musculus-e-quantificamos-o-transcriptoma-de-candida-albicans-com-o-nf-corernaseq.-o-resultado-final-desse-pipeline-é-uma-matriz-de-contagens-onde-cada-linha-representa-um-gene-e-cada-coluna-uma-amostra.-a-partir-dessa-matriz-podemos-realizar-a-análise-de-expressão-diferencial-para-identificar-quais-genes-da-candida-foram-regulados-upregulados-ou-downregulados-em-resposta-ao-tratamento-com-vancomicina.">
+<span class="header-section-number">5.1</span> Nas etapas anteriores, descontaminamos as reads do hospedeiro (<em>Mus musculus</em>) e quantificamos o transcriptoma de <em>Candida albicans</em> com o nf-core/rnaseq. O resultado final desse pipeline é uma <strong>matriz de contagens</strong>, onde cada linha representa um gene e cada coluna uma amostra. A partir dessa matriz, podemos realizar a análise de expressão diferencial para identificar quais genes da <em>Candida</em> foram regulados (upregulados ou downregulados) em resposta ao tratamento com vancomicina.</h2>
+</section><section id="sanidade-de-dados" class="level1" data-number="6"><h1 data-number="6">
+<span class="header-section-number">6</span> Sanidade de Dados</h1>
+<p>Antes de realizarmos a análise de expressão diferencial propriamente dita, é fundamental explorar a estrutura do nosso conjunto de dados. Essa etapa, frequentemente chamada de sanidade de dados ou análise exploratória, serve para responder perguntas essenciais:</p>
+<ul>
+<li>As amostras se agrupam conforme esperamos (por tratamento)?</li>
+<li>Existem <em>outliers</em> ou amostras com comportamento atípico?</li>
+<li>Quais variáveis do metadado influenciam a expressão gênica?</li>
+</ul>
+<p>Para tal, precisamos de técnicas que consigam lidar com a <strong>multidimensionalidade</strong> dos dados: estamos analisando milhares de genes simultaneamente. Técnicas como a Análise de Componentes Principais (PCA) e a clusterização hierárquica nos permitem “resumir” essa complexidade e visualizar padrões.</p>
+<section id="carregando-os-pacotes" class="level2" data-number="6.1"><h2 data-number="6.1" class="anchored" data-anchor-id="carregando-os-pacotes">
+<span class="header-section-number">6.1</span> 1. Carregando os Pacotes</h2>
+<p>Vamos começar carregando os pacotes que utilizaremos ao longo de toda esta seção prática.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/thelovelab/DESeq2">DESeq2</a></span><span class="op">)</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/kevinblighe/PCAtools">PCAtools</a></span><span class="op">)</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org">readr</a></span><span class="op">)</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/">tibble</a></span><span class="op">)</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">pheatmap</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section><section id="importando-a-matriz-de-contagens" class="level2" data-number="6.2"><h2 data-number="6.2" class="anchored" data-anchor-id="importando-a-matriz-de-contagens">
+<span class="header-section-number">6.2</span> 2. Importando a Matriz de Contagens</h2>
+<p>O nf-core/rnaseq com o quantificador Salmon gera uma tabela consolidada com as contagens de todos os genes por amostra. Vamos carregá-la:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Importar matriz de contagens (gerada pelo Salmon via nf-core/rnaseq)</span></span>
+<span><span class="va">gene_counts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_tsv</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html">here</a></span><span class="op">(</span><span class="st">"data/rnaseq/salmon.merged.gene_counts.tsv"</span><span class="op">)</span>,</span>
+<span>                        show_col_types <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Visualizar as primeiras linhas e colunas</span></span>
+<span><span class="va">gene_counts</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 6
+  gene_id     gene_name   SRR29279085 SRR29279086 SRR29279087 SRR29279088
+  &lt;chr&gt;       &lt;chr&gt;             &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;
+1 C1_00010W_A C1_00010W_A           0           0           0           0
+2 C1_00020C_A C1_00020C_A           2           4           1           2
+3 C1_00030C_A C1_00030C_A           0           0           0           0
+4 C1_00040W_A CTA2                  0           0           0           0
+5 C1_00050C_A C1_00050C_A           0           0           0           0</code></pre>
+</div>
+</div>
+<p>A primeira coluna (<code>gene_id</code>) contém os identificadores dos genes de <em>Candida albicans</em> no Ensembl Fungi, e a segunda (<code>gene_name</code>) contém o nome do gene quando disponível. As demais colunas são as amostras, identificadas pelo código SRR.</p>
+</section><section id="importando-os-metadados" class="level2" data-number="6.3"><h2 data-number="6.3" class="anchored" data-anchor-id="importando-os-metadados">
+<span class="header-section-number">6.3</span> 3. Importando os Metadados</h2>
+<p>As informações sobre as condições experimentais de cada amostra estão no arquivo <code>SraRunTable.csv</code>, obtido do SRA. Precisamos filtrá-lo para manter apenas as amostras que foram estimuladas com <em>Candida albicans</em>. Vamos organizar o metadado para que ele possa ser facilmente integrado com a matriz de contagens. O DESeq2 exige que as colunas da matriz de contagens correspondam às linhas do metadado, e que o metadado contenha as variáveis que queremos testar (neste caso, o tratamento) e as covariáveis (como o grupo experimental).</p>
+<p>Além da variável de interesse (<code>treatment</code>), nosso metadado contém uma informação crucial: o <strong>lote experimental</strong> (<code>experiment_group</code>). Como vimos na descrição do conjunto de dados, o experimento foi conduzido em <strong>6 lotes independentes</strong>, cada um contendo 4 amostras tratadas com vancomicina e 4 controles. Diferenças entre lotes, como variações no dia de cultivo, preparo de reagentes ou condições de extração, podem introduzir variabilidade que <strong>não é interessante para o objetivo do estudo</strong>. Se não levarmos isso em conta, corremos o risco de confundir efeito de <em>batch</em> com efeito do tratamento, o que pode gerar tanto falsos positivos quanto falsos negativos nos resultados da expressão diferencial.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Importar metadados e filtrar amostras estimuladas com C. albicans</span></span>
+<span><span class="va">sra_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html">here</a></span><span class="op">(</span><span class="st">"data/SraRunTable.csv"</span><span class="op">)</span>, show_col_types <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="va">sra_table</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">stimulus</span> <span class="op">==</span> <span class="st">"Candida albicans"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Run</span>, <span class="va">treatment</span>, <span class="va">experiment_group</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">treatment</span>, </span>
+<span>                            levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Untreated (control)"</span>, <span class="st">"Vancomycin"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>         experiment_group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">experiment_group</span>,</span>
+<span>                            levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">6</span><span class="op">)</span><span class="op">)</span></span>
+<span>                            <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  </span>
+<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html">column_to_rownames</a></span><span class="op">(</span><span class="st">"Run"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">metadata</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span><span class="op">(</span><span class="va">metadata</span><span class="op">$</span><span class="va">experiment_group</span><span class="op">)</span>,<span class="op">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                      treatment experiment_group
+SRR29279165          Vancomycin                1
+SRR29279173 Untreated (control)                1
+SRR29279166          Vancomycin                1
+SRR29279167          Vancomycin                1
+SRR29279168          Vancomycin                1
+SRR29279174 Untreated (control)                1
+SRR29279175 Untreated (control)                1
+SRR29279176 Untreated (control)                1
+SRR29279149          Vancomycin                2
+SRR29279157 Untreated (control)                2
+SRR29279150          Vancomycin                2
+SRR29279151          Vancomycin                2
+SRR29279152          Vancomycin                2
+SRR29279158 Untreated (control)                2
+SRR29279159 Untreated (control)                2
+SRR29279160 Untreated (control)                2
+SRR29279133          Vancomycin                3
+SRR29279141 Untreated (control)                3
+SRR29279134          Vancomycin                3
+SRR29279135          Vancomycin                3
+SRR29279136          Vancomycin                3
+SRR29279142 Untreated (control)                3
+SRR29279143 Untreated (control)                3
+SRR29279144 Untreated (control)                3
+SRR29279117          Vancomycin                4
+SRR29279125 Untreated (control)                4
+SRR29279118          Vancomycin                4
+SRR29279119          Vancomycin                4
+SRR29279120          Vancomycin                4
+SRR29279126 Untreated (control)                4
+SRR29279127 Untreated (control)                4
+SRR29279128 Untreated (control)                4
+SRR29279101          Vancomycin                5
+SRR29279109 Untreated (control)                5
+SRR29279102          Vancomycin                5
+SRR29279103          Vancomycin                5
+SRR29279104          Vancomycin                5
+SRR29279110 Untreated (control)                5
+SRR29279111 Untreated (control)                5
+SRR29279112 Untreated (control)                5
+SRR29279085          Vancomycin                6
+SRR29279093 Untreated (control)                6
+SRR29279086          Vancomycin                6
+SRR29279087          Vancomycin                6
+SRR29279088          Vancomycin                6
+SRR29279094 Untreated (control)                6
+SRR29279095 Untreated (control)                6
+SRR29279096 Untreated (control)                6</code></pre>
+</div>
+</div>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Ponto Importante
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Repare que cada amostra biológica (<code>experiment_group</code>) possui 4 runs de sequenciamento (SRR). No nosso caso, o nf-core/rnaseq quantificou cada run individualmente. Isso significa que temos <strong>réplicas técnicas</strong> que devem ser levadas em consideração. Poderíamos agregá-las somando as contagens, mas como o DESeq2 lida naturalmente com o modelo de expressão, vamos mantê-las separadas e incluir o <code>experiment_group</code> no design para absorver essa variabilidade.</p>
+</div>
+</div>
+</section><section id="preparando-a-matriz-de-contagens" class="level2" data-number="6.4"><h2 data-number="6.4" class="anchored" data-anchor-id="preparando-a-matriz-de-contagens">
+<span class="header-section-number">6.4</span> 4. Preparando a Matriz de Contagens</h2>
+<p>Agora precisamos transformar a tabela importada em uma matriz numérica compatível com o DESeq2, e garantir que apenas as amostras de interesse (com estímulo por <em>Candida</em>) estejam presentes.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Transformar em matriz numérica com gene_id como rownames</span></span>
+<span><span class="va">count_matrix</span> <span class="op">&lt;-</span> <span class="va">gene_counts</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">gene_id</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html">all_of</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">metadata</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html">column_to_rownames</a></span><span class="op">(</span><span class="st">"gene_id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># O DESeq2 requer valores inteiros</span></span>
+<span><span class="va">count_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">count_matrix</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Verificar correspondência entre metadado e contagens</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/identical.html">identical</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">count_matrix</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">metadata</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">count_matrix</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 6468   48</code></pre>
+</div>
+</div>
+<p>Temos <strong>6468 genes</strong> e <strong>48 amostras</strong> prontos para análise.</p>
+</section><section id="criando-o-objeto-deseq2" class="level2" data-number="6.5"><h2 data-number="6.5" class="anchored" data-anchor-id="criando-o-objeto-deseq2">
+<span class="header-section-number">6.5</span> 5. Criando o Objeto DESeq2</h2>
+<p>O DESeq2 trabalha com um objeto especial (<code>DESeqDataSet</code>) que armazena juntos a matriz de contagens, o metadado e o modelo estatístico. Aqui, nosso modelo inclui o <code>experiment_group</code> como covariável e o <code>treatment</code> como a variável de interesse:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DESeq2/man/DESeqDataSet.html">DESeqDataSetFromMatrix</a></span><span class="op">(</span>countData <span class="op">=</span> <span class="va">count_matrix</span>,</span>
+<span>                              colData <span class="op">=</span> <span class="va">metadata</span>,</span>
+<span>                              design <span class="op">=</span> <span class="op">~</span> <span class="va">experiment_group</span> <span class="op">+</span> <span class="va">treatment</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Antes de prosseguirmos, vamos aplicar a <strong>Variance Stabilizing Transformation (VST)</strong>. Dados de RNA-seq possuem uma característica chamada <strong>heteroscedasticidade</strong>: a variância das contagens aumenta conforme a média de expressão cresce (ou seja, genes altamente expressos apresentam maior variância absoluta). Por outro lado, se aplicássemos apenas uma transformação logarítmica simples, os genes de baixa expressão ficariam com uma variância artificialmente inflada. A transformação VST corrige esse comportamento, tornando a variância mais homogênea em todos os níveis de expressão. Isso é essencial para análises exploratórias, como a PCA e a clusterização, mas <em>não</em> para o teste de expressão diferencial em si (que exige as contagens brutas não normalizadas).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dds_vst</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DESeq2/man/varianceStabilizingTransformation.html">varianceStabilizingTransformation</a></span><span class="op">(</span><span class="va">dds</span><span class="op">)</span></span>
+<span><span class="va">counts_vst</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assay</a></span><span class="op">(</span><span class="va">dds_vst</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section><section id="análise-de-componentes-principais-pca" class="level2" data-number="6.6"><h2 data-number="6.6" class="anchored" data-anchor-id="análise-de-componentes-principais-pca">
+<span class="header-section-number">6.6</span> 6. Análise de Componentes Principais (PCA)</h2>
+<p>A PCA é uma técnica de <strong>redução de dimensionalidade</strong> que projeta os milhares de genes em um número menor de componentes. Cada componente principal captura um eixo de variabilidade nos dados:</p>
+<ul>
+<li>
+<strong>PC1</strong> captura a <em>maior</em> fonte de variação.</li>
+<li>
+<strong>PC2</strong> captura a segunda maior, e assim por diante.</li>
+</ul>
+<p>Se o tratamento com vancomicina realmente altera o perfil transcricional da <em>Candida</em>, esperamos ver as amostras se separarem por grupo ao longo de uma das primeiras componentes.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pca_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/PCAtools/man/pca.html">pca</a></span><span class="op">(</span><span class="va">counts_vst</span>, metadata <span class="op">=</span> <span class="va">metadata</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/PCAtools/man/biplot.html">biplot</a></span><span class="op">(</span><span class="va">pca_result</span>,</span>
+<span>       colby <span class="op">=</span> <span class="st">"treatment"</span>,</span>
+<span>       shape <span class="op">=</span> <span class="st">"experiment_group"</span>,</span>
+<span>       legendPosition <span class="op">=</span> <span class="st">"right"</span>,</span>
+<span>       title <span class="op">=</span> <span class="st">"PCA — Transcriptoma de C. albicans"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="03_differential_expression_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="como-interpretar-o-biplot" class="level3" data-number="6.6.1"><h3 data-number="6.6.1" class="anchored" data-anchor-id="como-interpretar-o-biplot">
+<span class="header-section-number">6.6.1</span> Como interpretar o biplot:</h3>
+<ul>
+<li>
+<strong>Proximidade entre pontos</strong> indica similaridade no perfil de expressão global. Amostras do mesmo grupo de tratamento devem se agrupar.</li>
+<li>
+<strong>Eixos PC1 e PC2</strong>: o percentual ao lado de cada eixo indica quanto da variância total aquela componente explica. Se PC1 sozinha explica, por exemplo, 40% da variância, ela é a dimensão dominante do seu dado.</li>
+<li>A <strong>forma</strong> dos pontos diferencia os grupos experimentais (réplicas biológicas), o que permite avaliar se a variação entre réplicas é menor do que a variação entre tratamentos — o cenário ideal.</li>
+</ul></section></section><section id="scree-plot" class="level2" data-number="6.7"><h2 data-number="6.7" class="anchored" data-anchor-id="scree-plot">
+<span class="header-section-number">6.7</span> 7. Scree Plot</h2>
+<p>O <strong>scree plot</strong> mostra a proporção de variância explicada por cada componente principal. Ele ajuda a responder: <em>quantas dimensões são necessárias para descrever a variabilidade do meu dado?</em></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/PCAtools/man/screeplot.html">screeplot</a></span><span class="op">(</span><span class="va">pca_result</span>,</span>
+<span>          components <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/PCAtools/man/getComponents.html">getComponents</a></span><span class="op">(</span><span class="va">pca_result</span><span class="op">)</span>,</span>
+<span>          title <span class="op">=</span> <span class="st">"Scree Plot — Variância por Componente"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="03_differential_expression_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Como interpretar o scree plot
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Procure pelo ponto onde a curva se achata (<em>elbow</em>). Geralmente, em dados de RNA-seq, as 2–4 primeiras componentes são suficientes para descrever a maior parte da variabilidade. No nosso caso, é normal que as duas primeiras componentes não expliquem uma fração muito alta da variância. Isso acontece porque temos <strong>6 lotes experimentais independentes</strong>, cada um introduzindo sua própria fonte de variabilidade. A variância total acaba sendo “fragmentada” entre muitas componentes, cada uma capturando a variação de um ou mais lotes. Se analisássemos um único lote, veríamos PC1 e PC2 explicando uma proporção bem maior.</p>
+</div>
+</div>
+<section id="pca-dentro-de-um-único-lote" class="level3" data-number="6.7.1"><h3 data-number="6.7.1" class="anchored" data-anchor-id="pca-dentro-de-um-único-lote">
+<span class="header-section-number">6.7.1</span> PCA dentro de um único lote</h3>
+<p>Para ilustrar esse ponto, vamos repetir a PCA usando apenas as amostras do <strong>lote 1</strong> (um par vancomicina/controle com suas réplicas técnicas):</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Filtrar apenas amostras do lote 2</span></span>
+<span><span class="va">meta_batch1</span> <span class="op">&lt;-</span> <span class="va">metadata</span><span class="op">[</span><span class="va">metadata</span><span class="op">$</span><span class="va">experiment_group</span> <span class="op">==</span> <span class="st">"1"</span>, , drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span>
+<span><span class="va">counts_batch1</span> <span class="op">&lt;-</span> <span class="va">counts_vst</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">meta_batch1</span><span class="op">)</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">pca_batch1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/PCAtools/man/pca.html">pca</a></span><span class="op">(</span><span class="va">counts_batch1</span>, metadata <span class="op">=</span> <span class="va">meta_batch1</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/PCAtools/man/biplot.html">biplot</a></span><span class="op">(</span><span class="va">pca_batch1</span>,</span>
+<span>       colby <span class="op">=</span> <span class="st">"treatment"</span>,</span>
+<span>       legendPosition <span class="op">=</span> <span class="st">"right"</span>,</span>
+<span>       title <span class="op">=</span> <span class="st">"PCA — Apenas Lote 1"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="03_differential_expression_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Note como, isolando um único lote, a separação entre vancomicina e controle se torna mais evidente e as primeiras componentes explicam uma proporção maior da variância. Isso reforça a necessidade de incluir o <code>experiment_group</code> como covariável no nosso modelo.</p>
+</section></section><section id="clusterização-hierárquica" class="level2" data-number="6.8"><h2 data-number="6.8" class="anchored" data-anchor-id="clusterização-hierárquica">
+<span class="header-section-number">6.8</span> 8. Clusterização Hierárquica</h2>
+<p>A clusterização hierárquica agrupa as amostras com base na <strong>distância euclidiana</strong> entre seus perfis de expressão, construindo um <strong>dendrograma</strong>. Amostras com perfis mais similares são conectadas mais próximas na árvore.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span> <span class="co"># Transpor a matriz: cada amostra vira uma linha</span></span>
+<span></span>
+<span><span class="va">counts_vst_t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">counts_vst</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># Calcular distâncias euclidianas</span></span>
+<span></span>
+<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/dist.html">dist</a></span><span class="op">(</span><span class="va">counts_vst_t</span>, method <span class="op">=</span> <span class="st">"euclidean"</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># Clusterizar com ligação completa</span></span>
+<span></span>
+<span><span class="va">clusters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/hclust.html">hclust</a></span><span class="op">(</span><span class="va">d</span>, method <span class="op">=</span> <span class="st">"complete"</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span></span>
+<span><span class="co"># 1. Criar um vetor de novos rótulos combinando as colunas</span></span>
+<span><span class="co"># Garantimos que a ordem dos metadados seja a mesma das amostras na matriz</span></span>
+<span><span class="va">novos_rotulos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">metadata</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">counts_vst_t</span><span class="op">)</span>, <span class="st">"treatment"</span><span class="op">]</span>, </span>
+<span>                       <span class="va">metadata</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">counts_vst_t</span><span class="op">)</span>, <span class="st">"experiment_group"</span><span class="op">]</span>, </span>
+<span>                       sep <span class="op">=</span> <span class="st">" | "</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 2. Plotar o dendrograma usando o argumento 'labels'</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">2</span>, <span class="fl">8</span><span class="op">)</span><span class="op">)</span> <span class="co"># Aumentar a margem direita se os nomes forem longos</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">clusters</span>,</span>
+<span>     labels <span class="op">=</span> <span class="va">novos_rotulos</span>,</span>
+<span>     main <span class="op">=</span> <span class="st">"Clusterização Hierárquica — Tratamento e Batch"</span>,</span>
+<span>     xlab <span class="op">=</span> <span class="st">""</span>,</span>
+<span>     sub <span class="op">=</span> <span class="st">""</span>,</span>
+<span>     cex <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="co"># Font size</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="03_differential_expression_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="como-interpretar-o-dendrograma" class="level3" data-number="6.8.1"><h3 data-number="6.8.1" class="anchored" data-anchor-id="como-interpretar-o-dendrograma">
+<span class="header-section-number">6.8.1</span> Como interpretar o dendrograma:</h3>
+<ul>
+<li>Amostras que compartilham um ramo próximo possuem perfil de expressão semelhante.</li>
+<li>O ideal é que as amostras se agrupem por <strong>tratamento</strong> (vancomicina vs.&nbsp;controle) e não por outras variáveis como o lote experimental.</li>
+<li>Se amostras de grupos diferentes estiverem misturadas, isso pode indicar um efeito biológico fraco ou um forte efeito de <em>batch</em>.</li>
+</ul></section></section><section id="análise-de-covariáveis" class="level2" data-number="6.9"><h2 data-number="6.9" class="anchored" data-anchor-id="análise-de-covariáveis">
+<span class="header-section-number">6.9</span> 9. Análise de Covariáveis</h2>
+<p>Uma análise de expressão diferencial é, em essência, <strong>um modelo de regressão</strong> aplicado a cada gene. A variável principal é o tratamento (vancomicina vs.&nbsp;controle), mas outras variáveis, como o grupo experimental (lote/batch), podem influenciar significativamente a expressão.</p>
+<p>A função <code>eigencorplot</code> nos permite visualizar quais variáveis do metadado se correlacionam com as primeiras componentes principais, ajudando na decisão de <strong>quais covariáveis incluir no modelo</strong>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/PCAtools/man/eigencorplot.html">eigencorplot</a></span><span class="op">(</span><span class="va">pca_result</span>,</span>
+<span>             metavars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"experiment_group"</span><span class="op">)</span>,</span>
+<span>             main <span class="op">=</span> <span class="st">"Correlação entre Covariáveis e Componentes Principais"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="03_differential_expression_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-simple callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Por que incluir covariáveis?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Se o <code>experiment_group</code> (lote biológico) se correlaciona fortemente com alguma das primeiras componentes, isso significa que parte da variabilidade que observamos vem do lote de cultivo celular, e não do efeito da vancomicina. Ao incluir essa variável no modelo do DESeq2 (<code>~ experiment_group + treatment</code>), “descontamos” esse efeito e aumentamos o poder estatístico para detectar os genes realmente alterados pelo tratamento.</p>
+</div>
+</div>
+<hr>
+<p><strong>A sanidade dos nossos dados nos deu uma visão geral da sua estrutura. As amostras se comportam como esperado? Há outliers que precisam de atenção? Com essas respostas em mãos, podemos avançar com confiança para a próxima etapa.</strong></p>
+<hr></section></section><section id="análise-de-expressão-diferencial-de-genes-dge" class="level1" data-number="7"><h1 data-number="7">
+<span class="header-section-number">7</span> Análise de Expressão Diferencial de Genes (DGE)</h1>
+<p>Agora chegamos à pergunta central deste curso: <strong>quais genes da <em>Candida albicans</em> mudaram de comportamento em resposta à vancomicina?</strong></p>
+<p>A análise de Expressão Diferencial de Genes (DGE) é, essencialmente, um modelo de regressão aplicado a cada gene individualmente. O DESeq2 implementa um <strong>Modelo Linear Generalizado (GLM)</strong> baseado na distribuição <strong>Binomial Negativa</strong>, que é particularmente adequada para dados de contagem de RNA-seq, onde a variância geralmente excede a média (sobredispersão).</p>
+<section id="rodando-o-deseq2" class="level2" data-number="7.1"><h2 data-number="7.1" class="anchored" data-anchor-id="rodando-o-deseq2">
+<span class="header-section-number">7.1</span> 10. Rodando o DESeq2</h2>
+<p>A função <code><a href="https://rdrr.io/pkg/DESeq2/man/DESeq.html">DESeq()</a></code> congrega três etapas internas:</p>
+<ol type="1">
+<li>
+<strong>Estimativa dos fatores de normalização</strong> (<code>estimateSizeFactors</code>): corrige diferenças na profundidade de sequenciamento entre amostras.</li>
+<li>
+<strong>Estimativa da dispersão</strong> (<code>estimateDispersions</code>): modela a variabilidade dos dados gene a gene, compartilhando informação entre genes com expressão similar.</li>
+<li>
+<strong>Teste estatístico</strong> (<code>nbinomWaldTest</code>): aplica o modelo e testa a significância para cada gene.</li>
+</ol>
+<p>Lembre-se que, na seção 5, definimos o modelo do DESeq2 com a fórmula <code>~ experiment_group + treatment</code>. É nessa fórmula que resolvemos o problema dos lotes experimentais. A lógica funciona assim:</p>
+<ul>
+<li>A variável <code>experiment_group</code> entra como <strong>covariável</strong> (o primeiro termo da fórmula). Isso instrui o DESeq2 a “descontar” a variabilidade que vem das diferenças entre os 6 lotes <strong>antes</strong> de avaliar o efeito do tratamento.</li>
+<li>A variável <code>treatment</code> é a <strong>variável de interesse</strong> (o último termo). O teste estatístico será aplicado sobre ela.</li>
+</ul>
+<p>Na prática, o modelo estima para cada gene: <em>“quanto da expressão se explica pelo lote?”</em> e, removendo esse efeito, pergunta: <em>“o que sobra é explicado pelo tratamento com vancomicina?”</em>. Sem essa correção, diferenças entre lotes poderiam ser falsamente atribuídas ao tratamento — ou, inversamente, mascarar efeitos reais.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Rodar o pipeline completo do DESeq2</span></span>
+<span><span class="va">dds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DESeq2/man/DESeq.html">DESeq</a></span><span class="op">(</span><span class="va">dds</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section><section id="extraindo-os-resultados" class="level2" data-number="7.2"><h2 data-number="7.2" class="anchored" data-anchor-id="extraindo-os-resultados">
+<span class="header-section-number">7.2</span> 11. Extraindo os Resultados</h2>
+<p>Precisamos agora extrair os resultados para o <strong>contraste</strong> que nos interessa. Um contraste é a comparação entre dois grupos de uma variável categórica. No nosso caso, queremos comparar <strong>Vancomycin vs.&nbsp;Untreated (control)</strong>.</p>
+<p>A função <code><a href="https://rdrr.io/pkg/DESeq2/man/results.html">results()</a></code> aceita o argumento <code>contrast</code>, um vetor de 3 elementos:</p>
+<ol type="1">
+<li>O nome da variável (<code>treatment</code>).</li>
+<li>O grupo correspondente ao <strong>tratamento</strong> (<code>Vancomycin</code>).</li>
+<li>O grupo correspondente à <strong>referência</strong> (<code>Untreated (control)</code>).</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">res_dge</span> <span class="op">&lt;-</span> <span class="fu">DESeq2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DESeq2/man/results.html">results</a></span><span class="op">(</span><span class="va">dds</span>, </span>
+<span>                           contrast <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"Vancomycin"</span>, <span class="st">"Untreated (control)"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="callout callout-style-simple callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>A Ordem do Contraste Importa!
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A interpretação do resultado depende diretamente da ordem com que o contraste é construído. No nosso caso, a referência é o grupo <strong>controle</strong> (não tratado). Portanto:</p>
+<ul>
+<li>
+<strong>Log2FC positivo</strong> → gene com expressão <strong>maior</strong> nas amostras tratadas com vancomicina (upregulado).</li>
+<li>
+<strong>Log2FC negativo</strong> → gene com expressão <strong>menor</strong> nas amostras tratadas com vancomicina (downregulado).</li>
+</ul>
+<p>Se invertêssemos a ordem do contraste, a interpretação seria a oposta.</p>
+</div>
+</div>
+<p>Vamos transformar o resultado em um data frame e inspecionar as colunas:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">res_dge</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">res_dge</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">res_dge</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              baseMean log2FoldChange     lfcSE        stat    pvalue      padj
+C1_00010W_A 0.13073479      0.2439030 2.5493706  0.09567186 0.9237812        NA
+C1_00020C_A 1.35871278     -0.7858614 0.5442897 -1.44382928 0.1487870 0.5357854
+C1_00030C_A 0.02292633      0.2485875 2.9448570  0.08441413 0.9327272        NA
+C1_00040W_A 0.03442856      0.3688108 2.9448570  0.12523896 0.9003344        NA
+C1_00050C_A 0.03644129     -0.1120823 2.9448570 -0.03806036 0.9696396        NA
+C1_00060W_A 0.36778762      0.4121354 1.3458047  0.30623715 0.7594241        NA</code></pre>
+</div>
+</div>
+<p>O data frame <code>res_dge</code> contém as seguintes colunas para cada gene:</p>
+<ul>
+<li>
+<strong><code>baseMean</code></strong>: média dos valores de contagens normalizados para todas as amostras.</li>
+<li>
+<strong><code>log2FoldChange</code></strong>: métrica que indica a intensidade e a direção da mudança de expressão (positivo = up, negativo = down).</li>
+<li>
+<strong><code>lfcSE</code></strong>: erro padrão do log2FC.</li>
+<li>
+<strong><code>stat</code></strong>: estatística do teste de Wald.</li>
+<li>
+<strong><code>pvalue</code></strong>: p-valor do teste.</li>
+<li>
+<strong><code>padj</code></strong>: p-valor ajustado pelo método de Benjamini-Hochberg (FDR), que corrige para os múltiplos testes (um por gene).</li>
+</ul>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Ponto Importante
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>O DESeq2 atribui <code>NA</code> ao <code>padj</code> de genes com contagens muito baixas ou com dispersão extrema. Esses genes não possuem evidência estatística suficiente para serem testados e, na prática, são considerados não significativos.</p>
+</div>
+</div>
+</section><section id="definindo-os-genes-diferencialmente-expressos" class="level2" data-number="7.3"><h2 data-number="7.3" class="anchored" data-anchor-id="definindo-os-genes-diferencialmente-expressos">
+<span class="header-section-number">7.3</span> 12. Definindo os Genes Diferencialmente Expressos</h2>
+<p>Para identificar os genes significativos, vamos utilizar o critério de <strong>padj ≤ 0.1</strong>. Além disso, vamos classificar cada gene como <em>Upregulated</em>, <em>Downregulated</em> de acordo com o log2FC ou <em>Not significant</em>:</p>
+<div class="callout callout-style-simple callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Nota Didática
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Em publicações científicas, o corte mais comumente utilizado é <strong>padj ≤ 0.05</strong>. Neste minicurso, utilizamos um limiar mais permissivo (<strong>padj ≤ 0.1</strong>) para fins didáticos, permitindo que tenhamos um número maior de genes diferencialmente expressos para demonstrar as análises downstream (enriquecimento funcional e visualizações). Em um cenário de pesquisa real, recomendamos utilizar padj ≤ 0.05.</p>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">res_dge</span> <span class="op">&lt;-</span> <span class="va">res_dge</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span></span>
+<span>    padj <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">padj</span><span class="op">)</span>, <span class="fl">1</span>, <span class="va">padj</span><span class="op">)</span>,</span>
+<span>    signif <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case-and-replace-when.html">case_when</a></span><span class="op">(</span></span>
+<span>      <span class="va">padj</span> <span class="op">&lt;=</span> <span class="fl">0.1</span> <span class="op">&amp;</span> <span class="va">log2FoldChange</span> <span class="op">&gt;</span> <span class="fl">0</span> <span class="op">~</span> <span class="st">"Upregulated"</span>,</span>
+<span>      <span class="va">padj</span> <span class="op">&lt;=</span> <span class="fl">0.1</span> <span class="op">&amp;</span> <span class="va">log2FoldChange</span> <span class="op">&lt;</span> <span class="fl">0</span> <span class="op">~</span> <span class="st">"Downregulated"</span>,</span>
+<span>      <span class="va">padj</span> <span class="op">&gt;</span> <span class="fl">0.1</span> <span class="op">~</span> <span class="st">"Not significant"</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Resumo dos genes significativos</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">res_dge</span><span class="op">$</span><span class="va">signif</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  Downregulated Not significant     Upregulated 
+             35            6393              40 </code></pre>
+</div>
+</div>
+</section><section id="ma-plot" class="level2" data-number="7.4"><h2 data-number="7.4" class="anchored" data-anchor-id="ma-plot">
+<span class="header-section-number">7.4</span> 13. MA Plot</h2>
+<p>O <strong>MA Plot</strong> é a primeira visualização diagnóstica da expressão diferencial. Ele relaciona a <strong>expressão média</strong> de cada gene (eixo X, em escala log) com o <strong>log2 Fold Change</strong> estimado (eixo Y). Genes significativos aparecem em destaque.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">res_dge</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">baseMean</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span>, y <span class="op">=</span> <span class="va">log2FoldChange</span>, color <span class="op">=</span> <span class="va">signif</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="va">signif</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_color_manual</a></span><span class="op">(</span></span>
+<span>    values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Downregulated"</span> <span class="op">=</span> <span class="st">"#1F78B4"</span>,</span>
+<span>               <span class="st">"Not significant"</span> <span class="op">=</span> <span class="st">"grey60"</span>,</span>
+<span>               <span class="st">"Upregulated"</span> <span class="op">=</span> <span class="st">"#E31A1C"</span><span class="op">)</span>,</span>
+<span>    name <span class="op">=</span> <span class="st">"Regulação"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_alpha_manual</a></span><span class="op">(</span></span>
+<span>    values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Downregulated"</span> <span class="op">=</span> <span class="fl">0.7</span>,</span>
+<span>               <span class="st">"Not significant"</span> <span class="op">=</span> <span class="fl">0.15</span>,</span>
+<span>               <span class="st">"Upregulated"</span> <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span>,</span>
+<span>    guide <span class="op">=</span> <span class="st">"none"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, color <span class="op">=</span> <span class="st">"black"</span>, linewidth <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"MA Plot — Vancomicina vs. Controle"</span>,</span>
+<span>    x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">log</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span> <span class="op">~</span> <span class="st">"(Expressão Média)"</span><span class="op">)</span>,</span>
+<span>    y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">log</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">~</span> <span class="st">"Fold Change"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">13</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span></span>
+<span>    plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span>, face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
+<span>    legend.position <span class="op">=</span> <span class="st">"bottom"</span>,</span>
+<span>    panel.grid.minor <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="03_differential_expression_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="como-interpretar-o-ma-plot" class="level3" data-number="7.4.1"><h3 data-number="7.4.1" class="anchored" data-anchor-id="como-interpretar-o-ma-plot">
+<span class="header-section-number">7.4.1</span> Como interpretar o MA Plot:</h3>
+<ul>
+<li>Genes à <strong>esquerda</strong> (baixo baseMean) possuem baixa expressão. Mudanças grandes nesse intervalo devem ser interpretadas com cautela, pois a incerteza estatística é alta.</li>
+<li>Genes <strong>significativos</strong> (coloridos) que se afastam da linha central (log2FC = 0) são os que realmente mudaram de expressão entre as condições.</li>
+<li>O ideal é que a nuvem de pontos cinza esteja <strong>centralizada em zero</strong>, indicando que a normalização foi adequada.</li>
+</ul></section></section><section id="volcano-plot" class="level2" data-number="7.5"><h2 data-number="7.5" class="anchored" data-anchor-id="volcano-plot">
+<span class="header-section-number">7.5</span> 14. Volcano Plot</h2>
+<p>O <strong>Volcano Plot</strong> é o gráfico mais utilizado para visualizar resultados de expressão diferencial. Ele combina a <strong>significância estatística</strong> (-log10 do p-valor ajustado, eixo Y) com a <strong>magnitude da mudança</strong> (log2FC, eixo X), permitindo identificar rapidamente os genes mais relevantes.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggrepel.slowkow.com/">ggrepel</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">padj_cutoff</span> <span class="op">&lt;-</span> <span class="fl">0.1</span>  <span class="co"># Limiar didático (em pesquisa, use 0.05)</span></span>
+<span></span>
+<span><span class="co"># Selecionar os top 10 genes mais significativos para rotular</span></span>
+<span><span class="va">genes_to_label</span> <span class="op">&lt;-</span> <span class="va">res_dge</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">signif</span> <span class="op">!=</span> <span class="st">"Not significant"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">padj</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">res_dge</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">log2FoldChange</span>, y <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">padj</span><span class="op">)</span>, color <span class="op">=</span> <span class="va">signif</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="va">signif</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_color_manual</a></span><span class="op">(</span></span>
+<span>    values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Downregulated"</span> <span class="op">=</span> <span class="st">"#1F78B4"</span>,</span>
+<span>               <span class="st">"Not significant"</span> <span class="op">=</span> <span class="st">"grey60"</span>,</span>
+<span>               <span class="st">"Upregulated"</span> <span class="op">=</span> <span class="st">"#E31A1C"</span><span class="op">)</span>,</span>
+<span>    name <span class="op">=</span> <span class="st">"Regulação"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_alpha_manual</a></span><span class="op">(</span></span>
+<span>    values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Downregulated"</span> <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span>               <span class="st">"Not significant"</span> <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<span>               <span class="st">"Upregulated"</span> <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span>,</span>
+<span>    guide <span class="op">=</span> <span class="st">"none"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">padj_cutoff</span><span class="op">)</span>,</span>
+<span>             linetype <span class="op">=</span> <span class="st">"dashed"</span>, color <span class="op">=</span> <span class="st">"black"</span>, linewidth <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggrepel.slowkow.com/reference/geom_text_repel.html">geom_text_repel</a></span><span class="op">(</span></span>
+<span>    data <span class="op">=</span> <span class="va">genes_to_label</span>,</span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">genes_to_label</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    size <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>    box.padding <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>    point.padding <span class="op">=</span> <span class="fl">0.3</span>,</span>
+<span>    max.overlaps <span class="op">=</span> <span class="cn">Inf</span>,</span>
+<span>    segment.color <span class="op">=</span> <span class="st">"grey50"</span>,</span>
+<span>    color <span class="op">=</span> <span class="st">"gray9"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Volcano Plot — Vancomicina vs. Controle (C. albicans)"</span>,</span>
+<span>    x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">log</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">~</span> <span class="st">"Fold Change"</span><span class="op">)</span>,</span>
+<span>    y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="st">"-"</span> <span class="op">~</span> <span class="va">log</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span> <span class="op">~</span> <span class="st">"p-valor ajustado"</span><span class="op">)</span>,</span>
+<span>    caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"Cutoff: padj &lt; "</span>, <span class="va">padj_cutoff</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">13</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span></span>
+<span>    plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span>, face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
+<span>    legend.position <span class="op">=</span> <span class="st">"bottom"</span>,</span>
+<span>    panel.grid.minor <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    panel.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"white"</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>    plot.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"white"</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="03_differential_expression_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="como-interpretar-o-volcano-plot" class="level3" data-number="7.5.1"><h3 data-number="7.5.1" class="anchored" data-anchor-id="como-interpretar-o-volcano-plot">
+<span class="header-section-number">7.5.1</span> Como interpretar o Volcano Plot:</h3>
+<ul>
+<li>
+<strong>Eixo X (log2FC)</strong>: genes à direita estão upregulados sob o tratamento de vancomicina; genes à esquerda estão downregulados.</li>
+<li>
+<strong>Eixo Y (-log10 padj)</strong>: quanto mais alto o ponto, mais significativa é a mudança. A linha tracejada marca o threshold de padj = 0.1.</li>
+<li>Os <strong>genes rotulados</strong> são os top 10 mais significativos.</li>
+</ul>
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>O que o Volcano Plot nos diz biologicamente?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Observe a distribuição entre upregulados e downregulados. Se o tratamento com vancomicina remodela a resposta transcricional da <em>Candida</em>, esperamos ver genes envolvidos em <strong>resistência a estresse</strong>, <strong>remodelamento da parede celular</strong> e <strong>virulência</strong> entre os mais significativos. Genes de <em>housekeeping</em> devem permanecer na região cinza central.</p>
+</div>
+</div>
+</section></section><section id="heatmap-dos-genes-diferencialmente-expressos" class="level2" data-number="7.6"><h2 data-number="7.6" class="anchored" data-anchor-id="heatmap-dos-genes-diferencialmente-expressos">
+<span class="header-section-number">7.6</span> 15. Heatmap dos Genes Diferencialmente Expressos</h2>
+<p>O <strong>heatmap</strong> nos permite visualizar o padrão de expressão dos genes significativos em todas as amostras simultaneamente. Para isso, utilizamos os valores de expressão normalizados transformados em <strong>z-score</strong> (escala por gene), o que evidencia as diferenças relativas entre condições.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Filtrar apenas os genes significativos (padj &lt;= 0.05)</span></span>
+<span><span class="va">res_dge_signif</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">res_dge</span>, <span class="va">padj</span> <span class="op">&lt;=</span> <span class="fl">0.05</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Obter contagens normalizadas</span></span>
+<span><span class="va">exp_genes</span> <span class="op">&lt;-</span> <span class="fu">DESeq2</span><span class="fu">::</span><span class="fu">counts</span><span class="op">(</span><span class="va">dds</span>, normalized <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Selecionar apenas os genes DEG</span></span>
+<span><span class="va">idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">exp_genes</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">res_dge_signif</span><span class="op">)</span></span>
+<span><span class="va">exp_dge</span> <span class="op">&lt;-</span> <span class="va">exp_genes</span><span class="op">[</span><span class="va">idx</span>, <span class="op">]</span></span>
+<span></span>
+<span><span class="co"># Transformar em z-score (por gene)</span></span>
+<span><span class="va">exp_dge_z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">exp_dge</span>, <span class="fl">1</span>, <span class="va">scale</span>, center <span class="op">=</span> <span class="cn">TRUE</span>, scale <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">exp_dge_z</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">exp_dge</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Criar anotação das colunas</span></span>
+<span><span class="va">ann_col</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span></span>
+<span>  Tratamento <span class="op">=</span> <span class="va">metadata</span><span class="op">$</span><span class="va">treatment</span>,</span>
+<span>  Lote <span class="op">=</span> <span class="va">metadata</span><span class="op">$</span><span class="va">experiment_group</span>,</span>
+<span>  row.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">metadata</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">ann_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>  Tratamento <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Untreated (control)"</span> <span class="op">=</span> <span class="st">"#4393C3"</span>, <span class="st">"Vancomycin"</span> <span class="op">=</span> <span class="st">"#D6604D"</span><span class="op">)</span>,</span>
+<span>  Lote <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"1"</span> <span class="op">=</span> <span class="st">"#F0E442"</span>, <span class="st">"2"</span> <span class="op">=</span> <span class="st">"#E69F00"</span>, <span class="st">"3"</span> <span class="op">=</span> <span class="st">"#56B4E9"</span>,</span>
+<span>           <span class="st">"4"</span> <span class="op">=</span> <span class="st">"#009E73"</span>, <span class="st">"5"</span> <span class="op">=</span> <span class="st">"#CC79A7"</span>, <span class="st">"6"</span> <span class="op">=</span> <span class="st">"#999999"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Plotar heatmap</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/pheatmap/man/pheatmap.html">pheatmap</a></span><span class="op">(</span><span class="va">exp_dge_z</span>,</span>
+<span>         show_rownames <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>         annotation_col <span class="op">=</span> <span class="va">ann_col</span>,</span>
+<span>         annotation_colors <span class="op">=</span> <span class="va">ann_colors</span>,</span>
+<span>         cluster_cols <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>         fontsize <span class="op">=</span> <span class="fl">9</span>,</span>
+<span>         main <span class="op">=</span> <span class="st">"Heatmap — Genes Diferencialmente Expressos (z-score)"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="03_differential_expression_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="como-interpretar-o-heatmap" class="level3" data-number="7.6.1"><h3 data-number="7.6.1" class="anchored" data-anchor-id="como-interpretar-o-heatmap">
+<span class="header-section-number">7.6.1</span> Como interpretar o heatmap:</h3>
+<ul>
+<li>Cada <strong>linha</strong> é um gene diferencialmente expresso e cada <strong>coluna</strong> é uma amostra.</li>
+<li>As <strong>cores</strong> representam o z-score: <strong>vermelho</strong> indica expressão acima da média daquele gene, enquanto <strong>azul</strong> indica expressão abaixo da média.</li>
+<li>A <strong>barra de anotação superior</strong> diferencia as amostras por tratamento e lote.</li>
+<li>Se os genes DEG segregam perfeitamente as amostras por tratamento, isso confirma que o sinal biológico é forte e consistente entre os lotes.</li>
+<li>Note que as <strong>linhas são clusterizadas</strong>: genes com padrões de expressão similares ficam próximos, revelando blocos de genes co-regulados.</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Salvar a tabela de genes diferencialmente expressos para a próxima etapa</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">saveRDS</a></span><span class="op">(</span><span class="va">res_dge</span>, file <span class="op">=</span> <span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html">here</a></span><span class="op">(</span><span class="st">"data/DGE/res_dge.rds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+<p><strong>Identificamos os genes da <em>Candida albicans</em> cuja expressão mudou significativamente em resposta à vancomicina. Mas o que esses genes fazem? A quais vias biológicas eles pertencem? Essas perguntas serão respondidas na próxima seção, onde realizaremos a análise de enriquecimento funcional.</strong></p>
 
 
-<section id="differential-expression-analysis" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> Differential Expression Analysis</h1>
-
-
-</section>
-
-</main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
+</section></section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
     if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
@@ -784,22 +1500,19 @@ ul.task-list li input[type="checkbox"] {
       }
     }
   });
-  </script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
-      <a href="../analysis/02_quantification.html" class="pagination-link" aria-label="Quantification">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Quantification</span></span>
+  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="../analysis/02_quantification.html" class="pagination-link" aria-label="Quantificação">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Quantificação</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../analysis/04_downstream_analyses.html" class="pagination-link" aria-label="Downstream Analyses">
-        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Downstream Analyses</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../analysis/04_downstream_analyses.html" class="pagination-link" aria-label="Análises Downstream">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Análises Downstream</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
-<footer class="footer">
-  <div class="nav-footer">
+<footer class="footer"><div class="nav-footer">
     <div class="nav-footer-left">
       &nbsp;
     </div>   
@@ -811,8 +1524,6 @@ ul.task-list li input[type="checkbox"] {
     </div>
   </div>
 </footer>
-
-
 
 
 </body></html>

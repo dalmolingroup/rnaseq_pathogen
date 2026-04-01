@@ -35,6 +35,22 @@ Ao final do curso, os alunos serão capazes de:
 
 ⚙️ **Requisitos:** Os participantes devem ter acesso a um notebook com R e RStudio instalados para a etapa de análise estatística.
 
+📦 **Instalação de Pacotes**
+Antes de iniciar as análises práticas, certifique-se de instalar as bibliotecas necessárias executando o código a seguir no R:
+
+```r
+# Pacotes do CRAN
+install.packages(c("dplyr", "readr", "tibble", "ggplot2", "pheatmap", 
+                   "RCurl", "igraph", "ggraph", "scales", "devtools"))
+
+# Pacotes do Bioconductor
+if (!require("BiocManager", quietly = TRUE)) install.packages("BiocManager")
+BiocManager::install(c("DESeq2", "PCAtools", "clusterProfiler", "KEGGREST", "enrichplot", "GO.db"))
+
+# Pacote easylayout do GitHub
+devtools::install_github("dalmolingroup/easylayout")
+```
+
 🙏 **Agradecimentos**:
 
 * Dalmolin Systems Biology Group

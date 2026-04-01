@@ -1,8 +1,915 @@
 ---
-title: "Downstream Analyses"
+title: "Análises Downstream"
 author: "Dalmolin Systems Biology Group"
 format: html
 execute:
   cache: true
 ---
 
+Na etapa anterior, identificamos quais genes da *Candida albicans* tiveram sua expressão significativamente alterada pelo tratamento com vancomicina. Mas uma lista de genes, por si só, diz pouco sobre a biologia do organismo. Para extrairmos significado biológico, precisamos perguntar: **esses genes pertencem a vias biológicas específicas? Há processos celulares mais afetados do que o esperado ao acaso?**
+
+É exatamente isso que a **análise de enriquecimento funcional** nos permite responder.
+
+---
+
+# Enriquecimento Funcional
+
+A análise de enriquecimento funcional verifica se, entre os genes diferencialmente expressos, há um número desproporcional de genes pertencentes a uma determinada via biológica ou processo celular. Se encontrarmos mais genes alterados em uma via do que o esperado por acaso, dizemos que essa via está **enriquecida**.
+
+A abordagem que utilizaremos é a **ORA (Over-Representation Analysis)**, que parte da nossa lista de genes significativos e aplica um teste hipergeométrico para verificar quais vias estão sobre-representadas. Para os bancos de dados, utilizaremos o **KEGG Pathways** e o **Gene Ontology (GO)**.
+
+## O que são GO e KEGG?
+
+### Gene Ontology (GO)
+
+O [Gene Ontology](http://geneontology.org/) é um sistema de ontologias que descreve a função dos genes em três dimensões independentes (ontologias):
+
+* **Biological Process (BP)**: o processo celular de que o gene participa (ex: *resposta a estresse oxidativo*, *biossíntese da parede celular*).
+* **Molecular Function (MF)**: a atividade molecular que a proteína exerce (ex: *atividade de quinase*, *ligação a ATP*).
+* **Cellular Component (CC)**: onde no espaço celular a proteína atua (ex: *núcleo*, *membrana plasmática*).
+
+A GO é organizada como um **grafo acíclico dirigido (DAG)**: termos mais gerais (ex: *processo metabólico*) estão no topo da hierarquia, e termos mais específicos (ex: *biossíntese de ergosterol*) estão na base. Um gene pode ser anotado em múltiplos termos e em múltiplas ontologias simultaneamente.
+
+### KEGG Pathways
+
+O [KEGG (Kyoto Encyclopedia of Genes and Genomes)](https://www.kegg.jp/) é um banco de dados que organiza o conhecimento biológico em **mapas de vias metabólicas e de sinalização**. Cada via é um diagrama que conecta enzimas, metabólitos e reações em sequência, representando processos como a glicólise, o ciclo do TCA ou a biossíntese de aminoácidos.
+
+Diferente do GO, o KEGG tem uma estrutura **plana** (não hierárquica): cada via é independente e autocontida. Além disso, o KEGG inclui informações sobre **reações bioquímicas** e **compostos químicos**, o que o torna especialmente útil para estudar metabolismo.
+
+### Principais diferenças
+
+| Característica | Gene Ontology (GO) | KEGG Pathways |
+|:---|:---|:---|
+| **Estrutura** | Hierárquica (DAG) | Plana (mapas independentes) |
+| **Foco** | Funções, processos e localização | Vias metabólicas e de sinalização |
+| **Granularidade** | Alta (termos muito específicos a gerais) | Moderada (vias completas) |
+| **Curadoria** | Comunidade científica global | Equipe centralizada (Kanehisa Lab) |
+| **Organismo** | Ampla cobertura (via OrgDb ou GAF) | Código por organismo (ex: `cal`) |
+
+## A Importância dos Bancos de Dados Curados
+
+Antes de começar, é fundamental entender que **o enriquecimento funcional depende inteiramente da qualidade e completude das anotações disponíveis para o organismo estudado**. Para organismos-modelo como *Homo sapiens* ou *Mus musculus*, bancos como KEGG, Gene Ontology e Reactome possuem anotações extensas, curadas por décadas de pesquisa. O resultado é que milhares de genes estão anotados em centenas de vias biológicas, e o teste estatístico tem alta chance de encontrar padrões significativos.
+
+Para organismos não-modelo como *Candida albicans*, a situação é diferente:
+
+* **Menos genes anotados**: uma fração menor do genoma possui anotação funcional.
+* **Menos vias catalogadas**: o número de vias biológicas mapeadas é mais restrito.
+* **Anotações menos curadas**: muitas anotações são inferidas computacionalmente (IEA - *Inferred from Electronic Annotation*), e não por evidência experimental direta.
+
+Isso significa que, mesmo que nossos genes estejam participando de processos biológicos relevantes, **se esses processos não estiverem adequadamente anotados no banco de dados, o enriquecimento simplesmente não os detectará**. Por isso, para *C. albicans*, utilizaremos tanto o KEGG (que suporta o organismo nativamente) quanto as anotações curadas do **Candida Genome Database (CGD)**, o banco de referência para genômica de *Candida*, que possui mais de 33 mil anotações GO específicas.
+
+::: {.callout-warning}
+## Nota Didática — Thresholds Relaxados
+
+Em publicações científicas, os cortes padrão para enriquecimento são **p.adjust ≤ 0.05** e **qvalue ≤ 0.05**. Neste minicurso, utilizamos thresholds mais permissivos (**p.adjust ≤ 0.5** e **qvalue ≤ 0.5**) para fins **didáticos**, de modo que seja possível visualizar e interpretar os gráficos de enriquecimento mesmo com um número reduzido de DEGs. Em um cenário de pesquisa real, recomendamos utilizar os cortes padrão.
+:::
+
+## 1. Carregando os Pacotes
+
+```{r}
+#| message: false
+#| warning: false
+suppressPackageStartupMessages({
+  library(clusterProfiler)
+  library(KEGGREST)
+  library(enrichplot)
+  library(GO.db)
+  library(dplyr)
+  library(readr)
+  library(tibble)
+  library(ggplot2)
+})
+```
+
+
+
+## 2. Carregando os Resultados da Expressão Diferencial
+
+Vamos recuperar a tabela de resultados que salvamos no módulo anterior:
+
+```{r}
+res_dge <- readRDS(here::here("data/DGE/res_dge.rds"))
+
+head(res_dge)
+```
+
+## 3. Preparando os Conjuntos de Genes
+
+Vamos preparar três conjuntos de genes para o enriquecimento: os **upregulados**, os **downregulados** e **todos os DEGs** juntos.
+
+```{r}
+genes_up <- rownames(subset(res_dge, signif == "Upregulated"))
+genes_down <- rownames(subset(res_dge, signif == "Downregulated"))
+genes_all <- rownames(subset(res_dge, signif != "Not significant"))
+
+cat("Genes upregulados:", length(genes_up), "\n")
+cat("Genes downregulados:", length(genes_down), "\n")
+cat("Total DEGs:", length(genes_all), "\n")
+```
+
+---
+
+## 4. Conversão de Identificadores para o KEGG
+
+Os nossos identificadores de genes seguem o padrão do Ensembl Fungi (ex: `C1_00010W_A`), mas o KEGG utiliza um formato próprio para *C. albicans* (ex: `CAALFM_C100010WA`). Precisamos construir o dicionário para conversão:
+
+```{r}
+# Baixar todos os genes de C. albicans (cal) do KEGG
+kegg_genes <- keggList("cal")
+
+# Criar tabela de mapeamento
+kegg_mapping <- data.frame(
+  kegg_id = sub("cal:", "", names(kegg_genes)),
+  description = as.character(kegg_genes),
+  stringsAsFactors = FALSE
+)
+
+# Gerar o ID Ensembl Fungi equivalente a partir do KEGG ID
+kegg_mapping <- kegg_mapping %>%
+  mutate(
+    core = sub("^CAALFM_", "", kegg_id),
+    ensembl_id = gsub(
+      "^(C[0-9R]+)(\\d{5})(\\w)(\\w)$",
+      "\\1_\\2\\3_\\4",
+      core
+    )
+  )
+
+# Verificar quantos dos nossos genes têm correspondência
+genes_com_kegg <- sum(rownames(res_dge) %in% kegg_mapping$ensembl_id)
+cat("Genes mapeados para KEGG:", genes_com_kegg, "de", nrow(res_dge), "\n")
+```
+
+```{r}
+# Criar dicionário: Ensembl → KEGG
+ensembl_to_kegg <- setNames(kegg_mapping$kegg_id, kegg_mapping$ensembl_id)
+
+# Converter cada conjunto de genes
+genes_up_kegg <- unname(ensembl_to_kegg[genes_up[genes_up %in% names(ensembl_to_kegg)]])
+genes_down_kegg <- unname(ensembl_to_kegg[genes_down[genes_down %in% names(ensembl_to_kegg)]])
+genes_all_kegg <- unname(ensembl_to_kegg[genes_all[genes_all %in% names(ensembl_to_kegg)]])
+
+cat("UP com KEGG ID:", length(genes_up_kegg), "\n")
+cat("DOWN com KEGG ID:", length(genes_down_kegg), "\n")
+cat("ALL com KEGG ID:", length(genes_all_kegg), "\n")
+```
+
+---
+
+## 5. Enriquecimento KEGG — ORA
+
+Vamos rodar a ORA com o KEGG Pathways separadamente para genes upregulados, downregulados e todos os DEGs:
+
+```{r}
+# KEGG ORA — Upregulados
+kegg_up <- enrichKEGG(
+  gene = genes_up_kegg, organism = "cal", keyType = "kegg",
+  pvalueCutoff = 0.5, qvalueCutoff = 0.5, pAdjustMethod = "BH"
+)
+
+# KEGG ORA — Downregulados
+kegg_down <- enrichKEGG(
+  gene = genes_down_kegg, organism = "cal", keyType = "kegg",
+  pvalueCutoff = 0.5, qvalueCutoff = 0.5, pAdjustMethod = "BH"
+)
+
+# KEGG ORA — Todos os DEGs
+kegg_all <- enrichKEGG(
+  gene = genes_all_kegg, organism = "cal", keyType = "kegg",
+  pvalueCutoff = 0.5, qvalueCutoff = 0.5, pAdjustMethod = "BH"
+)
+```
+
+### Dotplot — KEGG Upregulados
+
+```{r}
+#| fig-width: 9
+#| fig-height: 6
+if (!is.null(kegg_up) && nrow(as.data.frame(kegg_up)) > 0) {
+  dotplot(kegg_up,
+          showCategory = 15,
+          title = "KEGG — Genes Upregulados",
+          color = "p.adjust") +
+    theme(axis.text.y = element_text(size = 10)) +
+    scale_color_gradient(low = "#E31A1C", high = "#FCBBA1", name = "p-valor\najustado")
+} else {
+  cat("Nenhuma via KEGG enriquecida para genes upregulados.\n")
+}
+```
+
+### Dotplot — KEGG Downregulados
+
+```{r}
+#| fig-width: 9
+#| fig-height: 6
+if (!is.null(kegg_down) && nrow(as.data.frame(kegg_down)) > 0) {
+  dotplot(kegg_down,
+          showCategory = 15,
+          title = "KEGG — Genes Downregulados",
+          color = "p.adjust") +
+    theme(axis.text.y = element_text(size = 10)) +
+    scale_color_gradient(low = "#1F78B4", high = "#C6DBEF", name = "p-valor\najustado")
+} else {
+  cat("Nenhuma via KEGG enriquecida para genes downregulados.\n")
+}
+```
+
+### Dotplot — KEGG Todos os DEGs
+
+```{r}
+#| fig-width: 9
+#| fig-height: 6
+if (!is.null(kegg_all) && nrow(as.data.frame(kegg_all)) > 0) {
+  dotplot(kegg_all,
+          showCategory = 15,
+          title = "KEGG — Todos os DEGs",
+          color = "p.adjust") +
+    theme(axis.text.y = element_text(size = 10)) +
+    scale_color_gradient(low = "grey20", high = "grey70", name = "p-valor\najustado")
+} else {
+  cat("Nenhuma via KEGG enriquecida para todos os DEGs.\n")
+}
+```
+
+### Barplot Bidirecional — KEGG UP vs. DOWN
+
+Para comparar diretamente quais vias estão ativadas (UP) e reprimidas (DOWN), podemos construir um **barplot bidirecional** onde as barras vermelhas (UP) se estendem para a direita e as azuis (DOWN) para a esquerda:
+
+```{r}
+#| fig-width: 10
+#| fig-height: 7
+# Extrair resultados de UP e DOWN
+df_kegg_up <- if (!is.null(kegg_up) && nrow(as.data.frame(kegg_up)) > 0) {
+  as.data.frame(kegg_up) %>% mutate(Direction = "Upregulated", Count_dir = Count)
+} else { data.frame() }
+
+df_kegg_down <- if (!is.null(kegg_down) && nrow(as.data.frame(kegg_down)) > 0) {
+  as.data.frame(kegg_down) %>% mutate(Direction = "Downregulated", Count_dir = -Count)
+} else { data.frame() }
+
+if (nrow(df_kegg_up) > 0 || nrow(df_kegg_down) > 0) {
+  df_kegg_bidir <- bind_rows(
+    df_kegg_up %>% head(10),
+    df_kegg_down %>% head(10)
+  )
+
+  ggplot(df_kegg_bidir, aes(x = Count_dir, y = reorder(Description, Count_dir), fill = Direction)) +
+    geom_col(width = 0.7) +
+    scale_fill_manual(values = c("Upregulated" = "#E31A1C", "Downregulated" = "#1F78B4")) +
+    geom_vline(xintercept = 0, linewidth = 0.5) +
+    labs(title = "KEGG — UP vs. DOWN",
+         x = "Número de Genes", y = NULL, fill = "Regulação") +
+    theme_minimal(base_size = 13) +
+    theme(plot.title = element_text(hjust = 0.5, face = "bold"),
+          axis.text.y = element_text(size = 9),
+          legend.position = "bottom")
+} else {
+  cat("Nenhuma via KEGG enriquecida para gerar o barplot bidirecional.\n")
+}
+```
+
+### Barplot — KEGG Todos os DEGs
+
+```{r}
+#| fig-width: 9
+#| fig-height: 6
+if (!is.null(kegg_all) && nrow(as.data.frame(kegg_all)) > 0) {
+  barplot(kegg_all,
+          showCategory = 15,
+          title = "KEGG — Todos os DEGs",
+          color = "p.adjust") +
+    theme(axis.text.y = element_text(size = 10)) +
+    scale_fill_gradient(low = "grey20", high = "grey70", name = "p-valor\najustado")
+} else {
+  cat("Nenhuma via KEGG enriquecida para todos os DEGs.\n")
+}
+```
+
+### Como interpretar os gráficos:
+
+* **Dotplot**: cada ponto representa uma via enriquecida. O **tamanho** indica quantos DEGs pertencem àquela via (Count); a **cor** indica o p-valor ajustado.
+* **Barplot bidirecional**: permite comparar diretamente as vias UP (vermelho, à direita) e DOWN (azul, à esquerda) em um único gráfico.
+* **Barplot (ALL)**: mostra as vias enriquecidas considerando todos os DEGs juntos, com a cor indicando o p-valor ajustado.
+
+---
+
+## 6. Obtendo Anotações GO do Candida Genome Database (CGD)
+
+O **Candida Genome Database (CGD)** disponibiliza um arquivo GAF (*Gene Association File*) com anotações de Gene Ontology curadas manualmente e computacionalmente, específicas para *C. albicans* SC5314. Esse arquivo contém mais de 33 mil anotações — significativamente mais completo do que o disponível via Ensembl Fungi.
+
+::: {.callout-note}
+## Ponto Importante
+
+O arquivo GAF pode ser baixado diretamente de: [candidagenome.org/download/go/](http://www.candidagenome.org/download/go/). Nós já o baixamos e descompactamos em `data/cgd/`.
+:::
+
+### Parsear o arquivo GAF
+
+```{r}
+# Ler o arquivo GAF (pulando linhas de comentário)
+gaf_raw <- read.delim(
+  here::here("data/cgd/cgd_C_albicans_SC5314.gaf"),
+  header = FALSE,
+  comment.char = "!",
+  quote = "",
+  stringsAsFactors = FALSE
+)
+
+# Nomear as colunas relevantes do GAF 2.2
+colnames(gaf_raw)[c(1, 2, 3, 4, 5, 7, 9, 11)] <- c(
+  "DB", "DB_Object_ID", "Gene_Symbol", "Qualifier", "GO_ID",
+  "Evidence_Code", "Aspect", "Synonyms"
+)
+
+cat("Total de anotações no GAF:", nrow(gaf_raw), "\n")
+```
+
+### Extrair IDs Ensembl dos Sinônimos
+
+```{r}
+# Função para extrair o ID Ensembl (_A) dos sinônimos
+extract_ensembl_id <- function(synonyms) {
+  syns <- unlist(strsplit(synonyms, "\\|"))
+  match <- grep("^C[0-9R]+_\\d{5}[WC]_A$", syns, value = TRUE)
+  if (length(match) > 0) return(match[1])
+  return(NA_character_)
+}
+
+# Aplicar a extração
+gaf_raw$ensembl_id <- sapply(gaf_raw$Synonyms, extract_ensembl_id)
+
+# Verificar taxa de mapeamento
+mapped <- sum(!is.na(gaf_raw$ensembl_id))
+cat("Anotações com ID Ensembl mapeado:", mapped, "de", nrow(gaf_raw), "\n")
+```
+
+### Construir TERM2GENE e TERM2NAME
+
+```{r}
+# Filtrar anotações válidas
+gaf_mapped <- gaf_raw %>%
+  filter(!is.na(ensembl_id)) %>%
+  dplyr::select(ensembl_id, GO_ID, Gene_Symbol, Aspect)
+
+# TERM2GENE: GO_ID → ensembl_id
+term2gene_cgd <- gaf_mapped %>%
+  dplyr::select(GO_ID, ensembl_id) %>%
+  distinct()
+
+# Obter nomes dos termos GO via GO.db
+go_terms <- AnnotationDbi::select(GO.db, 
+                                   keys = unique(term2gene_cgd$GO_ID), 
+                                   columns = c("GOID", "TERM", "ONTOLOGY"), 
+                                   keytype = "GOID")
+go_terms <- go_terms[!is.na(go_terms$TERM), ]
+
+term2name_cgd <- data.frame(
+  GO_ID = go_terms$GOID,
+  Name = go_terms$TERM
+)
+
+cat("Total de mapeamentos gene-GO:", nrow(term2gene_cgd), "\n")
+cat("Termos GO únicos:", length(unique(term2gene_cgd$GO_ID)), "\n")
+cat("Genes únicos com GO:", length(unique(term2gene_cgd$ensembl_id)), "\n")
+```
+
+```{r}
+# Separar por ontologia
+bp_terms <- go_terms %>% filter(ONTOLOGY == "BP")
+
+term2gene_cgd_bp <- term2gene_cgd %>% filter(GO_ID %in% bp_terms$GOID)
+term2name_cgd_bp <- term2name_cgd %>% filter(GO_ID %in% bp_terms$GOID)
+
+cat("Termos BP:", length(unique(term2gene_cgd_bp$GO_ID)), "\n")
+```
+
+---
+
+## 7. Enriquecimento GO — ORA (CGD)
+
+Vamos rodar a ORA com Gene Ontology (Biological Process) separadamente para cada conjunto:
+
+```{r}
+# GO ORA — Upregulados
+go_up <- enricher(
+  gene = genes_up,
+  TERM2GENE = term2gene_cgd_bp,
+  TERM2NAME = term2name_cgd_bp,
+  pvalueCutoff = 0.5, qvalueCutoff = 0.5, pAdjustMethod = "BH"
+)
+
+# GO ORA — Downregulados
+go_down <- enricher(
+  gene = genes_down,
+  TERM2GENE = term2gene_cgd_bp,
+  TERM2NAME = term2name_cgd_bp,
+  pvalueCutoff = 0.5, qvalueCutoff = 0.5, pAdjustMethod = "BH"
+)
+
+# GO ORA — Todos os DEGs
+go_all <- enricher(
+  gene = genes_all,
+  TERM2GENE = term2gene_cgd_bp,
+  TERM2NAME = term2name_cgd_bp,
+  pvalueCutoff = 0.5, qvalueCutoff = 0.5, pAdjustMethod = "BH"
+)
+```
+
+### Dotplot — GO BP Upregulados
+
+```{r}
+#| fig-width: 10
+#| fig-height: 7
+if (!is.null(go_up) && nrow(as.data.frame(go_up)) > 0) {
+  dotplot(go_up,
+          showCategory = 15,
+          title = "GO Biological Process — Genes Upregulados (CGD)",
+          color = "p.adjust") +
+    theme(axis.text.y = element_text(size = 9)) +
+    scale_color_gradient(low = "#E31A1C", high = "#FCBBA1", name = "p-valor\najustado")
+} else {
+  cat("Nenhum processo biológico enriquecido para genes upregulados.\n")
+}
+```
+
+### Dotplot — GO BP Downregulados
+
+```{r}
+#| fig-width: 10
+#| fig-height: 7
+if (!is.null(go_down) && nrow(as.data.frame(go_down)) > 0) {
+  dotplot(go_down,
+          showCategory = 15,
+          title = "GO Biological Process — Genes Downregulados (CGD)",
+          color = "p.adjust") +
+    theme(axis.text.y = element_text(size = 9)) +
+    scale_color_gradient(low = "#1F78B4", high = "#C6DBEF", name = "p-valor\najustado")
+} else {
+  cat("Nenhum processo biológico enriquecido para genes downregulados.\n")
+}
+```
+
+### Dotplot — GO BP Todos os DEGs
+
+```{r}
+#| fig-width: 10
+#| fig-height: 7
+if (!is.null(go_all) && nrow(as.data.frame(go_all)) > 0) {
+  dotplot(go_all,
+          showCategory = 15,
+          title = "GO Biological Process — Todos os DEGs (CGD)",
+          color = "p.adjust") +
+    theme(axis.text.y = element_text(size = 9)) +
+    scale_color_gradient(low = "grey20", high = "grey70", name = "p-valor\najustado")
+} else {
+  cat("Nenhum processo biológico enriquecido para todos os DEGs.\n")
+}
+```
+
+### Barplot Bidirecional — GO BP UP vs. DOWN
+
+```{r}
+#| fig-width: 11
+#| fig-height: 8
+# Extrair resultados de UP e DOWN
+df_go_up <- if (!is.null(go_up) && nrow(as.data.frame(go_up)) > 0) {
+  as.data.frame(go_up) %>% mutate(Direction = "Upregulated", Count_dir = Count)
+} else { data.frame() }
+
+df_go_down <- if (!is.null(go_down) && nrow(as.data.frame(go_down)) > 0) {
+  as.data.frame(go_down) %>% mutate(Direction = "Downregulated", Count_dir = -Count)
+} else { data.frame() }
+
+if (nrow(df_go_up) > 0 || nrow(df_go_down) > 0) {
+  df_go_bidir <- bind_rows(
+    df_go_up %>% head(10),
+    df_go_down %>% head(10)
+  )
+
+  ggplot(df_go_bidir, aes(x = Count_dir, y = reorder(Description, Count_dir), fill = Direction)) +
+    geom_col(width = 0.7) +
+    scale_fill_manual(values = c("Upregulated" = "#E31A1C", "Downregulated" = "#1F78B4")) +
+    geom_vline(xintercept = 0, linewidth = 0.5) +
+    labs(title = "GO Biological Process — UP vs. DOWN (CGD)",
+         x = "Número de Genes", y = NULL, fill = "Regulação") +
+    theme_minimal(base_size = 13) +
+    theme(plot.title = element_text(hjust = 0.5, face = "bold"),
+          axis.text.y = element_text(size = 9),
+          legend.position = "bottom")
+} else {
+  cat("Nenhum processo biológico enriquecido para gerar o barplot bidirecional.\n")
+}
+```
+
+### Barplot — GO BP Todos os DEGs
+
+```{r}
+#| fig-width: 10
+#| fig-height: 7
+if (!is.null(go_all) && nrow(as.data.frame(go_all)) > 0) {
+  barplot(go_all,
+          showCategory = 15,
+          title = "GO Biological Process — Todos os DEGs (CGD)",
+          color = "p.adjust") +
+    theme(axis.text.y = element_text(size = 9)) +
+    scale_fill_gradient(low = "grey20", high = "grey70", name = "p-valor\najustado")
+} else {
+  cat("Nenhum processo biológico enriquecido para todos os DEGs.\n")
+}
+```
+
+---
+
+## 8. Resumo e Interpretação
+
+```{r}
+cat("=== Resumo do Enriquecimento Funcional ===\n\n")
+cat("Genes UP:", length(genes_up), "| DOWN:", length(genes_down),
+    "| Total:", length(genes_all), "\n\n")
+
+cat("--- KEGG ---\n")
+cat("  UP:   ")
+if (!is.null(kegg_up) && nrow(as.data.frame(kegg_up)) > 0) {
+  cat(nrow(as.data.frame(kegg_up)), "vias\n")
+} else { cat("nenhuma via\n") }
+
+cat("  DOWN: ")
+if (!is.null(kegg_down) && nrow(as.data.frame(kegg_down)) > 0) {
+  cat(nrow(as.data.frame(kegg_down)), "vias\n")
+} else { cat("nenhuma via\n") }
+
+cat("  ALL:  ")
+if (!is.null(kegg_all) && nrow(as.data.frame(kegg_all)) > 0) {
+  cat(nrow(as.data.frame(kegg_all)), "vias\n")
+} else { cat("nenhuma via\n") }
+
+cat("\n--- GO Biological Process (CGD) ---\n")
+cat("  UP:   ")
+if (!is.null(go_up) && nrow(as.data.frame(go_up)) > 0) {
+  cat(nrow(as.data.frame(go_up)), "termos\n")
+} else { cat("nenhum termo\n") }
+
+cat("  DOWN: ")
+if (!is.null(go_down) && nrow(as.data.frame(go_down)) > 0) {
+  cat(nrow(as.data.frame(go_down)), "termos\n")
+} else { cat("nenhum termo\n") }
+
+cat("  ALL:  ")
+if (!is.null(go_all) && nrow(as.data.frame(go_all)) > 0) {
+  cat(nrow(as.data.frame(go_all)), "termos\n")
+} else { cat("nenhum termo\n") }
+```
+
+
+**Identificamos quais vias biológicas estão enriquecidas entre os genes diferencialmente expressos da *Candida albicans*. Mas como esses genes se relacionam entre si? Será que as proteínas codificadas por eles interagem fisicamente ou funcionam nos mesmos processos? Para responder a essas perguntas, vamos construir uma rede de interação proteína-proteína (PPI).**
+
+---
+
+# Redes de Interação Proteína-Proteína (PPI)
+
+Uma lista de genes diferencialmente expressos nos diz **quais** genes mudaram. O enriquecimento funcional nos diz **em quais vias** esses genes participam. Mas nenhuma dessas análises nos mostra **como** os produtos desses genes se relacionam entre si. É exatamente essa lacuna que as redes de interação proteína-proteína (PPI) preenchem.
+
+Uma rede PPI é um grafo onde cada **nó** representa uma proteína e cada **aresta** conecta duas proteínas que possuem alguma relação funcional ou física documentada. Ao mapear nossos genes diferencialmente expressos nessa rede.
+
+## 9. O Banco de Dados STRING
+
+O [STRING (Search Tool for the Retrieval of Interacting Genes/Proteins)](https://string-db.org/) é o maior banco de dados público de interações proteicas, cobrindo mais de 14.000 organismos. Um ponto crucial é entender que o STRING **não armazena apenas interações físicas diretas** (como ligações proteína-proteína demonstradas por co-imunoprecipitação). Ele integra **múltiplas fontes de evidência** para inferir **associações funcionais** entre proteínas:
+
+| Canal de Evidência | Coluna | O que mede |
+|:---|:---|:---|
+| **Vizinhança genômica** | `nscore` | Genes fisicamente próximos no genoma tendem a ser funcionalmente relacionados |
+| **Fusão gênica** | `fscore` | Genes que aparecem fundidos em outros organismos provavelmente interagem |
+| **Co-ocorrência filogenética** | `pscore` | Proteínas que co-evoluem (presentes/ausentes juntas em espécies) |
+| **Co-expressão** | `ascore` | Genes com padrões de expressão similares em múltiplos experimentos |
+| **Evidência experimental** | `escore` | Interações demonstradas por ensaios bioquímicos (Y2H, AP-MS, etc.) |
+| **Bancos de dados curados** | `dscore` | Interações registradas em bancos curados (KEGG, Reactome, BioCyc, etc.) |
+| **Text mining** | `tscore` | Co-menção de proteínas na literatura científica |
+
+Cada canal produz um **escore** entre 0 e 1 que indica a confiança daquela evidência para um dado par de proteínas. O STRING combina esses escores em um **escore combinado** usando uma fórmula probabilística que evita dupla contagem.
+
+::: {.callout-important}
+## Interações ≠ Interações Físicas
+
+É fundamental entender que o termo "interação" no STRING é mais amplo do que interação física direta. Quando dizemos que duas proteínas "interagem" no STRING, estamos dizendo que há **evidência de associação funcional**, elas podem participar do mesmo complexo, da mesma via metabólica, ou serem co-reguladas, sem necessariamente se tocarem fisicamente. Por isso, o termo mais preciso é **associação funcional**.
+:::
+
+::: {.callout-note}
+## Ponto Importante — Bancos de Dados Curados e Organismos Não-Modelo
+
+Assim como vimos na análise de enriquecimento funcional, a qualidade dos resultados de redes PPI depende diretamente da **completude do banco de dados para o organismo estudado**. Para organismos-modelo como *Homo sapiens* e *Saccharomyces cerevisiae*, o STRING possui milhares de interações experimentalmente validadas. Para *Candida albicans*, a cobertura é menor, muitas interações são inferidas computacionalmente a partir de ortologia com *S. cerevisiae* ou por text mining. Mesmo assim, o STRING suporta *C. albicans* SC5314 nativamente (identificador taxonômico **237561**), o que nos permite consultar a base diretamente.
+:::
+
+## 10. Carregando os Pacotes
+
+```{r}
+#| message: false
+#| warning: false
+suppressPackageStartupMessages({
+  library(RCurl)
+  library(igraph)
+  library(ggraph)
+  library(ggplot2)
+  library(dplyr)
+  library(readr)
+  library(tibble)
+  library(scales)
+})
+```
+
+
+
+## 11. Preparando a Lista de Genes
+
+Vamos recuperar nossos resultados de expressão diferencial e preparar a lista de genes que será submetida ao STRING. O STRING não reconhece diretamente os identificadores do Ensembl Fungi (ex: `C1_00210C_A`). Para *C. albicans*, o STRING utiliza os identificadores no formato `CAALFM_` (ex: `CAALFM_C100210CA`), que são os mesmos usados pelo CGD e pelo KEGG. Felizmente, já construímos o dicionário de conversão (`ensembl_to_kegg`) na seção anterior:
+
+```{r}
+# Carregar resultados da expressão diferencial
+res_dge <- readRDS(here::here("data/DGE/res_dge.rds"))
+
+# Selecionar apenas os genes significativos (DEGs)
+res_dge_signif <- res_dge %>%
+  filter(signif != "Not significant")
+
+genes_deg <- rownames(res_dge_signif)
+
+# Converter Ensembl IDs para o formato CAALFM_ usando o dicionário da seção 4
+genes_deg_caalfm <- unname(ensembl_to_kegg[genes_deg[genes_deg %in% names(ensembl_to_kegg)]])
+
+# Criar dicionário reverso para mapear de volta
+caalfm_to_ensembl <- setNames(names(ensembl_to_kegg), unname(ensembl_to_kegg))
+
+cat("Total de DEGs:", length(genes_deg), "\n")
+cat("DEGs com ID CAALFM_ mapeado:", length(genes_deg_caalfm), "\n")
+```
+
+::: {.callout-note}
+## Ponto Importante — Conversão de Identificadores
+
+A conversão entre Ensembl Fungi e CAALFM_ segue uma regra simples: o ID `C1_00010W_A` corresponde a `CAALFM_C100010WA` (remoção dos underscores e adição do prefixo). Essa é a mesma conversão que fizemos para o KEGG na seção 4. Se um gene não possui correspondência no dicionário, ele simplesmente não será incluído na rede.
+:::
+
+## 12. Consultando o STRING via API
+
+O STRING disponibiliza uma [API pública](https://string-db.org/help/api/) que permite realizar consultas programáticas. Vamos utilizá-la para: (1) mapear nossos identificadores `CAALFM_` para os identificadores internos do STRING, e (2) obter a rede de interações entre eles.
+
+O identificador taxonômico da cepa SC5314 de *C. albicans* no STRING é **237561**.
+
+### Mapeando os identificadores
+
+```{r}
+# Concatenar os genes no formato CAALFM_ para a requisição à API
+genes_concatenado <- paste0(genes_deg_caalfm, collapse = "%0d")
+
+# Requisição para mapear nossos IDs para os IDs do STRING
+req_map <- RCurl::postForm(
+  "https://string-db.org/api/tsv/get_string_ids",
+  identifiers = genes_concatenado,
+  echo_query = "1",
+  species = "237561"  # C. albicans SC5314
+)
+
+map_ids <- read.table(text = req_map, sep = "\t", header = TRUE, quote = "")
+
+cat("Genes mapeados no STRING:", nrow(map_ids), "de", length(genes_deg_caalfm), "\n")
+```
+
+### Obtendo a rede de interações
+
+```{r}
+# Concatenar os identificadores do STRING
+genes_string_concatenado <- paste0(unique(map_ids$stringId), collapse = "%0d")
+
+# Requisição para o método 'network'
+req_net <- RCurl::postForm(
+  "https://string-db.org/api/tsv/network",
+  identifiers = genes_string_concatenado,
+  required_score = "0",   # Sem filtro mínimo (filtraremos depois)
+  species = "237561"
+)
+
+int_network <- read.table(text = req_net, sep = "\t", header = TRUE)
+int_network <- unique(int_network)
+
+cat("Interações brutas obtidas:", nrow(int_network), "\n")
+```
+
+## 13. Filtrando as Interações com `combinescores`
+
+As interações brutas incluem todas as fontes de evidência e todos os níveis de confiança. Para obtermos uma rede de alta qualidade, precisamos:
+
+1. **Selecionar os canais de evidência** mais confiáveis para o nosso contexto.
+2. **Combinar os escores** desses canais usando a fórmula probabilística do STRING.
+3. **Filtrar** pelo escore combinado mínimo.
+
+A função `combinescores` abaixo implementa exatamente esse procedimento. Ela recebe a tabela de interações, seleciona os canais desejados e calcula o escore combinado usando a fórmula: $1 - \prod_{i}(1 - S_i)$, onde $S_i$ é o escore de cada canal. Essa abordagem probabilística garante que **múltiplas fontes fracas de evidência possam se somar** para produzir uma interação de alta confiança.
+
+```{r}
+# Função para combinar escores de acordo com o algoritmo do STRING
+combinescores <- function(dat, evidences = "all", confLevel = 0.4) {
+  if (evidences[1] == "all") {
+    edat <- dat[, -c(1, 2, ncol(dat))]
+  } else {
+    if (!all(evidences %in% colnames(dat))) {
+      stop("ERRO: uma ou mais evidências não encontradas nas colunas dos dados!")
+    }
+    edat <- dat[, evidences]
+  }
+  # Os escores do STRING vêm em escala 0-1000; converter para 0-1
+  if (any(edat > 1)) {
+    edat <- edat / 1000
+  }
+  # Fórmula probabilística: 1 - prod(1 - Si)
+  edat <- 1 - edat
+  sc <- apply(X = edat, MARGIN = 1, FUN = function(x) 1 - prod(x))
+  dat <- cbind(dat[, c(1, 2)], combined_score = sc)
+  idx <- dat$combined_score >= confLevel
+  dat <- dat[idx, ]
+  return(dat)
+}
+```
+
+Vamos aplicar o filtro. Utilizaremos os canais de **co-expressão**, **evidência experimental** e **bancos de dados curados**. Aqui, por motivos didáticos, vamos estabelecer um escore combinado mínimo de **0.15** (baixa confiança):
+
+```{r}
+# Aplicar o filtro por canais e confiança mínima
+int_network_filtered <- combinescores(
+  int_network,
+  evidences = c("ascore", "escore", "dscore"),
+  confLevel = 0.15
+)
+
+cat("Interações após filtro (confiança ≥ 0.15):", nrow(int_network_filtered), "\n")
+```
+
+::: {.callout-note}
+## Ponto Importante — Escolha do Threshold
+
+O STRING utiliza uma classificação de confiança para seus escores:
+
+* **Low confidence:** > 0.15
+* **Medium confidence:** > 0.4
+* **High confidence:** > 0.7
+* **Highest confidence:** > 0.9
+
+Para *C. albicans*, um organismo com menos interações experimentalmente validadas, utilizamos o threshold de **baixa confiança (0.15)** de forma didática para obter uma rede com conexões suficientes a fim de explorar e interpretar grafos durante a aula. Diferentes escores devem ser empregados (como > 0.4 ou 0.7) a depender do contexto e perguntas biológicas com intenção em dados com nível maior de acurácia.
+:::
+
+## 14. Construindo o Grafo com igraph
+
+Agora vamos transformar a tabela de interações filtrada em um **objeto igraph** e anotar cada nó com as informações de expressão diferencial (log2FC e significância):
+
+```{r}
+# Criar dataframe de anotação mapeando stringId → nomes preferenciais e IDs originais
+ann <- data.frame(
+  stringId = map_ids$stringId,
+  gene_name = map_ids$preferredName,
+  query_caalfm = map_ids$queryItem,
+  stringsAsFactors = FALSE
+) %>%
+  distinct(stringId, .keep_all = TRUE) %>%
+  mutate(
+    # Mapear CAALFM_ de volta para Ensembl ID
+    ensembl_id = caalfm_to_ensembl[query_caalfm]
+  )
+
+# Substituir os stringIds pelos nomes dos genes na tabela de interações
+int_network_named <- int_network_filtered %>%
+  mutate(
+    gene_A = ann$gene_name[match(stringId_A, ann$stringId)],
+    gene_B = ann$gene_name[match(stringId_B, ann$stringId)]
+  ) %>%
+  filter(!is.na(gene_A), !is.na(gene_B)) %>%
+  dplyr::select(gene_A, gene_B, combined_score)
+
+# Criar objeto igraph (rede não direcionada)
+g <- graph_from_data_frame(int_network_named, directed = FALSE)
+
+# Remover arestas duplicadas e auto-loops
+g <- igraph::simplify(g)
+
+cat("Rede construída:", vcount(g), "nós,", ecount(g), "arestas\n")
+```
+
+### Anotando os nós com informações de expressão
+
+```{r}
+# Criar dicionário gene_name → ensembl_id
+name_to_ensembl <- setNames(ann$ensembl_id, ann$gene_name)
+
+# Para cada nó do grafo, buscar o Ensembl ID e depois as informações do DEG
+node_names <- V(g)$name
+node_ensembl <- name_to_ensembl[node_names]
+
+# Extrair log2FC e padj
+node_log2fc <- res_dge[node_ensembl, "log2FoldChange"]
+node_padj <- res_dge[node_ensembl, "padj"]
+node_signif <- res_dge[node_ensembl, "signif"]
+
+# Atribuir como atributos do grafo
+V(g)$log2FC <- ifelse(is.na(node_log2fc), 0, node_log2fc)
+V(g)$padj <- ifelse(is.na(node_padj), 1, node_padj)
+V(g)$signif <- ifelse(is.na(node_signif), "Not significant", node_signif)
+V(g)$ensembl_id <- ifelse(is.na(node_ensembl), "", node_ensembl)
+
+# Calcular -log10(padj) como atributo (usado na visualização)
+V(g)$neg_log10_padj <- -log10(ifelse(V(g)$padj == 0, .Machine$double.xps, V(g)$padj))
+```
+
+## 15. Layout Interativo com easylayout
+
+Para posicionar os nós da rede de forma visualmente clara, utilizaremos o pacote [**easylayout**](https://github.com/dalmolingroup/easylayout), desenvolvido pelo nosso grupo. O easylayout é um pacote R que utiliza **simulações de forças interativas** diretamente dentro do RStudio, permitindo ajustar o layout em tempo real antes de exportar o resultado para plotagem com ggraph ou ggplot2.
+
+O easylayout **não é** uma biblioteca de visualização, ele é uma ferramenta de **posicionamento** que se integra com bibliotecas existentes. Ele recebe um objeto igraph, abre uma aplicação web interativa dentro do IDE, e retorna uma **matriz de coordenadas XY** que pode ser usada por qualquer pacote de plotagem.
+
+::: {.callout-tip}
+## Usando o easylayout na prática
+
+1.  Execute `layout <- easylayout(g)` — uma janela interativa abrirá no RStudio.
+2.  Ajuste as forças de atração/repulsão em tempo real até que o layout fique satisfatório.
+3.  Use o modo de edição para mover nós manualmente, se necessário.
+4.  Clique em "Export" — as coordenadas serão enviadas de volta ao R.
+5.  Plote com `ggraph(g, layout = layout) + ...`
+:::
+
+```{r}
+#| eval: false
+library(easylayout)
+
+# Layout interativo(Descomente a linha para executar) — uma janela abrirá no RStudio
+# layout_ppi <- easylayout(g)
+
+# Salvar o layout para reprodutibilidade
+# saveRDS(layout_ppi, file = here::here("data/DGE/layout_ppi.rds"))
+```
+
+
+## 16. Visualização da Rede PPI com ggraph
+
+Vamos plotar a rede utilizando ggraph, colorindo os nós de acordo com o **log2 Fold Change** (escala contínua: azul para downregulados, vermelho para upregulados) e ajustando o tamanho conforme a **significância estatística** (-log10 do p-valor ajustado):
+
+```{r}
+#| fig-width: 12
+#| fig-height: 10
+
+# Carregar layout
+
+layout_ppi <- readRDS(here::here("data/DGE/layout_ppi.rds"))
+
+ggraph(g, layout = layout_ppi) +
+  geom_edge_link(alpha = 0.3, color = "grey60", width = 0.3) +
+  geom_node_point(
+    aes(color = log2FC, size = neg_log10_padj),
+    alpha = 0.85
+  ) +
+  geom_node_text(
+    aes(label = name),
+    size = 2.8,
+    repel = TRUE,
+    max.overlaps = 20,
+    color = "black",
+    segment.color = "grey50",
+    segment.size = 0.3
+  ) +
+  scale_color_gradient2(
+    low = "#1F78B4",
+    mid = "grey90",
+    high = "#E31A1C",
+    midpoint = 0,
+    name = expression(log[2] ~ "FC"),
+    limits = c(
+      -max(abs(V(g)$log2FC), na.rm = TRUE),
+       max(abs(V(g)$log2FC), na.rm = TRUE)
+    )
+  ) +
+  scale_size_continuous(
+    name = expression("-" ~ log[10] ~ "padj"),
+    range = c(2, 8)
+  ) +
+  labs(
+    title = "Rede PPI — Genes Diferencialmente Expressos de C. albicans",
+    subtitle = "Interações STRING (co-expressão + experimental + banco de dados, score ≥ 0.4)",
+    caption = "Fonte: STRING v12 | Organismo: C. albicans SC5314 (taxid: 237561)"
+  ) +
+  coord_fixed() +
+  theme_void(base_size = 13) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+    plot.subtitle = element_text(hjust = 0.5, color = "grey40", size = 10),
+    plot.caption = element_text(hjust = 1, color = "grey50", size = 8),
+    legend.position = "right",
+    plot.margin = margin(10, 10, 10, 10)
+  )
+```
+
+### Como interpretar a rede PPI:
+
+* **Cor dos nós**: segue uma escala contínua do **azul** (downregulado sob vancomicina) ao **vermelho** (upregulado), passando por cinza (log2FC próximo de zero). Isso permite identificar rapidamente se regiões da rede são dominadas por up ou downregulação.
+* **Tamanho dos nós**: proporcional a $-\log_{10}(\text{padj})$  quanto maior o ponto, mais significativa é a mudança de expressão daquele gene.
+* **Arestas**: representam associações funcionais documentadas no STRING (co-expressão, evidência experimental ou bancos de dados curados). Arestas mais densas indicam sub-redes de proteínas que atuam de forma coordenada.
+* **Rótulos**: aparecem apenas para os 10% dos genes mais significativos, destacando os candidatos de maior interesse biológico.
+* **Clusters visuais**: grupos de nós densamente conectados sugerem módulos funcionais — conjuntos de proteínas que trabalham juntas em um processo biológico. Identifique se esses módulos correspondem às vias enriquecidas que encontramos anteriormente.
+
+
+---
+
+**Concluímos a análise completa de RNA-seq da *Candida albicans* em resposta à vancomicina. Desde a descontaminação das leituras do hospedeiro com o nf-core/detaxizer, passando pela quantificação com o nf-core/rnaseq, a análise de expressão diferencial com DESeq2, o enriquecimento funcional com KEGG e GO, até a construção e visualização de redes de interação proteína-proteína com o STRING — percorremos um pipeline completo e reprodutível para transcriptômica de patógenos, enfrentando os desafios específicos de um organismo não-modelo.**

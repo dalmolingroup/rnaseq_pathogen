@@ -57,6 +57,20 @@ Para este curso, utilizamos a linhagem de referência **SC5314** da *Candida alb
 Diferente do Ensembl principal (focado em vertebrados), o Ensembl Fungi mantém curadoria específica para as complexidades de genomas fúngicos, como estruturas de íntrons compactas e polimorfismos frequentes, garantindo que a nossa quantificação seja a mais precisa possível.
 :::
 
------
+### 4. Entendendo os Outputs: Do Transcrito ao Gene à Proteína
 
-**Agora que temos nossa matriz de contagens pronta, podemos finalmente abrir o R e perguntar: quais genes mudaram sua expressão devido ao tratamento com vancomicina? Veremos isso na nossa primeira parte prática com o DESeq2.**
+Antes de abrirmos o R para a Análise de Expressão Diferencial, precisamos alinhar exatamente o que o RNA-Seq mede e como isso se conecta com o resto do curso. 
+
+Lembrando o dogma central da biologia molecular (**DNA → RNA → Proteína**), nosso dado é um "snapshot" do **transcriptoma** (RNA). O Salmon quantifica **transcritos** (mRNA), mas nas próximas etapas falaremos constantemente em **genes** e **proteínas**. Por que essa mudança de termos?
+
+* **Dos Transcritos aos Genes:** Um único gene pode gerar múltiplos transcritos (isoformas) por *splicing* alternativo. Para simplificar a análise, especialmente no genoma mais compacto da *Candida albicans*, o padrão é **somar as contagens das isoformas em um único valor por gene**. O pipeline *nf-core/rnaseq* já fez isso para nós e gerou o arquivo que usaremos: `salmon.merged.gene_counts.tsv`.
+* **Dos Genes às Proteínas:** No final da nossa análise, usaremos esses genes para mapear vias biológicas e redes de interação (PPI).
+
+::: {.callout-note}
+## Atenção aos Termos
+Na literatura, é muito comum ler "o gene X está superexpresso" ou "a proteína Y alterou" em estudos de RNA-Seq. Na prática, nós medimos apenas a **abundância de transcritos** e a usamos como um *proxy* (uma estimativa) da atividade do gene e da futura tradução proteica. Seguiremos essa mesma convenção prática ao longo do curso.
+:::
+
+---
+
+**Com a nossa matriz de contagens pronta e os conceitos alinhados, vamos abrir o R. A grande pergunta agora é: quais genes alteraram sua expressão devido ao tratamento com vancomicina? É o que vamos descobrir a seguir usando o DESeq2.**
