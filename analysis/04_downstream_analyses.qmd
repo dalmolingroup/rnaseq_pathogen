@@ -81,16 +81,7 @@ suppressPackageStartupMessages({
 })
 ```
 
-::: {.callout-tip}
-## Instalando os pacotes
 
-Caso algum pacote não esteja instalado, execute:
-
-```{r}
-install.packages(c("dplyr", "readr", "tibble", "ggplot2"))
-BiocManager::install(c("clusterProfiler", "KEGGREST", "enrichplot", "GO.db"))
-```
-:::
 
 ## 2. Carregando os Resultados da Expressão Diferencial
 
@@ -569,18 +560,6 @@ if (!is.null(go_all) && nrow(as.data.frame(go_all)) > 0) {
 } else { cat("nenhum termo\n") }
 ```
 
-::: {.callout-important}
-## O que procurar nos resultados?
-
-No contexto de *Candida albicans* sob pressão antibiótica, fique atento a:
-
-* **Biossíntese da parede celular e membrana**: *C. albicans* pode remodelar β-glucanas e quitina em resposta a estresse, alterando a exposição de PAMPs ao sistema imune.
-* **Metabolismo de ergosterol**: vias de biossíntese de ergosterol são alvos clássicos de antifúngicos e podem ser moduladas indiretamente pela vancomicina.
-* **Resposta a estresse oxidativo**: macrófagos atacam com ROS; genes de detoxificação (SOD, CAT) são indicadores de adaptação.
-* **Metabolismo central (glicólise, TCA)**: alterações metabólicas refletem adaptação ao microambiente do macrófago.
-:::
-
----
 
 **Identificamos quais vias biológicas estão enriquecidas entre os genes diferencialmente expressos da *Candida albicans*. Mas como esses genes se relacionam entre si? Será que as proteínas codificadas por eles interagem fisicamente ou funcionam nos mesmos processos? Para responder a essas perguntas, vamos construir uma rede de interação proteína-proteína (PPI).**
 
@@ -637,23 +616,11 @@ suppressPackageStartupMessages({
 })
 ```
 
-::: {.callout-tip}
-## Instalando os pacotes
 
-Caso algum pacote não esteja instalado, execute:
-
-```{r}
-install.packages(c("RCurl", "igraph", "ggraph", "ggplot2", "dplyr", "readr", "tibble", "scales"))
-
-# O easylayout é instalado a partir do GitHub:
-# install.packages("devtools")
-devtools::install_github("dalmolingroup/easylayout")
-```
-:::
 
 ## 11. Preparando a Lista de Genes
 
-Vamos recuperar nossos resultados de expressão diferencial e preparar a lista de genes que será submetida ao STRING:
+Vamos recuperar nossos resultados de expressão diferencial e preparar a lista de genes que será submetida ao STRING. O STRING não reconhece diretamente os identificadores do Ensembl Fungi (ex: `C1_00210C_A`). Para *C. albicans*, o STRING utiliza os identificadores no formato `CAALFM_` (ex: `CAALFM_C100210CA`), que são os mesmos usados pelo CGD e pelo KEGG. Felizmente, já construímos o dicionário de conversão (`ensembl_to_kegg`) na seção anterior:
 
 ```{r}
 # Carregar resultados da expressão diferencial
@@ -665,20 +632,33 @@ res_dge_signif <- res_dge %>%
 
 genes_deg <- rownames(res_dge_signif)
 
-cat("Total de DEGs para a rede PPI:", length(genes_deg), "\n")
+# Converter Ensembl IDs para o formato CAALFM_ usando o dicionário da seção 4
+genes_deg_caalfm <- unname(ensembl_to_kegg[genes_deg[genes_deg %in% names(ensembl_to_kegg)]])
+
+# Criar dicionário reverso para mapear de volta
+caalfm_to_ensembl <- setNames(names(ensembl_to_kegg), unname(ensembl_to_kegg))
+
+cat("Total de DEGs:", length(genes_deg), "\n")
+cat("DEGs com ID CAALFM_ mapeado:", length(genes_deg_caalfm), "\n")
 ```
+
+::: {.callout-note}
+## Ponto Importante — Conversão de Identificadores
+
+A conversão entre Ensembl Fungi e CAALFM_ segue uma regra simples: o ID `C1_00010W_A` corresponde a `CAALFM_C100010WA` (remoção dos underscores e adição do prefixo). Essa é a mesma conversão que fizemos para o KEGG na seção 4. Se um gene não possui correspondência no dicionário, ele simplesmente não será incluído na rede.
+:::
 
 ## 12. Consultando o STRING via API
 
-O STRING disponibiliza uma [API pública](https://string-db.org/help/api/) que permite realizar consultas programáticas. Vamos utilizá-la para: (1) mapear nossos identificadores de genes para os identificadores internos do STRING, e (2) obter a rede de interações entre eles.
+O STRING disponibiliza uma [API pública](https://string-db.org/help/api/) que permite realizar consultas programáticas. Vamos utilizá-la para: (1) mapear nossos identificadores `CAALFM_` para os identificadores internos do STRING, e (2) obter a rede de interações entre eles.
 
 O identificador taxonômico da cepa SC5314 de *C. albicans* no STRING é **237561**.
 
 ### Mapeando os identificadores
 
 ```{r}
-# Concatenar os genes para a requisição à API
-genes_concatenado <- paste0(genes_deg, collapse = "%0d")
+# Concatenar os genes no formato CAALFM_ para a requisição à API
+genes_concatenado <- paste0(genes_deg_caalfm, collapse = "%0d")
 
 # Requisição para mapear nossos IDs para os IDs do STRING
 req_map <- RCurl::postForm(
@@ -690,7 +670,7 @@ req_map <- RCurl::postForm(
 
 map_ids <- read.table(text = req_map, sep = "\t", header = TRUE, quote = "")
 
-cat("Genes mapeados no STRING:", nrow(map_ids), "de", length(genes_deg), "\n")
+cat("Genes mapeados no STRING:", nrow(map_ids), "de", length(genes_deg_caalfm), "\n")
 ```
 
 ### Obtendo a rede de interações
@@ -748,17 +728,17 @@ combinescores <- function(dat, evidences = "all", confLevel = 0.4) {
 }
 ```
 
-Vamos aplicar o filtro. Utilizaremos os canais de **co-expressão**, **evidência experimental** e **bancos de dados curados**, com um escore combinado mínimo de **0.4** (média confiança):
+Vamos aplicar o filtro. Utilizaremos os canais de **co-expressão**, **evidência experimental** e **bancos de dados curados**. Aqui, por motivos didáticos, vamos estabelecer um escore combinado mínimo de **0.15** (baixa confiança):
 
 ```{r}
 # Aplicar o filtro por canais e confiança mínima
 int_network_filtered <- combinescores(
   int_network,
   evidences = c("ascore", "escore", "dscore"),
-  confLevel = 0.4
+  confLevel = 0.15
 )
 
-cat("Interações após filtro (confiança ≥ 0.4):", nrow(int_network_filtered), "\n")
+cat("Interações após filtro (confiança ≥ 0.15):", nrow(int_network_filtered), "\n")
 ```
 
 ::: {.callout-note}
@@ -771,7 +751,7 @@ O STRING utiliza uma classificação de confiança para seus escores:
 * **High confidence:** > 0.7
 * **Highest confidence:** > 0.9
 
-Para *C. albicans*, um organismo com menos interações experimentalmente validadas, utilizamos o threshold de **média confiança (0.4)** para obter uma rede com número suficiente de arestas. Em organismos-modelo com cobertura extensa, é possível ser mais rigoroso (0.7 ou 0.9).
+Para *C. albicans*, um organismo com menos interações experimentalmente validadas, utilizamos o threshold de **baixa confiança (0.15)** de forma didática para obter uma rede com conexões suficientes a fim de explorar e interpretar grafos durante a aula. Diferentes escores devem ser empregados (como > 0.4 ou 0.7) a depender do contexto e perguntas biológicas com intenção em dados com nível maior de acurácia.
 :::
 
 ## 14. Construindo o Grafo com igraph
@@ -779,13 +759,18 @@ Para *C. albicans*, um organismo com menos interações experimentalmente valida
 Agora vamos transformar a tabela de interações filtrada em um **objeto igraph** e anotar cada nó com as informações de expressão diferencial (log2FC e significância):
 
 ```{r}
-# Criar dataframe de anotação mapeando stringId → nomes preferenciais e DEG info
+# Criar dataframe de anotação mapeando stringId → nomes preferenciais e IDs originais
 ann <- data.frame(
   stringId = map_ids$stringId,
   gene_name = map_ids$preferredName,
-  query = map_ids$queryItem,
+  query_caalfm = map_ids$queryItem,
   stringsAsFactors = FALSE
-) %>% distinct(stringId, .keep_all = TRUE)
+) %>%
+  distinct(stringId, .keep_all = TRUE) %>%
+  mutate(
+    # Mapear CAALFM_ de volta para Ensembl ID
+    ensembl_id = caalfm_to_ensembl[query_caalfm]
+  )
 
 # Substituir os stringIds pelos nomes dos genes na tabela de interações
 int_network_named <- int_network_filtered %>%
@@ -800,7 +785,7 @@ int_network_named <- int_network_filtered %>%
 g <- graph_from_data_frame(int_network_named, directed = FALSE)
 
 # Remover arestas duplicadas e auto-loops
-g <- simplify(g)
+g <- igraph::simplify(g)
 
 cat("Rede construída:", vcount(g), "nós,", ecount(g), "arestas\n")
 ```
@@ -808,8 +793,8 @@ cat("Rede construída:", vcount(g), "nós,", ecount(g), "arestas\n")
 ### Anotando os nós com informações de expressão
 
 ```{r}
-# Criar dicionário gene_name → queryItem (nosso ID Ensembl)
-name_to_ensembl <- setNames(ann$query, ann$gene_name)
+# Criar dicionário gene_name → ensembl_id
+name_to_ensembl <- setNames(ann$ensembl_id, ann$gene_name)
 
 # Para cada nó do grafo, buscar o Ensembl ID e depois as informações do DEG
 node_names <- V(g)$name
@@ -825,13 +810,16 @@ V(g)$log2FC <- ifelse(is.na(node_log2fc), 0, node_log2fc)
 V(g)$padj <- ifelse(is.na(node_padj), 1, node_padj)
 V(g)$signif <- ifelse(is.na(node_signif), "Not significant", node_signif)
 V(g)$ensembl_id <- ifelse(is.na(node_ensembl), "", node_ensembl)
+
+# Calcular -log10(padj) como atributo (usado na visualização)
+V(g)$neg_log10_padj <- -log10(ifelse(V(g)$padj == 0, .Machine$double.xps, V(g)$padj))
 ```
 
 ## 15. Layout Interativo com easylayout
 
 Para posicionar os nós da rede de forma visualmente clara, utilizaremos o pacote [**easylayout**](https://github.com/dalmolingroup/easylayout), desenvolvido pelo nosso grupo. O easylayout é um pacote R que utiliza **simulações de forças interativas** diretamente dentro do RStudio, permitindo ajustar o layout em tempo real antes de exportar o resultado para plotagem com ggraph ou ggplot2.
 
-O easylayout **não é** uma biblioteca de visualização — ele é uma ferramenta de **posicionamento** que se integra com bibliotecas existentes. Ele recebe um objeto igraph, abre uma aplicação web interativa dentro do IDE, e retorna uma **matriz de coordenadas XY** que pode ser usada por qualquer pacote de plotagem.
+O easylayout **não é** uma biblioteca de visualização, ele é uma ferramenta de **posicionamento** que se integra com bibliotecas existentes. Ele recebe um objeto igraph, abre uma aplicação web interativa dentro do IDE, e retorna uma **matriz de coordenadas XY** que pode ser usada por qualquer pacote de plotagem.
 
 ::: {.callout-tip}
 ## Usando o easylayout na prática
@@ -854,13 +842,6 @@ layout_ppi <- easylayout(g)
 saveRDS(layout_ppi, file = here::here("data/DGE/layout_ppi.rds"))
 ```
 
-Para este material, utilizamos um layout pré-computado com o algoritmo de Fruchterman-Reingold como alternativa estática:
-
-```{r}
-# Alternativa estática (reprodutível sem interação)
-set.seed(42)
-layout_ppi <- layout_with_fr(g, niter = 1000)
-```
 
 ## 16. Visualização da Rede PPI com ggraph
 
@@ -869,28 +850,18 @@ Vamos plotar a rede utilizando ggraph, colorindo os nós de acordo com o **log2 
 ```{r}
 #| fig-width: 12
 #| fig-height: 10
-# Preparar dataframe de nós para o plot
-node_df <- data.frame(
-  name = V(g)$name,
-  log2FC = V(g)$log2FC,
-  padj = V(g)$padj,
-  signif = V(g)$signif,
-  neg_log10_padj = -log10(ifelse(V(g)$padj == 0, .Machine$double.xps, V(g)$padj)),
-  stringsAsFactors = FALSE
-)
-
 ggraph(g, layout = layout_ppi) +
-  geom_edge_link(alpha = 0.15, color = "grey60", width = 0.3) +
+  geom_edge_link(alpha = 0.3, color = "grey60", width = 0.3) +
   geom_node_point(
     aes(color = log2FC, size = neg_log10_padj),
     alpha = 0.85
   ) +
   geom_node_text(
-    aes(label = ifelse(neg_log10_padj > quantile(neg_log10_padj, 0.90), name, "")),
+    aes(label = name),
     size = 2.8,
     repel = TRUE,
     max.overlaps = 20,
-    color = "gray10",
+    color = "black",
     segment.color = "grey50",
     segment.size = 0.3
   ) +
@@ -928,89 +899,11 @@ ggraph(g, layout = layout_ppi) +
 ### Como interpretar a rede PPI:
 
 * **Cor dos nós**: segue uma escala contínua do **azul** (downregulado sob vancomicina) ao **vermelho** (upregulado), passando por cinza (log2FC próximo de zero). Isso permite identificar rapidamente se regiões da rede são dominadas por up ou downregulação.
-* **Tamanho dos nós**: proporcional a $-\log_{10}(\text{padj})$ — quanto maior o ponto, mais significativa é a mudança de expressão daquele gene.
+* **Tamanho dos nós**: proporcional a $-\log_{10}(\text{padj})$  quanto maior o ponto, mais significativa é a mudança de expressão daquele gene.
 * **Arestas**: representam associações funcionais documentadas no STRING (co-expressão, evidência experimental ou bancos de dados curados). Arestas mais densas indicam sub-redes de proteínas que atuam de forma coordenada.
 * **Rótulos**: aparecem apenas para os 10% dos genes mais significativos, destacando os candidatos de maior interesse biológico.
 * **Clusters visuais**: grupos de nós densamente conectados sugerem módulos funcionais — conjuntos de proteínas que trabalham juntas em um processo biológico. Identifique se esses módulos correspondem às vias enriquecidas que encontramos anteriormente.
 
-::: {.callout-tip}
-## Explorando a rede no STRING web
-
-Para uma análise interativa mais detalhada, acesse [string-db.org](https://string-db.org/), selecione **Multiple proteins**, cole a lista de genes DEG, escolha *Candida albicans SC5314 (237561)* como organismo, e explore a rede com as ferramentas visuais do STRING (incluindo clustering automático, enriquecimento funcional integrado e filtros de evidência interativos).
-:::
-
-## 17. Métricas de Centralidade
-
-Para identificar os genes mais importantes na rede — aqueles que ocupam posições de **hub** (altamente conectados) ou de **ponte** entre módulos — podemos calcular métricas de centralidade:
-
-```{r}
-# Calcular métricas de centralidade
-node_metrics <- data.frame(
-  gene = V(g)$name,
-  degree = degree(g),
-  betweenness = betweenness(g),
-  log2FC = V(g)$log2FC,
-  padj = V(g)$padj,
-  signif = V(g)$signif,
-  stringsAsFactors = FALSE
-) %>%
-  arrange(desc(degree))
-
-# Top 15 genes por grau de conectividade
-head(node_metrics, 15)
-```
-
-### Como interpretar as métricas:
-
-* **Degree (grau)**: número de conexões de cada proteína. Proteínas com alto grau são **hubs** — potenciais reguladores centrais. Se um hub estiver fortemente up ou downregulado, ele pode ser um candidato relevante para investigação experimental.
-* **Betweenness (intermediação)**: mede quantos caminhos mais curtos passam por aquela proteína. Proteínas com alta intermediação são **pontes** que conectam diferentes módulos funcionais. Sua perturbação pode ter impacto cascata na rede.
-
-```{r}
-#| fig-width: 9
-#| fig-height: 6
-ggplot(node_metrics, aes(x = degree, y = betweenness, color = signif)) +
-  geom_point(aes(size = -log10(padj)), alpha = 0.7) +
-  scale_color_manual(
-    values = c("Downregulated" = "#1F78B4",
-               "Not significant" = "grey60",
-               "Upregulated" = "#E31A1C"),
-    name = "Regulação"
-  ) +
-  scale_size_continuous(
-    name = expression("-" ~ log[10] ~ "padj"),
-    range = c(1.5, 6)
-  ) +
-  ggrepel::geom_text_repel(
-    data = node_metrics %>% filter(degree >= quantile(degree, 0.92) |
-                                    betweenness >= quantile(betweenness, 0.92)),
-    aes(label = gene),
-    size = 3,
-    color = "gray10",
-    max.overlaps = 15,
-    segment.color = "grey50"
-  ) +
-  labs(
-    title = "Centralidade na Rede PPI — Hubs e Pontes",
-    x = "Degree (conectividade)",
-    y = "Betweenness (intermediação)"
-  ) +
-  theme_minimal(base_size = 13) +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold"),
-    legend.position = "bottom",
-    panel.grid.minor = element_blank()
-  )
-```
-
-::: {.callout-important}
-## O que procurar na rede?
-
-No contexto de *Candida albicans* sob pressão de vancomicina:
-
-* **Hubs upregulados (vermelho, alto degree)**: podem indicar genes cuja ativação coordena uma resposta global de adaptação ao estresse antibiótico.
-* **Hubs downregulados (azul, alto degree)**: genes centrais cuja repressão pela vancomicina pode comprometer processos essenciais como a biogênese da parede celular ou o metabolismo de ergosterol.
-* **Pontes (alto betweenness)**: proteínas que conectam diferentes módulos funcionais. Sua alteração pode sinalizar uma reorganização da comunicação entre processos celulares da *Candida* no microambiente do macrófago.
-:::
 
 ---
 

@@ -37,20 +37,6 @@ suppressPackageStartupMessages({
 })
 ```
 
-::: {.callout-tip}
-## Instalando os pacotes
-
-Caso algum pacote não esteja instalado, execute as linhas abaixo **antes** de prosseguir:
-
-```{r}
-# Pacotes do CRAN
-install.packages(c("dplyr", "readr", "tibble", "ggplot2", "pheatmap"))
-
-# Pacotes do Bioconductor
-if (!require("BiocManager", quietly = TRUE)) install.packages("BiocManager")
-BiocManager::install(c("DESeq2", "PCAtools"))
-```
-:::
 
 ## 2. Importando a Matriz de Contagens
 
