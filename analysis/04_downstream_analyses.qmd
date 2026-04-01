@@ -835,11 +835,14 @@ O easylayout **não é** uma biblioteca de visualização, ele é uma ferramenta
 #| eval: false
 library(easylayout)
 
-# Layout interativo — uma janela abrirá no RStudio
-layout_ppi <- easylayout(g)
+# Layout interativo(Descomente a linha para executar) — uma janela abrirá no RStudio
+# layout_ppi <- easylayout(g)
 
 # Salvar o layout para reprodutibilidade
-saveRDS(layout_ppi, file = here::here("data/DGE/layout_ppi.rds"))
+# saveRDS(layout_ppi, file = here::here("data/DGE/layout_ppi.rds"))
+
+# Carregar layout
+layout_ppi <- readRDS(here::here("data/DGE/layout_ppi.rds"))
 ```
 
 
