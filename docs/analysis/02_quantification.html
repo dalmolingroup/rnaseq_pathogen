@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.14">
+<meta name="generator" content="quarto-1.9.36">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -10,6 +10,9 @@
 
 <title>4&nbsp; Quantificação – RNA-seq: Patógenos associados a hospedeiros</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -71,19 +74,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../content/images/dalmolin_icon.svg" rel="icon" type="image/svg+xml">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-3485b2d93be123e8f777e710cba6c06e.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-59ef0155341c95c0b31ded8cf1727339.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-3485b2d93be123e8f777e710cba6c06e.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-a06763021a52c43c40a351ac8b799b8f.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-dbc92dda8186f57fa2e333fbb71d6a9d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-a06763021a52c43c40a351ac8b799b8f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-9bbd077d4201944d018d0c4cb6950598.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-19bb26631b5c8e2903ac015273b5d5f6.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-9bbd077d4201944d018d0c4cb6950598.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-49fd1f1441fd54ec71df2da41e3b08e6.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-9082959d1594bdca9ab86728af60ead1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-49fd1f1441fd54ec71df2da41e3b08e6.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -348,13 +350,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../analysis/03_differential_expression.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Differential Expression Analysis</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Análise de Expressão Diferencial</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../analysis/04_downstream_analyses.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Downstream Analyses</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Análises Downstream</span></span></a>
   </div>
 </li>
     </ul>
@@ -373,7 +375,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#o-script-de-execução" id="toc-o-script-de-execução" class="nav-link" data-scroll-target="#o-script-de-execução"><span class="header-section-number">4.2.1</span> O Script de Execução</a></li>
   <li><a href="#entendendo-os-parâmetros" id="toc-entendendo-os-parâmetros" class="nav-link" data-scroll-target="#entendendo-os-parâmetros"><span class="header-section-number">4.2.2</span> Entendendo os Parâmetros:</a></li>
   </ul></li>
-  <li><a href="#fontes-de-dados-ensembl-fungi" id="toc-fontes-de-dados-ensembl-fungi" class="nav-link" data-scroll-target="#fontes-de-dados-ensembl-fungi"><span class="header-section-number">4.3</span> 3. Fontes de Dados: Ensembl Fungi</a></li>
+  <li><a href="#fontes-de-dados-ensembl-fungi" id="toc-fontes-de-dados-ensembl-fungi" class="nav-link" data-scroll-target="#fontes-de-dados-ensembl-fungi"><span class="header-section-number">4.3</span> 3. Fontes de Dados: Ensembl Fungi</a>
+  <ul class="collapse">
+  <li><a href="#entendendo-os-outputs-do-transcrito-ao-gene-à-proteína" id="toc-entendendo-os-outputs-do-transcrito-ao-gene-à-proteína" class="nav-link" data-scroll-target="#entendendo-os-outputs-do-transcrito-ao-gene-à-proteína"><span class="header-section-number">4.3.1</span> 4. Entendendo os Outputs: Do Transcrito ao Gene à Proteína</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -465,10 +470,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Diferente do Ensembl principal (focado em vertebrados), o Ensembl Fungi mantém curadoria específica para as complexidades de genomas fúngicos, como estruturas de íntrons compactas e polimorfismos frequentes, garantindo que a nossa quantificação seja a mais precisa possível.</p>
 </div>
 </div>
+<section id="entendendo-os-outputs-do-transcrito-ao-gene-à-proteína" class="level3" data-number="4.3.1">
+<h3 data-number="4.3.1" class="anchored" data-anchor-id="entendendo-os-outputs-do-transcrito-ao-gene-à-proteína"><span class="header-section-number">4.3.1</span> 4. Entendendo os Outputs: Do Transcrito ao Gene à Proteína</h3>
+<p>Antes de abrirmos o R para a Análise de Expressão Diferencial, precisamos alinhar exatamente o que o RNA-Seq mede e como isso se conecta com o resto do curso.</p>
+<p>Lembrando o dogma central da biologia molecular (<strong>DNA → RNA → Proteína</strong>), nosso dado é um “snapshot” do <strong>transcriptoma</strong> (RNA). O Salmon quantifica <strong>transcritos</strong> (mRNA), mas nas próximas etapas falaremos constantemente em <strong>genes</strong> e <strong>proteínas</strong>. Por que essa mudança de termos?</p>
+<ul>
+<li><strong>Dos Transcritos aos Genes:</strong> Um único gene pode gerar múltiplos transcritos (isoformas) por <em>splicing</em> alternativo. Para simplificar a análise, especialmente no genoma mais compacto da <em>Candida albicans</em>, o padrão é <strong>somar as contagens das isoformas em um único valor por gene</strong>. O pipeline <em>nf-core/rnaseq</em> já fez isso para nós e gerou o arquivo que usaremos: <code>salmon.merged.gene_counts.tsv</code>.</li>
+<li><strong>Dos Genes às Proteínas:</strong> No final da nossa análise, usaremos esses genes para mapear vias biológicas e redes de interação (PPI).</li>
+</ul>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Atenção aos Termos
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Na literatura, é muito comum ler “o gene X está superexpresso” ou “a proteína Y alterou” em estudos de RNA-Seq. Na prática, nós medimos apenas a <strong>abundância de transcritos</strong> e a usamos como um <em>proxy</em> (uma estimativa) da atividade do gene e da futura tradução proteica. Seguiremos essa mesma convenção prática ao longo do curso.</p>
+</div>
+</div>
 <hr>
-<p><strong>Agora que temos nossa matriz de contagens pronta, podemos finalmente abrir o R e perguntar: quais genes mudaram sua expressão devido ao tratamento com vancomicina? Veremos isso na nossa primeira parte prática com o DESeq2.</strong></p>
+<p><strong>Com a nossa matriz de contagens pronta e os conceitos alinhados, vamos abrir o R. A grande pergunta agora é: quais genes alteraram sua expressão devido ao tratamento com vancomicina? É o que vamos descobrir a seguir usando o DESeq2.</strong></p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -892,8 +919,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../analysis/03_differential_expression.html" class="pagination-link" aria-label="Differential Expression Analysis">
-        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Differential Expression Analysis</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../analysis/03_differential_expression.html" class="pagination-link" aria-label="Análise de Expressão Diferencial">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Análise de Expressão Diferencial</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

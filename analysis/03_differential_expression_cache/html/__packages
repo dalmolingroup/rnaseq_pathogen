@@ -11,3 +11,16 @@ BiocGenerics
 dbplyr
 BiocFileCache
 AnnotationHub
+S4Vectors
+IRanges
+Seqinfo
+GenomicRanges
+matrixStats
+MatrixGenerics
+Biobase
+SummarizedExperiment
+DESeq2
+ggrepel
+PCAtools
+tibble
+pheatmap

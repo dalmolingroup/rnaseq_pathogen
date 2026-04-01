@@ -840,9 +840,6 @@ library(easylayout)
 
 # Salvar o layout para reprodutibilidade
 # saveRDS(layout_ppi, file = here::here("data/DGE/layout_ppi.rds"))
-
-# Carregar layout
-layout_ppi <- readRDS(here::here("data/DGE/layout_ppi.rds"))
 ```
 
 
@@ -853,6 +850,11 @@ Vamos plotar a rede utilizando ggraph, colorindo os nós de acordo com o **log2 
 ```{r}
 #| fig-width: 12
 #| fig-height: 10
+
+# Carregar layout
+
+layout_ppi <- readRDS(here::here("data/DGE/layout_ppi.rds"))
+
 ggraph(g, layout = layout_ppi) +
   geom_edge_link(alpha = 0.3, color = "grey60", width = 0.3) +
   geom_node_point(
