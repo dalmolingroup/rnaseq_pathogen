@@ -1,8 +1,508 @@
 ---
-title: "Downstream Analyses"
+title: "Análises Downstream"
 author: "Dalmolin Systems Biology Group"
 format: html
 execute:
   cache: true
 ---
 
+Na etapa anterior, identificamos quais genes da *Candida albicans* tiveram sua expressão significativamente alterada pelo tratamento com vancomicina. Mas uma lista de genes, por si só, diz pouco sobre a biologia do organismo. Para extrairmos significado biológico, precisamos perguntar: **esses genes pertencem a vias biológicas específicas? Há processos celulares mais afetados do que o esperado ao acaso?**
+
+É exatamente isso que a **análise de enriquecimento funcional** nos permite responder.
+
+---
+
+# Enriquecimento Funcional
+
+A análise de enriquecimento funcional verifica se, entre os genes diferencialmente expressos, há um número desproporcional de genes pertencentes a uma determinada via biológica ou processo celular. Se encontrarmos mais genes alterados em uma via do que o esperado por acaso, dizemos que essa via está **enriquecida**.
+
+A abordagem que utilizaremos é a **ORA (Over-Representation Analysis)**, que parte da nossa lista de genes significativos (padj ≤ 0.05) e aplica um teste hipergeométrico para verificar quais vias estão sobre-representadas. Para os bancos de dados, utilizaremos o **KEGG Pathways** e o **Gene Ontology (GO)**.
+
+::: {.callout-important}
+## *Candida albicans*: Um Organismo Não-Modelo
+
+Para organismos como *Homo sapiens* ou *Mus musculus*, pacotes como `org.Hs.eg.db` e `org.Mm.eg.db` fornecem anotações prontas. Para *C. albicans*, esses bancos não existem no Bioconductor. Precisamos, portanto, de uma estratégia alternativa:
+
+* **KEGG**: o `clusterProfiler` suporta nativamente o código `cal` (*Candida albicans* SC5314). Porém, os identificadores dos genes no KEGG diferem dos nossos IDs do Ensembl Fungi, exigindo uma etapa de conversão.
+* **GO**: utilizaremos o `biomaRt` conectado no **Ensembl Fungi** para baixar as anotações de Gene Ontology diretamente, e então usar a função `enricher()` com essa tabela customizada.
+:::
+
+## 1. Carregando os Pacotes
+
+```{r}
+#| message: false
+#| warning: false
+suppressPackageStartupMessages({
+  library(clusterProfiler)
+  library(KEGGREST)
+  library(biomaRt)
+  library(enrichplot)
+  library(dplyr)
+  library(readr)
+  library(tibble)
+  library(ggplot2)
+})
+```
+
+::: {.callout-tip}
+## Instalando os pacotes
+
+Caso algum pacote não esteja instalado, execute:
+
+```r
+install.packages(c("dplyr", "readr", "tibble", "ggplot2"))
+BiocManager::install(c("clusterProfiler", "KEGGREST", "biomaRt", "enrichplot"))
+```
+:::
+
+## 2. Carregando os Resultados da Expressão Diferencial
+
+Vamos recuperar a tabela de resultados que salvamos no módulo anterior:
+
+```{r}
+res_dge <- readRDS(here::here("data/DGE/res_dge.rds"))
+
+head(res_dge)
+```
+
+## 3. Preparando a Lista de Genes
+
+```{r}
+# Todos os genes significativos (UP + DOWN)
+genes_signif <- rownames(subset(res_dge, signif != "Not significant"))
+
+cat("Total de genes diferencialmente expressos:", length(genes_signif), "\n")
+```
+
+---
+
+## 4. Conversão de Identificadores para o KEGG
+
+Os nossos identificadores de genes seguem o padrão do Ensembl Fungi (ex: `C1_00010W_A`), mas o KEGG utiliza um formato próprio para *C. albicans* (ex: `CAALFM_C100010WA`). Precisamos construir o dicionário para conversão.
+
+Vamos baixar a lista completa de genes de *C. albicans* do KEGG e construir a tabela de conversão:
+
+```{r}
+# Baixar todos os genes de C. albicans (cal) do KEGG
+kegg_genes <- keggList("cal")
+
+# Criar tabela de mapeamento
+kegg_mapping <- data.frame(
+  kegg_id = sub("cal:", "", names(kegg_genes)),
+  description = as.character(kegg_genes),
+  stringsAsFactors = FALSE
+)
+
+# Gerar o ID Ensembl Fungi equivalente a partir do KEGG ID
+# Padrão KEGG: CAALFM_C100010WA → Ensembl: C1_00010W_A
+kegg_mapping <- kegg_mapping %>%
+  mutate(
+    core = sub("^CAALFM_", "", kegg_id),
+    ensembl_id = gsub(
+      "^(C[0-9R]+)(\\d{5})(\\w)(\\w)$",
+      "\\1_\\2\\3_\\4",
+      core
+    )
+  )
+
+# Verificar quantos dos nossos genes têm correspondência
+genes_com_kegg <- sum(rownames(res_dge) %in% kegg_mapping$ensembl_id)
+cat("Genes mapeados para KEGG:", genes_com_kegg, "de", nrow(res_dge), "\n")
+```
+
+```{r}
+# Criar dicionário: Ensembl → KEGG
+ensembl_to_kegg <- setNames(kegg_mapping$kegg_id, kegg_mapping$ensembl_id)
+
+# Converter nossos DEGs para IDs KEGG
+genes_signif_kegg <- unname(ensembl_to_kegg[genes_signif[genes_signif %in% names(ensembl_to_kegg)]])
+genes_signif_kegg <- genes_signif_kegg[!is.na(genes_signif_kegg)]
+
+cat("DEGs com KEGG ID:", length(genes_signif_kegg), "de", length(genes_signif), "\n")
+```
+
+---
+
+## 5. Enriquecimento KEGG — ORA
+
+Agora podemos rodar a Over-Representation Analysis com o KEGG Pathways usando todos os genes diferencialmente expressos:
+
+```{r}
+kegg_ora <- enrichKEGG(
+  gene = genes_signif_kegg,
+  organism = "cal",
+  keyType = "kegg",
+  pvalueCutoff = 0.05,
+  pAdjustMethod = "BH"
+)
+```
+
+### Dotplot — KEGG
+
+```{r}
+#| fig-width: 9
+#| fig-height: 6
+if (!is.null(kegg_ora) && nrow(as.data.frame(kegg_ora)) > 0) {
+  dotplot(kegg_ora,
+          showCategory = 15,
+          title = "KEGG — Genes Diferencialmente Expressos (C. albicans)") +
+    theme(axis.text.y = element_text(size = 10))
+} else {
+  cat("Nenhuma via KEGG enriquecida com padj < 0.05.\n")
+}
+```
+
+### Barplot — KEGG
+
+```{r}
+#| fig-width: 9
+#| fig-height: 6
+if (!is.null(kegg_ora) && nrow(as.data.frame(kegg_ora)) > 0) {
+  barplot(kegg_ora,
+          showCategory = 15,
+          title = "KEGG — Vias Enriquecidas") +
+    theme(axis.text.y = element_text(size = 10))
+} else {
+  cat("Nenhuma via KEGG enriquecida com padj < 0.05.\n")
+}
+```
+
+### Como interpretar o Dotplot e o Barplot:
+
+* **Dotplot**: cada ponto representa uma via enriquecida. O **tamanho** indica quantos DEGs pertencem àquela via (Count); a **cor** indica a significância (p.adjust).
+* **Barplot**: as barras representam o número de genes enriquecidos em cada via. Cores mais intensas indicam maior significância.
+* No contexto de *C. albicans* sob tratamento com vancomicina, vias relacionadas a **metabolismo central**, **biossíntese de aminoácidos** e **biossíntese de parede celular** são particularmente relevantes.
+
+---
+
+## 6. Obtendo Anotações de Gene Ontology
+
+Como não existe um pacote `org.Calb.eg.db` no Bioconductor, vamos buscar as anotações de GO diretamente do **Ensembl Fungi** via `biomaRt`.
+
+```{r}
+# Conectar ao Ensembl Fungi
+ensembl_fungi <- useEnsemblGenomes(biomart = "fungi_mart")
+
+# Buscar o dataset de C. albicans
+datasets_fungi <- searchDatasets(ensembl_fungi, pattern = "albicans")
+datasets_fungi
+```
+
+```{r}
+# Usar o dataset identificado para C. albicans SC5314
+ensembl_fungi <- useEnsemblGenomes(
+  biomart = "fungi_mart",
+  dataset = datasets_fungi$dataset[1]
+)
+
+# Baixar anotações GO para os nossos genes
+go_annotations <- getBM(
+  attributes = c("ensembl_gene_id", "go_id", "name_1006", "namespace_1003"),
+  filters = "ensembl_gene_id",
+  values = rownames(res_dge),
+  mart = ensembl_fungi
+)
+
+# Limpar: remover linhas sem GO
+go_annotations <- go_annotations %>%
+  filter(go_id != "" & !is.na(go_id))
+
+cat("Anotações GO obtidas:", nrow(go_annotations), "\n")
+cat("Genes com pelo menos um termo GO:", length(unique(go_annotations$ensembl_gene_id)), "\n")
+cat("Termos GO únicos:", length(unique(go_annotations$go_id)), "\n")
+```
+
+## 7. Enriquecimento GO — ORA
+
+Vamos filtrar apenas os termos de **Biological Process** (a ontologia mais informativa para entender o impacto funcional) e rodar o enriquecimento com todos os DEGs:
+
+```{r}
+# Filtrar apenas Biological Process
+go_bp <- go_annotations %>%
+  filter(namespace_1003 == "biological_process")
+
+# Criar tabelas TERM2GENE e TERM2NAME
+term2gene_bp <- go_bp %>% dplyr::select(go_id, ensembl_gene_id) %>% distinct()
+term2name_bp <- go_bp %>% dplyr::select(go_id, name_1006) %>% distinct()
+
+cat("Termos GO BP disponíveis:", length(unique(term2gene_bp$go_id)), "\n")
+```
+
+```{r}
+go_ora <- enricher(
+  gene = genes_signif,
+  TERM2GENE = term2gene_bp,
+  TERM2NAME = term2name_bp,
+  pvalueCutoff = 0.05,
+  pAdjustMethod = "BH"
+)
+```
+
+### Dotplot — GO Biological Process
+
+```{r}
+#| fig-width: 10
+#| fig-height: 7
+if (!is.null(go_ora) && nrow(as.data.frame(go_ora)) > 0) {
+  dotplot(go_ora,
+          showCategory = 20,
+          title = "GO Biological Process — DEGs (C. albicans)") +
+    theme(axis.text.y = element_text(size = 9))
+} else {
+  cat("Nenhum processo biológico enriquecido com padj < 0.05.\n")
+}
+```
+
+### Barplot — GO Biological Process
+
+```{r}
+#| fig-width: 10
+#| fig-height: 7
+if (!is.null(go_ora) && nrow(as.data.frame(go_ora)) > 0) {
+  barplot(go_ora,
+          showCategory = 20,
+          title = "GO Biological Process — Vias Enriquecidas") +
+    theme(axis.text.y = element_text(size = 9))
+} else {
+  cat("Nenhum processo biológico enriquecido com padj < 0.05.\n")
+}
+```
+
+### Como interpretar os gráficos de GO:
+
+* O dotplot e o barplot do GO seguem a mesma lógica do KEGG, mas utilizam termos de processos biológicos do Gene Ontology, que descrevem funções celulares de forma mais granular.
+* Em um contexto de infecção fúngica sob tratamento antibiótico, processos relacionados a **resposta a estresse**, **transporte de íons**, **metabolismo de lipídios** e **biogênese da parede celular** são particularmente relevantes.
+
+::: {.callout-tip}
+## E se nenhuma via for enriquecida?
+
+Com um número pequeno de DEGs (~40 genes), é possível que nenhuma via atinja significância estatística com anotações genéricas. Uma alternativa poderosa é utilizar anotações **curadas especificamente** para o organismo de interesse. Para *C. albicans*, o [Candida Genome Database (CGD)](http://www.candidagenome.org/) mantém um arquivo de anotação GO (formato GAF) com mais de 33 mil anotações curadas — muito mais rico que o disponível via Ensembl. Vamos testar essa abordagem a seguir.
+:::
+
+---
+
+## 8. Enriquecimento GO com Anotações do CGD
+
+O **Candida Genome Database (CGD)** é o banco de referência para genômica de *Candida*. Ele disponibiliza um arquivo GAF (*Gene Association File*) com anotações de Gene Ontology curadas manualmente e computacionalmente, específicas para *C. albicans* SC5314. Esse arquivo é significativamente mais completo do que o disponível via Ensembl Fungi.
+
+::: {.callout-note}
+## Ponto Importante
+
+O arquivo GAF pode ser baixado diretamente de: [candidagenome.org/download/go/](http://www.candidagenome.org/download/go/). Nós já o baixamos e descompactamos em `data/cgd/`.
+:::
+
+### Parsear o arquivo GAF
+
+O formato GAF é tabular, com informações sobre o gene, o termo GO, o aspecto da ontologia (P = Processo Biológico, F = Função Molecular, C = Componente Celular) e os sinônimos do gene — que incluem nossos IDs do Ensembl Fungi.
+
+```{r}
+# Ler o arquivo GAF (pulando linhas de comentário)
+gaf_raw <- read.delim(
+  here::here("data/cgd/cgd_C_albicans_SC5314.gaf"),
+  header = FALSE,
+  comment.char = "!",
+  quote = "",
+  stringsAsFactors = FALSE
+)
+
+# Nomear as colunas relevantes do GAF 2.2
+colnames(gaf_raw)[c(1, 2, 3, 4, 5, 7, 9, 11)] <- c(
+  "DB", "DB_Object_ID", "Gene_Symbol", "Qualifier", "GO_ID",
+  "Evidence_Code", "Aspect", "Synonyms"
+)
+
+cat("Total de anotações no GAF:", nrow(gaf_raw), "\n")
+```
+
+### Extrair IDs Ensembl dos Sinônimos
+
+Os IDs que usamos (ex: `C1_00010W_A`) aparecem no campo de sinônimos do GAF. Vamos extraí-los:
+
+```{r}
+# Função para extrair o ID Ensembl (_A) dos sinônimos
+extract_ensembl_id <- function(synonyms) {
+  syns <- unlist(strsplit(synonyms, "\\|"))
+  # Nossos IDs terminam em _A e começam com C
+  match <- grep("^C[0-9R]+_\\d{5}[WC]_A$", syns, value = TRUE)
+  if (length(match) > 0) return(match[1])
+  return(NA_character_)
+}
+
+# Aplicar a extração
+gaf_raw$ensembl_id <- sapply(gaf_raw$Synonyms, extract_ensembl_id)
+
+# Verificar taxa de mapeamento
+mapped <- sum(!is.na(gaf_raw$ensembl_id))
+cat("Anotações com ID Ensembl mapeado:", mapped, "de", nrow(gaf_raw), "\n")
+```
+
+### Construir TERM2GENE e TERM2NAME
+
+```{r}
+# Filtrar anotações válidas e separar por ontologia
+gaf_mapped <- gaf_raw %>%
+  filter(!is.na(ensembl_id)) %>%
+  dplyr::select(ensembl_id, GO_ID, Gene_Symbol, Aspect)
+
+# TERM2GENE: GO_ID → ensembl_id
+term2gene_cgd <- gaf_mapped %>%
+  dplyr::select(GO_ID, ensembl_id) %>%
+  distinct()
+
+# Para obter os nomes dos termos GO, usamos o GO.db do Bioconductor
+library(GO.db)
+go_terms <- AnnotationDbi::select(GO.db, 
+                                   keys = unique(term2gene_cgd$GO_ID), 
+                                   columns = c("GOID", "TERM", "ONTOLOGY"), 
+                                   keytype = "GOID")
+go_terms <- go_terms[!is.na(go_terms$TERM), ]
+
+term2name_cgd <- data.frame(
+  GO_ID = go_terms$GOID,
+  Name = go_terms$TERM
+)
+
+cat("\nTotal de mapeamentos gene-GO:", nrow(term2gene_cgd), "\n")
+cat("Termos GO únicos:", length(unique(term2gene_cgd$GO_ID)), "\n")
+cat("Genes únicos com GO:", length(unique(term2gene_cgd$ensembl_id)), "\n")
+```
+
+### ORA — Biological Process (CGD)
+
+```{r}
+# Filtrar apenas Biological Process
+bp_terms <- go_terms %>% filter(ONTOLOGY == "BP")
+
+term2gene_cgd_bp <- term2gene_cgd %>%
+  filter(GO_ID %in% bp_terms$GOID)
+
+term2name_cgd_bp <- term2name_cgd %>%
+  filter(GO_ID %in% bp_terms$GOID)
+
+# Rodar ORA com todos os DEGs
+go_cgd_ora <- enricher(
+  gene = genes_signif,
+  TERM2GENE = term2gene_cgd_bp,
+  TERM2NAME = term2name_cgd_bp,
+  pvalueCutoff = 0.05,
+  pAdjustMethod = "BH"
+)
+```
+
+### Dotplot — GO BP (CGD)
+
+```{r}
+#| fig-width: 10
+#| fig-height: 7
+if (!is.null(go_cgd_ora) && nrow(as.data.frame(go_cgd_ora)) > 0) {
+  dotplot(go_cgd_ora,
+          showCategory = 20,
+          title = "GO Biological Process — DEGs (CGD Annotations)") +
+    theme(axis.text.y = element_text(size = 9))
+} else {
+  cat("Nenhum processo biológico enriquecido (CGD) com padj < 0.05.\n")
+}
+```
+
+### Barplot — GO BP (CGD)
+
+```{r}
+#| fig-width: 10
+#| fig-height: 7
+if (!is.null(go_cgd_ora) && nrow(as.data.frame(go_cgd_ora)) > 0) {
+  barplot(go_cgd_ora,
+          showCategory = 20,
+          title = "GO Biological Process — Vias Enriquecidas (CGD)") +
+    theme(axis.text.y = element_text(size = 9))
+} else {
+  cat("Nenhum processo biológico enriquecido (CGD) com padj < 0.05.\n")
+}
+```
+
+### ORA — Molecular Function (CGD)
+
+```{r}
+mf_terms <- go_terms %>% filter(ONTOLOGY == "MF")
+
+term2gene_cgd_mf <- term2gene_cgd %>%
+  filter(GO_ID %in% mf_terms$GOID)
+
+term2name_cgd_mf <- term2name_cgd %>%
+  filter(GO_ID %in% mf_terms$GOID)
+
+go_cgd_mf <- enricher(
+  gene = genes_signif,
+  TERM2GENE = term2gene_cgd_mf,
+  TERM2NAME = term2name_cgd_mf,
+  pvalueCutoff = 0.05,
+  pAdjustMethod = "BH"
+)
+```
+
+```{r}
+#| fig-width: 10
+#| fig-height: 7
+if (!is.null(go_cgd_mf) && nrow(as.data.frame(go_cgd_mf)) > 0) {
+  dotplot(go_cgd_mf,
+          showCategory = 15,
+          title = "GO Molecular Function — DEGs (CGD Annotations)") +
+    theme(axis.text.y = element_text(size = 9))
+} else {
+  cat("Nenhuma função molecular enriquecida (CGD) com padj < 0.05.\n")
+}
+```
+
+---
+
+## 9. Resumo e Interpretação
+
+```{r}
+cat("=== Resumo do Enriquecimento ===\n\n")
+cat("DEGs analisados:", length(genes_signif), "\n\n")
+
+cat("--- KEGG ---\n")
+if (!is.null(kegg_ora) && nrow(as.data.frame(kegg_ora)) > 0) {
+  n_kegg <- nrow(as.data.frame(kegg_ora) %>% filter(p.adjust <= 0.05))
+  cat("KEGG:", n_kegg, "vias enriquecidas (padj <= 0.05)\n")
+} else {
+  cat("KEGG: nenhuma via enriquecida\n")
+}
+
+cat("\n--- GO (Ensembl Fungi / biomaRt) ---\n")
+if (!is.null(go_ora) && nrow(as.data.frame(go_ora)) > 0) {
+  n_go <- nrow(as.data.frame(go_ora) %>% filter(p.adjust <= 0.05))
+  cat("GO BP (Ensembl):", n_go, "termos enriquecidos\n")
+} else {
+  cat("GO BP (Ensembl): nenhum termo enriquecido\n")
+}
+
+cat("\n--- GO (CGD — Candida Genome Database) ---\n")
+if (!is.null(go_cgd_ora) && nrow(as.data.frame(go_cgd_ora)) > 0) {
+  n_cgd_bp <- nrow(as.data.frame(go_cgd_ora) %>% filter(p.adjust <= 0.05))
+  cat("GO BP (CGD):", n_cgd_bp, "termos enriquecidos\n")
+} else {
+  cat("GO BP (CGD): nenhum termo enriquecido\n")
+}
+if (!is.null(go_cgd_mf) && nrow(as.data.frame(go_cgd_mf)) > 0) {
+  n_cgd_mf <- nrow(as.data.frame(go_cgd_mf) %>% filter(p.adjust <= 0.05))
+  cat("GO MF (CGD):", n_cgd_mf, "termos enriquecidos\n")
+} else {
+  cat("GO MF (CGD): nenhum termo enriquecido\n")
+}
+```
+
+::: {.callout-important}
+## O que procurar nos resultados?
+
+No contexto de *Candida albicans* sob pressão antibiótica, fique atento a:
+
+* **Biossíntese da parede celular e membrana**: *C. albicans* pode remodelar β-glucanas e quitina em resposta a estresse, alterando a exposição de PAMPs ao sistema imune.
+* **Metabolismo de ergosterol**: vias de biossíntese de ergosterol são alvos clássicos de antifúngicos e podem ser moduladas indiretamente pela vancomicina.
+* **Resposta a estresse oxidativo**: macrófagos atacam com ROS; genes de detoxificação (SOD, CAT) são indicadores de adaptação.
+* **Transição morfológica (hifa/levedura)**: genes como *HWP1*, *ALS3* e *ECE1* são marcadores de virulência.
+* **Metabolismo central (glicólise, TCA)**: alterações metabólicas refletem adaptação ao microambiente do macrófago.
+:::
+
+---
+
+**Concluímos a análise funcional dos genes diferencialmente expressos da *Candida albicans* em resposta à vancomicina. Desde o pré-processamento até o enriquecimento funcional, percorremos um pipeline completo de análise de RNA-seq para um patógeno fúngico, lidando com os desafios específicos de um organismo não-modelo.**
