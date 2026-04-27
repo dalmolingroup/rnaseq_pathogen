@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://dalmolingroup.imd.ufrn.br/rnaseq_pathogen/index.html</loc>
+    <lastmod>2026-04-27T17:17:29.649Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dalmolingroup.imd.ufrn.br/rnaseq_pathogen/analysis/00_setup.html</loc>
+    <lastmod>2026-04-27T17:17:29.483Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dalmolingroup.imd.ufrn.br/rnaseq_pathogen/analysis/01_preprocessing.html</loc>
+    <lastmod>2026-04-27T17:17:29.484Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dalmolingroup.imd.ufrn.br/rnaseq_pathogen/analysis/02_quantification.html</loc>
+    <lastmod>2026-04-27T17:17:29.484Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dalmolingroup.imd.ufrn.br/rnaseq_pathogen/analysis/03_differential_expression.html</loc>
+    <lastmod>2026-04-27T19:10:03.222Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dalmolingroup.imd.ufrn.br/rnaseq_pathogen/analysis/04_downstream_analyses.html</loc>
+    <lastmod>2026-04-27T17:17:29.522Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dalmolingroup.imd.ufrn.br/rnaseq_pathogen/RNA-seq--Patógenos-associados-a-hospedeiros.pdf</loc>
+    <lastmod>2026-04-27T19:12:01.304Z</lastmod>
+  </url>
+</urlset>

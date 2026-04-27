@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta charset="UTF-8">
-<meta name="generator" content="quarto-1.9.36">
+<meta name="generator" content="quarto-1.9.37">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Dalmolin Systems Biology Group">
 <title>5&nbsp; Análise de Expressão Diferencial – RNA-seq: Patógenos associados a hospedeiros</title>
@@ -73,9 +73,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-a06763021a52c43c40a351ac8b799b8f.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-dbc92dda8186f57fa2e333fbb71d6a9d.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-a06763021a52c43c40a351ac8b799b8f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-acf12a64177840b8d86f2d4f01b2e9fb.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-23bbe8b5e4efc1e257f6d59dce478b08.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-acf12a64177840b8d86f2d4f01b2e9fb.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-49fd1f1441fd54ec71df2da41e3b08e6.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
@@ -352,60 +352,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<li><a href="#nas-etapas-anteriores-descontaminamos-as-reads-do-hospedeiro-mus-musculus-e-quantificamos-o-transcriptoma-de-candida-albicans-com-o-nf-corernaseq.-o-resultado-final-desse-pipeline-%C3%A9-uma-matriz-de-contagens-onde-cada-linha-representa-um-gene-e-cada-coluna-uma-amostra.-a-partir-dessa-matriz-podemos-realizar-a-an%C3%A1lise-de-express%C3%A3o-diferencial-para-identificar-quais-genes-da-candida-foram-regulados-upregulados-ou-downregulados-em-resposta-ao-tratamento-com-vancomicina." id="toc-nas-etapas-anteriores-descontaminamos-as-reads-do-hospedeiro-mus-musculus-e-quantificamos-o-transcriptoma-de-candida-albicans-com-o-nf-corernaseq.-o-resultado-final-desse-pipeline-é-uma-matriz-de-contagens-onde-cada-linha-representa-um-gene-e-cada-coluna-uma-amostra.-a-partir-dessa-matriz-podemos-realizar-a-análise-de-expressão-diferencial-para-identificar-quais-genes-da-candida-foram-regulados-upregulados-ou-downregulados-em-resposta-ao-tratamento-com-vancomicina." class="nav-link active" data-scroll-target="#nas-etapas-anteriores-descontaminamos-as-reads-do-hospedeiro-mus-musculus-e-quantificamos-o-transcriptoma-de-candida-albicans-com-o-nf-corernaseq.-o-resultado-final-desse-pipeline-%C3%A9-uma-matriz-de-contagens-onde-cada-linha-representa-um-gene-e-cada-coluna-uma-amostra.-a-partir-dessa-matriz-podemos-realizar-a-an%C3%A1lise-de-express%C3%A3o-diferencial-para-identificar-quais-genes-da-candida-foram-regulados-upregulados-ou-downregulados-em-resposta-ao-tratamento-com-vancomicina."><span class="header-section-number">5.1</span> Nas etapas anteriores, descontaminamos as reads do hospedeiro (<em>Mus musculus</em>) e quantificamos o transcriptoma de <em>Candida albicans</em> com o nf-core/rnaseq. O resultado final desse pipeline é uma <strong>matriz de contagens</strong>, onde cada linha representa um gene e cada coluna uma amostra. A partir dessa matriz, podemos realizar a análise de expressão diferencial para identificar quais genes da <em>Candida</em> foram regulados (upregulados ou downregulados) em resposta ao tratamento com vancomicina.</a></li>
-  <li>
-<a href="#sanidade-de-dados" id="toc-sanidade-de-dados" class="nav-link" data-scroll-target="#sanidade-de-dados"><span class="header-section-number">6</span> Sanidade de Dados</a>
+<li>
+<a href="#sanidade-de-dados" id="toc-sanidade-de-dados" class="nav-link active" data-scroll-target="#sanidade-de-dados"><span class="header-section-number">5.1</span> Sanidade de Dados</a>
   <ul class="collapse">
-<li><a href="#carregando-os-pacotes" id="toc-carregando-os-pacotes" class="nav-link" data-scroll-target="#carregando-os-pacotes"><span class="header-section-number">6.1</span> 1. Carregando os Pacotes</a></li>
-  <li><a href="#importando-a-matriz-de-contagens" id="toc-importando-a-matriz-de-contagens" class="nav-link" data-scroll-target="#importando-a-matriz-de-contagens"><span class="header-section-number">6.2</span> 2. Importando a Matriz de Contagens</a></li>
-  <li><a href="#importando-os-metadados" id="toc-importando-os-metadados" class="nav-link" data-scroll-target="#importando-os-metadados"><span class="header-section-number">6.3</span> 3. Importando os Metadados</a></li>
-  <li><a href="#preparando-a-matriz-de-contagens" id="toc-preparando-a-matriz-de-contagens" class="nav-link" data-scroll-target="#preparando-a-matriz-de-contagens"><span class="header-section-number">6.4</span> 4. Preparando a Matriz de Contagens</a></li>
-  <li><a href="#criando-o-objeto-deseq2" id="toc-criando-o-objeto-deseq2" class="nav-link" data-scroll-target="#criando-o-objeto-deseq2"><span class="header-section-number">6.5</span> 5. Criando o Objeto DESeq2</a></li>
-  <li>
-<a href="#an%C3%A1lise-de-componentes-principais-pca" id="toc-análise-de-componentes-principais-pca" class="nav-link" data-scroll-target="#an%C3%A1lise-de-componentes-principais-pca"><span class="header-section-number">6.6</span> 6. Análise de Componentes Principais (PCA)</a>
-  <ul class="collapse">
-<li><a href="#como-interpretar-o-biplot" id="toc-como-interpretar-o-biplot" class="nav-link" data-scroll-target="#como-interpretar-o-biplot"><span class="header-section-number">6.6.1</span> Como interpretar o biplot:</a></li>
+<li><a href="#carregando-os-pacotes" id="toc-carregando-os-pacotes" class="nav-link" data-scroll-target="#carregando-os-pacotes"><span class="header-section-number">5.1.1</span> 1. Carregando os Pacotes</a></li>
+  <li><a href="#importando-a-matriz-de-contagens" id="toc-importando-a-matriz-de-contagens" class="nav-link" data-scroll-target="#importando-a-matriz-de-contagens"><span class="header-section-number">5.1.2</span> 2. Importando a Matriz de Contagens</a></li>
+  <li><a href="#importando-os-metadados" id="toc-importando-os-metadados" class="nav-link" data-scroll-target="#importando-os-metadados"><span class="header-section-number">5.1.3</span> 3. Importando os Metadados</a></li>
+  <li><a href="#preparando-a-matriz-de-contagens" id="toc-preparando-a-matriz-de-contagens" class="nav-link" data-scroll-target="#preparando-a-matriz-de-contagens"><span class="header-section-number">5.1.4</span> 4. Preparando a Matriz de Contagens</a></li>
+  <li><a href="#criando-o-objeto-deseq2" id="toc-criando-o-objeto-deseq2" class="nav-link" data-scroll-target="#criando-o-objeto-deseq2"><span class="header-section-number">5.1.5</span> 5. Criando o Objeto DESeq2</a></li>
+  <li><a href="#an%C3%A1lise-de-componentes-principais-pca" id="toc-análise-de-componentes-principais-pca" class="nav-link" data-scroll-target="#an%C3%A1lise-de-componentes-principais-pca"><span class="header-section-number">5.1.6</span> 6. Análise de Componentes Principais (PCA)</a></li>
+  <li><a href="#scree-plot" id="toc-scree-plot" class="nav-link" data-scroll-target="#scree-plot"><span class="header-section-number">5.1.7</span> 7. Scree Plot</a></li>
+  <li><a href="#clusteriza%C3%A7%C3%A3o-hier%C3%A1rquica" id="toc-clusterização-hierárquica" class="nav-link" data-scroll-target="#clusteriza%C3%A7%C3%A3o-hier%C3%A1rquica"><span class="header-section-number">5.1.8</span> 8. Clusterização Hierárquica</a></li>
+  <li><a href="#an%C3%A1lise-de-covari%C3%A1veis" id="toc-análise-de-covariáveis" class="nav-link" data-scroll-target="#an%C3%A1lise-de-covari%C3%A1veis"><span class="header-section-number">5.1.9</span> 9. Análise de Covariáveis</a></li>
   </ul>
 </li>
   <li>
-<a href="#scree-plot" id="toc-scree-plot" class="nav-link" data-scroll-target="#scree-plot"><span class="header-section-number">6.7</span> 7. Scree Plot</a>
+<a href="#an%C3%A1lise-de-express%C3%A3o-diferencial-de-genes-dge" id="toc-análise-de-expressão-diferencial-de-genes-dge" class="nav-link" data-scroll-target="#an%C3%A1lise-de-express%C3%A3o-diferencial-de-genes-dge"><span class="header-section-number">5.2</span> Análise de Expressão Diferencial de Genes (DGE)</a>
   <ul class="collapse">
-<li><a href="#pca-dentro-de-um-%C3%BAnico-lote" id="toc-pca-dentro-de-um-único-lote" class="nav-link" data-scroll-target="#pca-dentro-de-um-%C3%BAnico-lote"><span class="header-section-number">6.7.1</span> PCA dentro de um único lote</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#clusteriza%C3%A7%C3%A3o-hier%C3%A1rquica" id="toc-clusterização-hierárquica" class="nav-link" data-scroll-target="#clusteriza%C3%A7%C3%A3o-hier%C3%A1rquica"><span class="header-section-number">6.8</span> 8. Clusterização Hierárquica</a>
-  <ul class="collapse">
-<li><a href="#como-interpretar-o-dendrograma" id="toc-como-interpretar-o-dendrograma" class="nav-link" data-scroll-target="#como-interpretar-o-dendrograma"><span class="header-section-number">6.8.1</span> Como interpretar o dendrograma:</a></li>
-  </ul>
-</li>
-  <li><a href="#an%C3%A1lise-de-covari%C3%A1veis" id="toc-análise-de-covariáveis" class="nav-link" data-scroll-target="#an%C3%A1lise-de-covari%C3%A1veis"><span class="header-section-number">6.9</span> 9. Análise de Covariáveis</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#an%C3%A1lise-de-express%C3%A3o-diferencial-de-genes-dge" id="toc-análise-de-expressão-diferencial-de-genes-dge" class="nav-link" data-scroll-target="#an%C3%A1lise-de-express%C3%A3o-diferencial-de-genes-dge"><span class="header-section-number">7</span> Análise de Expressão Diferencial de Genes (DGE)</a>
-  <ul class="collapse">
-<li><a href="#rodando-o-deseq2" id="toc-rodando-o-deseq2" class="nav-link" data-scroll-target="#rodando-o-deseq2"><span class="header-section-number">7.1</span> 10. Rodando o DESeq2</a></li>
-  <li><a href="#extraindo-os-resultados" id="toc-extraindo-os-resultados" class="nav-link" data-scroll-target="#extraindo-os-resultados"><span class="header-section-number">7.2</span> 11. Extraindo os Resultados</a></li>
-  <li><a href="#definindo-os-genes-diferencialmente-expressos" id="toc-definindo-os-genes-diferencialmente-expressos" class="nav-link" data-scroll-target="#definindo-os-genes-diferencialmente-expressos"><span class="header-section-number">7.3</span> 12. Definindo os Genes Diferencialmente Expressos</a></li>
-  <li>
-<a href="#ma-plot" id="toc-ma-plot" class="nav-link" data-scroll-target="#ma-plot"><span class="header-section-number">7.4</span> 13. MA Plot</a>
-  <ul class="collapse">
-<li><a href="#como-interpretar-o-ma-plot" id="toc-como-interpretar-o-ma-plot" class="nav-link" data-scroll-target="#como-interpretar-o-ma-plot"><span class="header-section-number">7.4.1</span> Como interpretar o MA Plot:</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#volcano-plot" id="toc-volcano-plot" class="nav-link" data-scroll-target="#volcano-plot"><span class="header-section-number">7.5</span> 14. Volcano Plot</a>
-  <ul class="collapse">
-<li><a href="#como-interpretar-o-volcano-plot" id="toc-como-interpretar-o-volcano-plot" class="nav-link" data-scroll-target="#como-interpretar-o-volcano-plot"><span class="header-section-number">7.5.1</span> Como interpretar o Volcano Plot:</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#heatmap-dos-genes-diferencialmente-expressos" id="toc-heatmap-dos-genes-diferencialmente-expressos" class="nav-link" data-scroll-target="#heatmap-dos-genes-diferencialmente-expressos"><span class="header-section-number">7.6</span> 15. Heatmap dos Genes Diferencialmente Expressos</a>
-  <ul class="collapse">
-<li><a href="#como-interpretar-o-heatmap" id="toc-como-interpretar-o-heatmap" class="nav-link" data-scroll-target="#como-interpretar-o-heatmap"><span class="header-section-number">7.6.1</span> Como interpretar o heatmap:</a></li>
-  </ul>
-</li>
+<li><a href="#rodando-o-deseq2" id="toc-rodando-o-deseq2" class="nav-link" data-scroll-target="#rodando-o-deseq2"><span class="header-section-number">5.2.1</span> 10. Rodando o DESeq2</a></li>
+  <li><a href="#extraindo-os-resultados" id="toc-extraindo-os-resultados" class="nav-link" data-scroll-target="#extraindo-os-resultados"><span class="header-section-number">5.2.2</span> 11. Extraindo os Resultados</a></li>
+  <li><a href="#definindo-os-genes-diferencialmente-expressos" id="toc-definindo-os-genes-diferencialmente-expressos" class="nav-link" data-scroll-target="#definindo-os-genes-diferencialmente-expressos"><span class="header-section-number">5.2.3</span> 12. Definindo os Genes Diferencialmente Expressos</a></li>
+  <li><a href="#ma-plot" id="toc-ma-plot" class="nav-link" data-scroll-target="#ma-plot"><span class="header-section-number">5.2.4</span> 13. MA Plot</a></li>
+  <li><a href="#volcano-plot" id="toc-volcano-plot" class="nav-link" data-scroll-target="#volcano-plot"><span class="header-section-number">5.2.5</span> 14. Volcano Plot</a></li>
+  <li><a href="#heatmap-dos-genes-diferencialmente-expressos" id="toc-heatmap-dos-genes-diferencialmente-expressos" class="nav-link" data-scroll-target="#heatmap-dos-genes-diferencialmente-expressos"><span class="header-section-number">5.2.6</span> 15. Heatmap dos Genes Diferencialmente Expressos</a></li>
   </ul>
 </li>
   </ul></nav>
@@ -434,10 +403,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
 
 
-</header><section id="nas-etapas-anteriores-descontaminamos-as-reads-do-hospedeiro-mus-musculus-e-quantificamos-o-transcriptoma-de-candida-albicans-com-o-nf-corernaseq.-o-resultado-final-desse-pipeline-é-uma-matriz-de-contagens-onde-cada-linha-representa-um-gene-e-cada-coluna-uma-amostra.-a-partir-dessa-matriz-podemos-realizar-a-análise-de-expressão-diferencial-para-identificar-quais-genes-da-candida-foram-regulados-upregulados-ou-downregulados-em-resposta-ao-tratamento-com-vancomicina." class="level2" data-number="5.1"><h2 data-number="5.1" class="anchored" data-anchor-id="nas-etapas-anteriores-descontaminamos-as-reads-do-hospedeiro-mus-musculus-e-quantificamos-o-transcriptoma-de-candida-albicans-com-o-nf-corernaseq.-o-resultado-final-desse-pipeline-é-uma-matriz-de-contagens-onde-cada-linha-representa-um-gene-e-cada-coluna-uma-amostra.-a-partir-dessa-matriz-podemos-realizar-a-análise-de-expressão-diferencial-para-identificar-quais-genes-da-candida-foram-regulados-upregulados-ou-downregulados-em-resposta-ao-tratamento-com-vancomicina.">
-<span class="header-section-number">5.1</span> Nas etapas anteriores, descontaminamos as reads do hospedeiro (<em>Mus musculus</em>) e quantificamos o transcriptoma de <em>Candida albicans</em> com o nf-core/rnaseq. O resultado final desse pipeline é uma <strong>matriz de contagens</strong>, onde cada linha representa um gene e cada coluna uma amostra. A partir dessa matriz, podemos realizar a análise de expressão diferencial para identificar quais genes da <em>Candida</em> foram regulados (upregulados ou downregulados) em resposta ao tratamento com vancomicina.</h2>
-</section><section id="sanidade-de-dados" class="level1" data-number="6"><h1 data-number="6">
-<span class="header-section-number">6</span> Sanidade de Dados</h1>
+</header><p>Nas etapas anteriores, descontaminamos as reads do hospedeiro (<em>Mus musculus</em>) e quantificamos o transcriptoma de <em>Candida albicans</em> com o nf-core/rnaseq. O resultado final desse pipeline é uma <strong>matriz de contagens</strong>, onde cada linha representa um gene e cada coluna uma amostra. A partir dessa matriz, podemos realizar a análise de expressão diferencial para identificar quais genes da <em>Candida</em> foram regulados (upregulados ou downregulados) em resposta ao tratamento com vancomicina.</p>
+<hr>
+<section id="sanidade-de-dados" class="level2" data-number="5.1"><h2 data-number="5.1" class="anchored" data-anchor-id="sanidade-de-dados">
+<span class="header-section-number">5.1</span> Sanidade de Dados</h2>
 <p>Antes de realizarmos a análise de expressão diferencial propriamente dita, é fundamental explorar a estrutura do nosso conjunto de dados. Essa etapa, frequentemente chamada de sanidade de dados ou análise exploratória, serve para responder perguntas essenciais:</p>
 <ul>
 <li>As amostras se agrupam conforme esperamos (por tratamento)?</li>
@@ -445,8 +414,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Quais variáveis do metadado influenciam a expressão gênica?</li>
 </ul>
 <p>Para tal, precisamos de técnicas que consigam lidar com a <strong>multidimensionalidade</strong> dos dados: estamos analisando milhares de genes simultaneamente. Técnicas como a Análise de Componentes Principais (PCA) e a clusterização hierárquica nos permitem “resumir” essa complexidade e visualizar padrões.</p>
-<section id="carregando-os-pacotes" class="level2" data-number="6.1"><h2 data-number="6.1" class="anchored" data-anchor-id="carregando-os-pacotes">
-<span class="header-section-number">6.1</span> 1. Carregando os Pacotes</h2>
+<section id="carregando-os-pacotes" class="level3" data-number="5.1.1"><h3 data-number="5.1.1" class="anchored" data-anchor-id="carregando-os-pacotes">
+<span class="header-section-number">5.1.1</span> 1. Carregando os Pacotes</h3>
 <p>Vamos começar carregando os pacotes que utilizaremos ao longo de toda esta seção prática.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="op">{</span></span>
@@ -459,8 +428,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">pheatmap</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</section><section id="importando-a-matriz-de-contagens" class="level2" data-number="6.2"><h2 data-number="6.2" class="anchored" data-anchor-id="importando-a-matriz-de-contagens">
-<span class="header-section-number">6.2</span> 2. Importando a Matriz de Contagens</h2>
+</section><section id="importando-a-matriz-de-contagens" class="level3" data-number="5.1.2"><h3 data-number="5.1.2" class="anchored" data-anchor-id="importando-a-matriz-de-contagens">
+<span class="header-section-number">5.1.2</span> 2. Importando a Matriz de Contagens</h3>
 <p>O nf-core/rnaseq com o quantificador Salmon gera uma tabela consolidada com as contagens de todos os genes por amostra. Vamos carregá-la:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Importar matriz de contagens (gerada pelo Salmon via nf-core/rnaseq)</span></span>
@@ -481,8 +450,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>A primeira coluna (<code>gene_id</code>) contém os identificadores dos genes de <em>Candida albicans</em> no Ensembl Fungi, e a segunda (<code>gene_name</code>) contém o nome do gene quando disponível. As demais colunas são as amostras, identificadas pelo código SRR.</p>
-</section><section id="importando-os-metadados" class="level2" data-number="6.3"><h2 data-number="6.3" class="anchored" data-anchor-id="importando-os-metadados">
-<span class="header-section-number">6.3</span> 3. Importando os Metadados</h2>
+</section><section id="importando-os-metadados" class="level3" data-number="5.1.3"><h3 data-number="5.1.3" class="anchored" data-anchor-id="importando-os-metadados">
+<span class="header-section-number">5.1.3</span> 3. Importando os Metadados</h3>
 <p>As informações sobre as condições experimentais de cada amostra estão no arquivo <code>SraRunTable.csv</code>, obtido do SRA. Precisamos filtrá-lo para manter apenas as amostras que foram estimuladas com <em>Candida albicans</em>. Vamos organizar o metadado para que ele possa ser facilmente integrado com a matriz de contagens. O DESeq2 exige que as colunas da matriz de contagens correspondam às linhas do metadado, e que o metadado contenha as variáveis que queremos testar (neste caso, o tratamento) e as covariáveis (como o grupo experimental).</p>
 <p>Além da variável de interesse (<code>treatment</code>), nosso metadado contém uma informação crucial: o <strong>lote experimental</strong> (<code>experiment_group</code>). Como vimos na descrição do conjunto de dados, o experimento foi conduzido em <strong>6 lotes independentes</strong>, cada um contendo 4 amostras tratadas com vancomicina e 4 controles. Diferenças entre lotes, como variações no dia de cultivo, preparo de reagentes ou condições de extração, podem introduzir variabilidade que <strong>não é interessante para o objetivo do estudo</strong>. Se não levarmos isso em conta, corremos o risco de confundir efeito de <em>batch</em> com efeito do tratamento, o que pode gerar tanto falsos positivos quanto falsos negativos nos resultados da expressão diferencial.</p>
 <div class="cell">
@@ -566,8 +535,8 @@ SRR29279096 Untreated (control)                6</code></pre>
 <p>Repare que cada amostra biológica (<code>experiment_group</code>) possui 4 runs de sequenciamento (SRR). No nosso caso, o nf-core/rnaseq quantificou cada run individualmente. Isso significa que temos <strong>réplicas técnicas</strong> que devem ser levadas em consideração. Poderíamos agregá-las somando as contagens, mas como o DESeq2 lida naturalmente com o modelo de expressão, vamos mantê-las separadas e incluir o <code>experiment_group</code> no design para absorver essa variabilidade.</p>
 </div>
 </div>
-</section><section id="preparando-a-matriz-de-contagens" class="level2" data-number="6.4"><h2 data-number="6.4" class="anchored" data-anchor-id="preparando-a-matriz-de-contagens">
-<span class="header-section-number">6.4</span> 4. Preparando a Matriz de Contagens</h2>
+</section><section id="preparando-a-matriz-de-contagens" class="level3" data-number="5.1.4"><h3 data-number="5.1.4" class="anchored" data-anchor-id="preparando-a-matriz-de-contagens">
+<span class="header-section-number">5.1.4</span> 4. Preparando a Matriz de Contagens</h3>
 <p>Agora precisamos transformar a tabela importada em uma matriz numérica compatível com o DESeq2, e garantir que apenas as amostras de interesse (com estímulo por <em>Candida</em>) estejam presentes.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Transformar em matriz numérica com gene_id como rownames</span></span>
@@ -592,8 +561,8 @@ SRR29279096 Untreated (control)                6</code></pre>
 </div>
 </div>
 <p>Temos <strong>6468 genes</strong> e <strong>48 amostras</strong> prontos para análise.</p>
-</section><section id="criando-o-objeto-deseq2" class="level2" data-number="6.5"><h2 data-number="6.5" class="anchored" data-anchor-id="criando-o-objeto-deseq2">
-<span class="header-section-number">6.5</span> 5. Criando o Objeto DESeq2</h2>
+</section><section id="criando-o-objeto-deseq2" class="level3" data-number="5.1.5"><h3 data-number="5.1.5" class="anchored" data-anchor-id="criando-o-objeto-deseq2">
+<span class="header-section-number">5.1.5</span> 5. Criando o Objeto DESeq2</h3>
 <p>O DESeq2 trabalha com um objeto especial (<code>DESeqDataSet</code>) que armazena juntos a matriz de contagens, o metadado e o modelo estatístico. Aqui, nosso modelo inclui o <code>experiment_group</code> como covariável e o <code>treatment</code> como a variável de interesse:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DESeq2/man/DESeqDataSet.html">DESeqDataSetFromMatrix</a></span><span class="op">(</span>countData <span class="op">=</span> <span class="va">count_matrix</span>,</span>
@@ -605,8 +574,8 @@ SRR29279096 Untreated (control)                6</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dds_vst</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DESeq2/man/varianceStabilizingTransformation.html">varianceStabilizingTransformation</a></span><span class="op">(</span><span class="va">dds</span><span class="op">)</span></span>
 <span><span class="va">counts_vst</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assay</a></span><span class="op">(</span><span class="va">dds_vst</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</section><section id="análise-de-componentes-principais-pca" class="level2" data-number="6.6"><h2 data-number="6.6" class="anchored" data-anchor-id="análise-de-componentes-principais-pca">
-<span class="header-section-number">6.6</span> 6. Análise de Componentes Principais (PCA)</h2>
+</section><section id="análise-de-componentes-principais-pca" class="level3" data-number="5.1.6"><h3 data-number="5.1.6" class="anchored" data-anchor-id="análise-de-componentes-principais-pca">
+<span class="header-section-number">5.1.6</span> 6. Análise de Componentes Principais (PCA)</h3>
 <p>A PCA é uma técnica de <strong>redução de dimensionalidade</strong> que projeta os milhares de genes em um número menor de componentes. Cada componente principal captura um eixo de variabilidade nos dados:</p>
 <ul>
 <li>
@@ -625,21 +594,21 @@ SRR29279096 Untreated (control)                6</code></pre>
 <span>       title <span class="op">=</span> <span class="st">"PCA — Transcriptoma de C. albicans"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="03_differential_expression_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="768"></p>
+<figure class="figure"><p><img src="03_differential_expression_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="1152"></p>
 </figure>
 </div>
 </div>
 </div>
-<section id="como-interpretar-o-biplot" class="level3" data-number="6.6.1"><h3 data-number="6.6.1" class="anchored" data-anchor-id="como-interpretar-o-biplot">
-<span class="header-section-number">6.6.1</span> Como interpretar o biplot:</h3>
+<section id="como-interpretar-o-biplot" class="level4" data-number="5.1.6.1"><h4 data-number="5.1.6.1" class="anchored" data-anchor-id="como-interpretar-o-biplot">
+<span class="header-section-number">5.1.6.1</span> Como interpretar o biplot:</h4>
 <ul>
 <li>
 <strong>Proximidade entre pontos</strong> indica similaridade no perfil de expressão global. Amostras do mesmo grupo de tratamento devem se agrupar.</li>
 <li>
 <strong>Eixos PC1 e PC2</strong>: o percentual ao lado de cada eixo indica quanto da variância total aquela componente explica. Se PC1 sozinha explica, por exemplo, 40% da variância, ela é a dimensão dominante do seu dado.</li>
 <li>A <strong>forma</strong> dos pontos diferencia os grupos experimentais (réplicas biológicas), o que permite avaliar se a variação entre réplicas é menor do que a variação entre tratamentos — o cenário ideal.</li>
-</ul></section></section><section id="scree-plot" class="level2" data-number="6.7"><h2 data-number="6.7" class="anchored" data-anchor-id="scree-plot">
-<span class="header-section-number">6.7</span> 7. Scree Plot</h2>
+</ul></section></section><section id="scree-plot" class="level3" data-number="5.1.7"><h3 data-number="5.1.7" class="anchored" data-anchor-id="scree-plot">
+<span class="header-section-number">5.1.7</span> 7. Scree Plot</h3>
 <p>O <strong>scree plot</strong> mostra a proporção de variância explicada por cada componente principal. Ele ajuda a responder: <em>quantas dimensões são necessárias para descrever a variabilidade do meu dado?</em></p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/PCAtools/man/screeplot.html">screeplot</a></span><span class="op">(</span><span class="va">pca_result</span>,</span>
@@ -647,7 +616,7 @@ SRR29279096 Untreated (control)                6</code></pre>
 <span>          title <span class="op">=</span> <span class="st">"Scree Plot — Variância por Componente"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="03_differential_expression_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="03_differential_expression_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="1344"></p>
 </figure>
 </div>
 </div>
@@ -665,8 +634,8 @@ SRR29279096 Untreated (control)                6</code></pre>
 <p>Procure pelo ponto onde a curva se achata (<em>elbow</em>). Geralmente, em dados de RNA-seq, as 2–4 primeiras componentes são suficientes para descrever a maior parte da variabilidade. No nosso caso, é normal que as duas primeiras componentes não expliquem uma fração muito alta da variância. Isso acontece porque temos <strong>6 lotes experimentais independentes</strong>, cada um introduzindo sua própria fonte de variabilidade. A variância total acaba sendo “fragmentada” entre muitas componentes, cada uma capturando a variação de um ou mais lotes. Se analisássemos um único lote, veríamos PC1 e PC2 explicando uma proporção bem maior.</p>
 </div>
 </div>
-<section id="pca-dentro-de-um-único-lote" class="level3" data-number="6.7.1"><h3 data-number="6.7.1" class="anchored" data-anchor-id="pca-dentro-de-um-único-lote">
-<span class="header-section-number">6.7.1</span> PCA dentro de um único lote</h3>
+<section id="pca-dentro-de-um-único-lote" class="level4" data-number="5.1.7.1"><h4 data-number="5.1.7.1" class="anchored" data-anchor-id="pca-dentro-de-um-único-lote">
+<span class="header-section-number">5.1.7.1</span> PCA dentro de um único lote</h4>
 <p>Para ilustrar esse ponto, vamos repetir a PCA usando apenas as amostras do <strong>lote 1</strong> (um par vancomicina/controle com suas réplicas técnicas):</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Filtrar apenas amostras do lote 2</span></span>
@@ -681,14 +650,14 @@ SRR29279096 Untreated (control)                6</code></pre>
 <span>       title <span class="op">=</span> <span class="st">"PCA — Apenas Lote 1"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="03_differential_expression_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="03_differential_expression_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="1152"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>Note como, isolando um único lote, a separação entre vancomicina e controle se torna mais evidente e as primeiras componentes explicam uma proporção maior da variância. Isso reforça a necessidade de incluir o <code>experiment_group</code> como covariável no nosso modelo.</p>
-</section></section><section id="clusterização-hierárquica" class="level2" data-number="6.8"><h2 data-number="6.8" class="anchored" data-anchor-id="clusterização-hierárquica">
-<span class="header-section-number">6.8</span> 8. Clusterização Hierárquica</h2>
+</section></section><section id="clusterização-hierárquica" class="level3" data-number="5.1.8"><h3 data-number="5.1.8" class="anchored" data-anchor-id="clusterização-hierárquica">
+<span class="header-section-number">5.1.8</span> 8. Clusterização Hierárquica</h3>
 <p>A clusterização hierárquica agrupa as amostras com base na <strong>distância euclidiana</strong> entre seus perfis de expressão, construindo um <strong>dendrograma</strong>. Amostras com perfis mais similares são conectadas mais próximas na árvore.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span> <span class="co"># Transpor a matriz: cada amostra vira uma linha</span></span>
@@ -723,19 +692,19 @@ SRR29279096 Untreated (control)                6</code></pre>
 <span>     cex <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="co"># Font size</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="03_differential_expression_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="03_differential_expression_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="1344"></p>
 </figure>
 </div>
 </div>
 </div>
-<section id="como-interpretar-o-dendrograma" class="level3" data-number="6.8.1"><h3 data-number="6.8.1" class="anchored" data-anchor-id="como-interpretar-o-dendrograma">
-<span class="header-section-number">6.8.1</span> Como interpretar o dendrograma:</h3>
+<section id="como-interpretar-o-dendrograma" class="level4" data-number="5.1.8.1"><h4 data-number="5.1.8.1" class="anchored" data-anchor-id="como-interpretar-o-dendrograma">
+<span class="header-section-number">5.1.8.1</span> Como interpretar o dendrograma:</h4>
 <ul>
 <li>Amostras que compartilham um ramo próximo possuem perfil de expressão semelhante.</li>
 <li>O ideal é que as amostras se agrupem por <strong>tratamento</strong> (vancomicina vs.&nbsp;controle) e não por outras variáveis como o lote experimental.</li>
 <li>Se amostras de grupos diferentes estiverem misturadas, isso pode indicar um efeito biológico fraco ou um forte efeito de <em>batch</em>.</li>
-</ul></section></section><section id="análise-de-covariáveis" class="level2" data-number="6.9"><h2 data-number="6.9" class="anchored" data-anchor-id="análise-de-covariáveis">
-<span class="header-section-number">6.9</span> 9. Análise de Covariáveis</h2>
+</ul></section></section><section id="análise-de-covariáveis" class="level3" data-number="5.1.9"><h3 data-number="5.1.9" class="anchored" data-anchor-id="análise-de-covariáveis">
+<span class="header-section-number">5.1.9</span> 9. Análise de Covariáveis</h3>
 <p>Uma análise de expressão diferencial é, em essência, <strong>um modelo de regressão</strong> aplicado a cada gene. A variável principal é o tratamento (vancomicina vs.&nbsp;controle), mas outras variáveis, como o grupo experimental (lote/batch), podem influenciar significativamente a expressão.</p>
 <p>A função <code>eigencorplot</code> nos permite visualizar quais variáveis do metadado se correlacionam com as primeiras componentes principais, ajudando na decisão de <strong>quais covariáveis incluir no modelo</strong>.</p>
 <div class="cell">
@@ -764,12 +733,12 @@ SRR29279096 Untreated (control)                6</code></pre>
 </div>
 <hr>
 <p><strong>A sanidade dos nossos dados nos deu uma visão geral da sua estrutura. As amostras se comportam como esperado? Há outliers que precisam de atenção? Com essas respostas em mãos, podemos avançar com confiança para a próxima etapa.</strong></p>
-<hr></section></section><section id="análise-de-expressão-diferencial-de-genes-dge" class="level1" data-number="7"><h1 data-number="7">
-<span class="header-section-number">7</span> Análise de Expressão Diferencial de Genes (DGE)</h1>
+<hr></section></section><section id="análise-de-expressão-diferencial-de-genes-dge" class="level2" data-number="5.2"><h2 data-number="5.2" class="anchored" data-anchor-id="análise-de-expressão-diferencial-de-genes-dge">
+<span class="header-section-number">5.2</span> Análise de Expressão Diferencial de Genes (DGE)</h2>
 <p>Agora chegamos à pergunta central deste curso: <strong>quais genes da <em>Candida albicans</em> mudaram de comportamento em resposta à vancomicina?</strong></p>
 <p>A análise de Expressão Diferencial de Genes (DGE) é, essencialmente, um modelo de regressão aplicado a cada gene individualmente. O DESeq2 implementa um <strong>Modelo Linear Generalizado (GLM)</strong> baseado na distribuição <strong>Binomial Negativa</strong>, que é particularmente adequada para dados de contagem de RNA-seq, onde a variância geralmente excede a média (sobredispersão).</p>
-<section id="rodando-o-deseq2" class="level2" data-number="7.1"><h2 data-number="7.1" class="anchored" data-anchor-id="rodando-o-deseq2">
-<span class="header-section-number">7.1</span> 10. Rodando o DESeq2</h2>
+<section id="rodando-o-deseq2" class="level3" data-number="5.2.1"><h3 data-number="5.2.1" class="anchored" data-anchor-id="rodando-o-deseq2">
+<span class="header-section-number">5.2.1</span> 10. Rodando o DESeq2</h3>
 <p>A função <code><a href="https://rdrr.io/pkg/DESeq2/man/DESeq.html">DESeq()</a></code> congrega três etapas internas:</p>
 <ol type="1">
 <li>
@@ -789,8 +758,8 @@ SRR29279096 Untreated (control)                6</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Rodar o pipeline completo do DESeq2</span></span>
 <span><span class="va">dds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DESeq2/man/DESeq.html">DESeq</a></span><span class="op">(</span><span class="va">dds</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</section><section id="extraindo-os-resultados" class="level2" data-number="7.2"><h2 data-number="7.2" class="anchored" data-anchor-id="extraindo-os-resultados">
-<span class="header-section-number">7.2</span> 11. Extraindo os Resultados</h2>
+</section><section id="extraindo-os-resultados" class="level3" data-number="5.2.2"><h3 data-number="5.2.2" class="anchored" data-anchor-id="extraindo-os-resultados">
+<span class="header-section-number">5.2.2</span> 11. Extraindo os Resultados</h3>
 <p>Precisamos agora extrair os resultados para o <strong>contraste</strong> que nos interessa. Um contraste é a comparação entre dois grupos de uma variável categórica. No nosso caso, queremos comparar <strong>Vancomycin vs.&nbsp;Untreated (control)</strong>.</p>
 <p>A função <code><a href="https://rdrr.io/pkg/DESeq2/man/results.html">results()</a></code> aceita o argumento <code>contrast</code>, um vetor de 3 elementos:</p>
 <ol type="1">
@@ -864,8 +833,8 @@ C1_00060W_A 0.36778762      0.4121354 1.3458047  0.30623715 0.7594241        NA<
 <p>O DESeq2 atribui <code>NA</code> ao <code>padj</code> de genes com contagens muito baixas ou com dispersão extrema. Esses genes não possuem evidência estatística suficiente para serem testados e, na prática, são considerados não significativos.</p>
 </div>
 </div>
-</section><section id="definindo-os-genes-diferencialmente-expressos" class="level2" data-number="7.3"><h2 data-number="7.3" class="anchored" data-anchor-id="definindo-os-genes-diferencialmente-expressos">
-<span class="header-section-number">7.3</span> 12. Definindo os Genes Diferencialmente Expressos</h2>
+</section><section id="definindo-os-genes-diferencialmente-expressos" class="level3" data-number="5.2.3"><h3 data-number="5.2.3" class="anchored" data-anchor-id="definindo-os-genes-diferencialmente-expressos">
+<span class="header-section-number">5.2.3</span> 12. Definindo os Genes Diferencialmente Expressos</h3>
 <p>Para identificar os genes significativos, vamos utilizar o critério de <strong>padj ≤ 0.1</strong>. Além disso, vamos classificar cada gene como <em>Upregulated</em>, <em>Downregulated</em> de acordo com o log2FC ou <em>Not significant</em>:</p>
 <div class="callout callout-style-simple callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -899,8 +868,8 @@ C1_00060W_A 0.36778762      0.4121354 1.3458047  0.30623715 0.7594241        NA<
              35            6393              40 </code></pre>
 </div>
 </div>
-</section><section id="ma-plot" class="level2" data-number="7.4"><h2 data-number="7.4" class="anchored" data-anchor-id="ma-plot">
-<span class="header-section-number">7.4</span> 13. MA Plot</h2>
+</section><section id="ma-plot" class="level3" data-number="5.2.4"><h3 data-number="5.2.4" class="anchored" data-anchor-id="ma-plot">
+<span class="header-section-number">5.2.4</span> 13. MA Plot</h3>
 <p>O <strong>MA Plot</strong> é a primeira visualização diagnóstica da expressão diferencial. Ele relaciona a <strong>expressão média</strong> de cada gene (eixo X, em escala log) com o <strong>log2 Fold Change</strong> estimado (eixo Y). Genes significativos aparecem em destaque.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">res_dge</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">baseMean</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span>, y <span class="op">=</span> <span class="va">log2FoldChange</span>, color <span class="op">=</span> <span class="va">signif</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -936,14 +905,14 @@ C1_00060W_A 0.36778762      0.4121354 1.3458047  0.30623715 0.7594241        NA<
 </div>
 </div>
 </div>
-<section id="como-interpretar-o-ma-plot" class="level3" data-number="7.4.1"><h3 data-number="7.4.1" class="anchored" data-anchor-id="como-interpretar-o-ma-plot">
-<span class="header-section-number">7.4.1</span> Como interpretar o MA Plot:</h3>
+<section id="como-interpretar-o-ma-plot" class="level4" data-number="5.2.4.1"><h4 data-number="5.2.4.1" class="anchored" data-anchor-id="como-interpretar-o-ma-plot">
+<span class="header-section-number">5.2.4.1</span> Como interpretar o MA Plot:</h4>
 <ul>
 <li>Genes à <strong>esquerda</strong> (baixo baseMean) possuem baixa expressão. Mudanças grandes nesse intervalo devem ser interpretadas com cautela, pois a incerteza estatística é alta.</li>
 <li>Genes <strong>significativos</strong> (coloridos) que se afastam da linha central (log2FC = 0) são os que realmente mudaram de expressão entre as condições.</li>
 <li>O ideal é que a nuvem de pontos cinza esteja <strong>centralizada em zero</strong>, indicando que a normalização foi adequada.</li>
-</ul></section></section><section id="volcano-plot" class="level2" data-number="7.5"><h2 data-number="7.5" class="anchored" data-anchor-id="volcano-plot">
-<span class="header-section-number">7.5</span> 14. Volcano Plot</h2>
+</ul></section></section><section id="volcano-plot" class="level3" data-number="5.2.5"><h3 data-number="5.2.5" class="anchored" data-anchor-id="volcano-plot">
+<span class="header-section-number">5.2.5</span> 14. Volcano Plot</h3>
 <p>O <strong>Volcano Plot</strong> é o gráfico mais utilizado para visualizar resultados de expressão diferencial. Ele combina a <strong>significância estatística</strong> (-log10 do p-valor ajustado, eixo Y) com a <strong>magnitude da mudança</strong> (log2FC, eixo X), permitindo identificar rapidamente os genes mais relevantes.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggrepel.slowkow.com/">ggrepel</a></span><span class="op">)</span></span>
@@ -1003,8 +972,8 @@ C1_00060W_A 0.36778762      0.4121354 1.3458047  0.30623715 0.7594241        NA<
 </div>
 </div>
 </div>
-<section id="como-interpretar-o-volcano-plot" class="level3" data-number="7.5.1"><h3 data-number="7.5.1" class="anchored" data-anchor-id="como-interpretar-o-volcano-plot">
-<span class="header-section-number">7.5.1</span> Como interpretar o Volcano Plot:</h3>
+<section id="como-interpretar-o-volcano-plot" class="level4" data-number="5.2.5.1"><h4 data-number="5.2.5.1" class="anchored" data-anchor-id="como-interpretar-o-volcano-plot">
+<span class="header-section-number">5.2.5.1</span> Como interpretar o Volcano Plot:</h4>
 <ul>
 <li>
 <strong>Eixo X (log2FC)</strong>: genes à direita estão upregulados sob o tratamento de vancomicina; genes à esquerda estão downregulados.</li>
@@ -1025,8 +994,8 @@ C1_00060W_A 0.36778762      0.4121354 1.3458047  0.30623715 0.7594241        NA<
 <p>Observe a distribuição entre upregulados e downregulados. Se o tratamento com vancomicina remodela a resposta transcricional da <em>Candida</em>, esperamos ver genes envolvidos em <strong>resistência a estresse</strong>, <strong>remodelamento da parede celular</strong> e <strong>virulência</strong> entre os mais significativos. Genes de <em>housekeeping</em> devem permanecer na região cinza central.</p>
 </div>
 </div>
-</section></section><section id="heatmap-dos-genes-diferencialmente-expressos" class="level2" data-number="7.6"><h2 data-number="7.6" class="anchored" data-anchor-id="heatmap-dos-genes-diferencialmente-expressos">
-<span class="header-section-number">7.6</span> 15. Heatmap dos Genes Diferencialmente Expressos</h2>
+</section></section><section id="heatmap-dos-genes-diferencialmente-expressos" class="level3" data-number="5.2.6"><h3 data-number="5.2.6" class="anchored" data-anchor-id="heatmap-dos-genes-diferencialmente-expressos">
+<span class="header-section-number">5.2.6</span> 15. Heatmap dos Genes Diferencialmente Expressos</h3>
 <p>O <strong>heatmap</strong> nos permite visualizar o padrão de expressão dos genes significativos em todas as amostras simultaneamente. Para isso, utilizamos os valores de expressão normalizados transformados em <strong>z-score</strong> (escala por gene), o que evidencia as diferenças relativas entre condições.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Filtrar apenas os genes significativos (padj &lt;= 0.05)</span></span>
@@ -1071,8 +1040,8 @@ C1_00060W_A 0.36778762      0.4121354 1.3458047  0.30623715 0.7594241        NA<
 </div>
 </div>
 </div>
-<section id="como-interpretar-o-heatmap" class="level3" data-number="7.6.1"><h3 data-number="7.6.1" class="anchored" data-anchor-id="como-interpretar-o-heatmap">
-<span class="header-section-number">7.6.1</span> Como interpretar o heatmap:</h3>
+<section id="como-interpretar-o-heatmap" class="level4" data-number="5.2.6.1"><h4 data-number="5.2.6.1" class="anchored" data-anchor-id="como-interpretar-o-heatmap">
+<span class="header-section-number">5.2.6.1</span> Como interpretar o heatmap:</h4>
 <ul>
 <li>Cada <strong>linha</strong> é um gene diferencialmente expresso e cada <strong>coluna</strong> é uma amostra.</li>
 <li>As <strong>cores</strong> representam o z-score: <strong>vermelho</strong> indica expressão acima da média daquele gene, enquanto <strong>azul</strong> indica expressão abaixo da média.</li>

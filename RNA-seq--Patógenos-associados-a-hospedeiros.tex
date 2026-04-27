@@ -897,19 +897,18 @@ a seguir usando o DESeq2.}
 \chapter{Análise de Expressão
 Diferencial}\label{anuxe1lise-de-expressuxe3o-diferencial}
 
-\section{\texorpdfstring{Nas etapas anteriores, descontaminamos as reads
-do hospedeiro (\emph{Mus musculus}) e quantificamos o transcriptoma de
-\emph{Candida albicans} com o nf-core/rnaseq. O resultado final desse
-pipeline é uma \textbf{matriz de contagens}, onde cada linha representa
-um gene e cada coluna uma amostra. A partir dessa matriz, podemos
-realizar a análise de expressão diferencial para identificar quais genes
-da \emph{Candida} foram regulados (upregulados ou downregulados) em
-resposta ao tratamento com
-vancomicina.}{Nas etapas anteriores, descontaminamos as reads do hospedeiro (Mus musculus) e quantificamos o transcriptoma de Candida albicans com o nf-core/rnaseq. O resultado final desse pipeline é uma matriz de contagens, onde cada linha representa um gene e cada coluna uma amostra. A partir dessa matriz, podemos realizar a análise de expressão diferencial para identificar quais genes da Candida foram regulados (upregulados ou downregulados) em resposta ao tratamento com vancomicina.}}\label{nas-etapas-anteriores-descontaminamos-as-reads-do-hospedeiro-mus-musculus-e-quantificamos-o-transcriptoma-de-candida-albicans-com-o-nf-corernaseq.-o-resultado-final-desse-pipeline-uxe9-uma-matriz-de-contagens-onde-cada-linha-representa-um-gene-e-cada-coluna-uma-amostra.-a-partir-dessa-matriz-podemos-realizar-a-anuxe1lise-de-expressuxe3o-diferencial-para-identificar-quais-genes-da-candida-foram-regulados-upregulados-ou-downregulados-em-resposta-ao-tratamento-com-vancomicina.}
+Nas etapas anteriores, descontaminamos as reads do hospedeiro (\emph{Mus
+musculus}) e quantificamos o transcriptoma de \emph{Candida albicans}
+com o nf-core/rnaseq. O resultado final desse pipeline é uma
+\textbf{matriz de contagens}, onde cada linha representa um gene e cada
+coluna uma amostra. A partir dessa matriz, podemos realizar a análise de
+expressão diferencial para identificar quais genes da \emph{Candida}
+foram regulados (upregulados ou downregulados) em resposta ao tratamento
+com vancomicina.
 
-\bookmarksetup{startatroot}
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-\chapter{Sanidade de Dados}\label{sanidade-de-dados}
+\section{Sanidade de Dados}\label{sanidade-de-dados}
 
 Antes de realizarmos a análise de expressão diferencial propriamente
 dita, é fundamental explorar a estrutura do nosso conjunto de dados.
@@ -932,7 +931,7 @@ genes simultaneamente. Técnicas como a Análise de Componentes Principais
 (PCA) e a clusterização hierárquica nos permitem ``resumir'' essa
 complexidade e visualizar padrões.
 
-\section{1. Carregando os Pacotes}\label{carregando-os-pacotes}
+\subsection{1. Carregando os Pacotes}\label{carregando-os-pacotes}
 
 Vamos começar carregando os pacotes que utilizaremos ao longo de toda
 esta seção prática.
@@ -951,7 +950,7 @@ esta seção prática.
 \end{Highlighting}
 \end{Shaded}
 
-\section{2. Importando a Matriz de
+\subsection{2. Importando a Matriz de
 Contagens}\label{importando-a-matriz-de-contagens}
 
 O nf-core/rnaseq com o quantificador Salmon gera uma tabela consolidada
@@ -984,7 +983,7 @@ genes de \emph{Candida albicans} no Ensembl Fungi, e a segunda
 (\texttt{gene\_name}) contém o nome do gene quando disponível. As demais
 colunas são as amostras, identificadas pelo código SRR.
 
-\section{3. Importando os Metadados}\label{importando-os-metadados}
+\subsection{3. Importando os Metadados}\label{importando-os-metadados}
 
 As informações sobre as condições experimentais de cada amostra estão no
 arquivo \texttt{SraRunTable.csv}, obtido do SRA. Precisamos filtrá-lo
@@ -1092,7 +1091,7 @@ variabilidade.
 
 \end{tcolorbox}
 
-\section{4. Preparando a Matriz de
+\subsection{4. Preparando a Matriz de
 Contagens}\label{preparando-a-matriz-de-contagens}
 
 Agora precisamos transformar a tabela importada em uma matriz numérica
@@ -1131,7 +1130,7 @@ compatível com o DESeq2, e garantir que apenas as amostras de interesse
 
 Temos \textbf{6468 genes} e \textbf{48 amostras} prontos para análise.
 
-\section{5. Criando o Objeto DESeq2}\label{criando-o-objeto-deseq2}
+\subsection{5. Criando o Objeto DESeq2}\label{criando-o-objeto-deseq2}
 
 O DESeq2 trabalha com um objeto especial (\texttt{DESeqDataSet}) que
 armazena juntos a matriz de contagens, o metadado e o modelo
@@ -1166,7 +1165,7 @@ brutas não normalizadas).
 \end{Highlighting}
 \end{Shaded}
 
-\section{6. Análise de Componentes Principais
+\subsection{6. Análise de Componentes Principais
 (PCA)}\label{anuxe1lise-de-componentes-principais-pca}
 
 A PCA é uma técnica de \textbf{redução de dimensionalidade} que projeta
@@ -1199,7 +1198,8 @@ longo de uma das primeiras componentes.
 
 \pandocbounded{\includegraphics[keepaspectratio]{analysis/03_differential_expression_files/figure-pdf/unnamed-chunk-8-1.pdf}}
 
-\subsection{Como interpretar o biplot:}\label{como-interpretar-o-biplot}
+\subsubsection{Como interpretar o
+biplot:}\label{como-interpretar-o-biplot}
 
 \begin{itemize}
 \tightlist
@@ -1219,7 +1219,7 @@ longo de uma das primeiras componentes.
   ideal.
 \end{itemize}
 
-\section{7. Scree Plot}\label{scree-plot}
+\subsection{7. Scree Plot}\label{scree-plot}
 
 O \textbf{scree plot} mostra a proporção de variância explicada por cada
 componente principal. Ele ajuda a responder: \emph{quantas dimensões são
@@ -1249,7 +1249,7 @@ cada uma capturando a variação de um ou mais lotes. Se analisássemos um
 
 \end{tcolorbox}
 
-\subsection{PCA dentro de um único
+\subsubsection{PCA dentro de um único
 lote}\label{pca-dentro-de-um-uxfanico-lote}
 
 Para ilustrar esse ponto, vamos repetir a PCA usando apenas as amostras
@@ -1278,7 +1278,7 @@ controle se torna mais evidente e as primeiras componentes explicam uma
 proporção maior da variância. Isso reforça a necessidade de incluir o
 \texttt{experiment\_group} como covariável no nosso modelo.
 
-\section{8. Clusterização
+\subsection{8. Clusterização
 Hierárquica}\label{clusterizauxe7uxe3o-hieruxe1rquica}
 
 A clusterização hierárquica agrupa as amostras com base na
@@ -1323,7 +1323,7 @@ são conectadas mais próximas na árvore.
 
 \pandocbounded{\includegraphics[keepaspectratio]{analysis/03_differential_expression_files/figure-pdf/unnamed-chunk-11-1.pdf}}
 
-\subsection{Como interpretar o
+\subsubsection{Como interpretar o
 dendrograma:}\label{como-interpretar-o-dendrograma}
 
 \begin{itemize}
@@ -1340,7 +1340,8 @@ dendrograma:}\label{como-interpretar-o-dendrograma}
   indicar um efeito biológico fraco ou um forte efeito de \emph{batch}.
 \end{itemize}
 
-\section{9. Análise de Covariáveis}\label{anuxe1lise-de-covariuxe1veis}
+\subsection{9. Análise de
+Covariáveis}\label{anuxe1lise-de-covariuxe1veis}
 
 Uma análise de expressão diferencial é, em essência, \textbf{um modelo
 de regressão} aplicado a cada gene. A variável principal é o tratamento
@@ -1383,9 +1384,7 @@ confiança para a próxima etapa.}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-\bookmarksetup{startatroot}
-
-\chapter{Análise de Expressão Diferencial de Genes
+\section{Análise de Expressão Diferencial de Genes
 (DGE)}\label{anuxe1lise-de-expressuxe3o-diferencial-de-genes-dge}
 
 Agora chegamos à pergunta central deste curso: \textbf{quais genes da
@@ -1399,7 +1398,7 @@ distribuição \textbf{Binomial Negativa}, que é particularmente adequada
 para dados de contagem de RNA-seq, onde a variância geralmente excede a
 média (sobredispersão).
 
-\section{10. Rodando o DESeq2}\label{rodando-o-deseq2}
+\subsection{10. Rodando o DESeq2}\label{rodando-o-deseq2}
 
 A função \texttt{DESeq()} congrega três etapas internas:
 
@@ -1449,7 +1448,7 @@ tratamento --- ou, inversamente, mascarar efeitos reais.
 \end{Highlighting}
 \end{Shaded}
 
-\section{11. Extraindo os Resultados}\label{extraindo-os-resultados}
+\subsection{11. Extraindo os Resultados}\label{extraindo-os-resultados}
 
 Precisamos agora extrair os resultados para o \textbf{contraste} que nos
 interessa. Um contraste é a comparação entre dois grupos de uma variável
@@ -1549,7 +1548,7 @@ considerados não significativos.
 
 \end{tcolorbox}
 
-\section{12. Definindo os Genes Diferencialmente
+\subsection{12. Definindo os Genes Diferencialmente
 Expressos}\label{definindo-os-genes-diferencialmente-expressos}
 
 Para identificar os genes significativos, vamos utilizar o critério de
@@ -1592,7 +1591,7 @@ padj ≤ 0.05.
              35            6393              40 
 \end{verbatim}
 
-\section{13. MA Plot}\label{ma-plot}
+\subsection{13. MA Plot}\label{ma-plot}
 
 O \textbf{MA Plot} é a primeira visualização diagnóstica da expressão
 diferencial. Ele relaciona a \textbf{expressão média} de cada gene (eixo
@@ -1632,7 +1631,7 @@ Genes significativos aparecem em destaque.
 
 \pandocbounded{\includegraphics[keepaspectratio]{analysis/03_differential_expression_files/figure-pdf/unnamed-chunk-17-1.pdf}}
 
-\subsection{Como interpretar o MA
+\subsubsection{Como interpretar o MA
 Plot:}\label{como-interpretar-o-ma-plot}
 
 \begin{itemize}
@@ -1650,7 +1649,7 @@ Plot:}\label{como-interpretar-o-ma-plot}
   zero}, indicando que a normalização foi adequada.
 \end{itemize}
 
-\section{14. Volcano Plot}\label{volcano-plot}
+\subsection{14. Volcano Plot}\label{volcano-plot}
 
 O \textbf{Volcano Plot} é o gráfico mais utilizado para visualizar
 resultados de expressão diferencial. Ele combina a \textbf{significância
@@ -1715,7 +1714,7 @@ rapidamente os genes mais relevantes.
 
 \pandocbounded{\includegraphics[keepaspectratio]{analysis/03_differential_expression_files/figure-pdf/unnamed-chunk-18-1.pdf}}
 
-\subsection{Como interpretar o Volcano
+\subsubsection{Como interpretar o Volcano
 Plot:}\label{como-interpretar-o-volcano-plot}
 
 \begin{itemize}
@@ -1742,7 +1741,7 @@ estresse}, \textbf{remodelamento da parede celular} e
 
 \end{tcolorbox}
 
-\section{15. Heatmap dos Genes Diferencialmente
+\subsection{15. Heatmap dos Genes Diferencialmente
 Expressos}\label{heatmap-dos-genes-diferencialmente-expressos}
 
 O \textbf{heatmap} nos permite visualizar o padrão de expressão dos
@@ -1793,7 +1792,7 @@ relativas entre condições.
 
 \pandocbounded{\includegraphics[keepaspectratio]{analysis/03_differential_expression_files/figure-pdf/unnamed-chunk-19-1.pdf}}
 
-\subsection{Como interpretar o
+\subsubsection{Como interpretar o
 heatmap:}\label{como-interpretar-o-heatmap}
 
 \begin{itemize}

@@ -7,9 +7,10 @@ execute:
 ---
 
 Nas etapas anteriores, descontaminamos as reads do hospedeiro (*Mus musculus*) e quantificamos o transcriptoma de *Candida albicans* com o nf-core/rnaseq. O resultado final desse pipeline é uma **matriz de contagens**, onde cada linha representa um gene e cada coluna uma amostra. A partir dessa matriz, podemos realizar a análise de expressão diferencial para identificar quais genes da *Candida* foram regulados (upregulados ou downregulados) em resposta ao tratamento com vancomicina.
+
 ---
 
-# Sanidade de Dados
+## Sanidade de Dados
 
 Antes de realizarmos a análise de expressão diferencial propriamente dita, é fundamental explorar a estrutura do nosso conjunto de dados. Essa etapa, frequentemente chamada de sanidade de dados ou análise exploratória, serve para responder perguntas essenciais:
 
@@ -19,7 +20,7 @@ Antes de realizarmos a análise de expressão diferencial propriamente dita, é 
 
 Para tal, precisamos de técnicas que consigam lidar com a **multidimensionalidade** dos dados: estamos analisando milhares de genes simultaneamente. Técnicas como a Análise de Componentes Principais (PCA) e a clusterização hierárquica nos permitem "resumir" essa complexidade e visualizar padrões.
 
-## 1. Carregando os Pacotes
+### 1. Carregando os Pacotes
 
 Vamos começar carregando os pacotes que utilizaremos ao longo de toda esta seção prática.
 
@@ -38,7 +39,7 @@ suppressPackageStartupMessages({
 ```
 
 
-## 2. Importando a Matriz de Contagens
+### 2. Importando a Matriz de Contagens
 
 O nf-core/rnaseq com o quantificador Salmon gera uma tabela consolidada com as contagens de todos os genes por amostra. Vamos carregá-la:
 
@@ -53,7 +54,7 @@ gene_counts[1:5, 1:6]
 
 A primeira coluna (`gene_id`) contém os identificadores dos genes de *Candida albicans* no Ensembl Fungi, e a segunda (`gene_name`) contém o nome do gene quando disponível. As demais colunas são as amostras, identificadas pelo código SRR.
 
-## 3. Importando os Metadados
+### 3. Importando os Metadados
 
 As informações sobre as condições experimentais de cada amostra estão no arquivo `SraRunTable.csv`, obtido do SRA. Precisamos filtrá-lo para manter apenas as amostras que foram estimuladas com *Candida albicans*. Vamos organizar o metadado para que ele possa ser facilmente integrado com a matriz de contagens. O DESeq2 exige que as colunas da matriz de contagens correspondam às linhas do metadado, e que o metadado contenha as variáveis que queremos testar (neste caso, o tratamento) e as covariáveis (como o grupo experimental).
 
@@ -78,12 +79,12 @@ metadata[order(metadata$experiment_group),]
 ```
 
 ::: {.callout-note}
-## Ponto Importante
+### Ponto Importante
 
 Repare que cada amostra biológica (`experiment_group`) possui 4 runs de sequenciamento (SRR). No nosso caso, o nf-core/rnaseq quantificou cada run individualmente. Isso significa que temos **réplicas técnicas** que devem ser levadas em consideração. Poderíamos agregá-las somando as contagens, mas como o DESeq2 lida naturalmente com o modelo de expressão, vamos mantê-las separadas e incluir o `experiment_group` no design para absorver essa variabilidade.
 :::
 
-## 4. Preparando a Matriz de Contagens
+### 4. Preparando a Matriz de Contagens
 
 Agora precisamos transformar a tabela importada em uma matriz numérica compatível com o DESeq2, e garantir que apenas as amostras de interesse (com estímulo por *Candida*) estejam presentes. 
 
@@ -107,7 +108,7 @@ dim(count_matrix)
 
 Temos **`r nrow(count_matrix)` genes** e **`r ncol(count_matrix)` amostras** prontos para análise.
 
-## 5. Criando o Objeto DESeq2
+### 5. Criando o Objeto DESeq2
 
 O DESeq2 trabalha com um objeto especial (`DESeqDataSet`) que armazena juntos a matriz de contagens, o metadado e o modelo estatístico. Aqui, nosso modelo inclui o `experiment_group` como covariável e o `treatment` como a variável de interesse:
 
@@ -124,7 +125,7 @@ dds_vst <- varianceStabilizingTransformation(dds)
 counts_vst <- assay(dds_vst)
 ```
 
-## 6. Análise de Componentes Principais (PCA)
+### 6. Análise de Componentes Principais (PCA)
 
 A PCA é uma técnica de **redução de dimensionalidade** que projeta os milhares de genes em um número menor de componentes. Cada componente principal captura um eixo de variabilidade nos dados:
 
@@ -134,8 +135,8 @@ A PCA é uma técnica de **redução de dimensionalidade** que projeta os milhar
 Se o tratamento com vancomicina realmente altera o perfil transcricional da *Candida*, esperamos ver as amostras se separarem por grupo ao longo de uma das primeiras componentes.
 
 ```{r}
-#| fig-width: 8
-#| fig-height: 6
+#| fig-width: 12
+#| fig-height: 8
 pca_result <- pca(counts_vst, metadata = metadata)
 
 biplot(pca_result,
@@ -145,18 +146,18 @@ biplot(pca_result,
        title = "PCA — Transcriptoma de C. albicans")
 ```
 
-### Como interpretar o biplot:
+#### Como interpretar o biplot:
 
 * **Proximidade entre pontos** indica similaridade no perfil de expressão global. Amostras do mesmo grupo de tratamento devem se agrupar.
 * **Eixos PC1 e PC2**: o percentual ao lado de cada eixo indica quanto da variância total aquela componente explica. Se PC1 sozinha explica, por exemplo, 40% da variância, ela é a dimensão dominante do seu dado.
 * A **forma** dos pontos diferencia os grupos experimentais (réplicas biológicas), o que permite avaliar se a variação entre réplicas é menor do que a variação entre tratamentos — o cenário ideal.
 
-## 7. Scree Plot
+### 7. Scree Plot
 
 O **scree plot** mostra a proporção de variância explicada por cada componente principal. Ele ajuda a responder: *quantas dimensões são necessárias para descrever a variabilidade do meu dado?*
 
 ```{r}
-#| fig-width: 7
+#| fig-width: 14
 #| fig-height: 5
 screeplot(pca_result,
           components = getComponents(pca_result),
@@ -164,20 +165,20 @@ screeplot(pca_result,
 ```
 
 ::: {.callout-tip}
-## Como interpretar o scree plot
+### Como interpretar o scree plot
 
 Procure pelo ponto onde a curva se achata (*elbow*). Geralmente, em dados de RNA-seq, as 2–4 primeiras componentes são suficientes para descrever a maior parte da variabilidade.
 No nosso caso, é normal que as duas primeiras componentes não expliquem uma fração muito alta da variância. Isso acontece porque temos **6 lotes experimentais independentes**, cada um introduzindo sua própria fonte de variabilidade. A variância total acaba sendo "fragmentada" entre muitas componentes, cada uma capturando a variação de um ou mais lotes. Se analisássemos um único lote, veríamos PC1 e PC2 explicando uma proporção bem maior.
 :::
 
 
-### PCA dentro de um único lote
+#### PCA dentro de um único lote
 
 Para ilustrar esse ponto, vamos repetir a PCA usando apenas as amostras do **lote 1** (um par vancomicina/controle com suas réplicas técnicas):
 
 ```{r}
-#| fig-width: 7
-#| fig-height: 5
+#| fig-width: 12
+#| fig-height: 8
 # Filtrar apenas amostras do lote 2
 meta_batch1 <- metadata[metadata$experiment_group == "1", , drop = FALSE]
 counts_batch1 <- counts_vst[, rownames(meta_batch1)]
@@ -192,11 +193,13 @@ biplot(pca_batch1,
 
 Note como, isolando um único lote, a separação entre vancomicina e controle se torna mais evidente e as primeiras componentes explicam uma proporção maior da variância. Isso reforça a necessidade de incluir o `experiment_group` como covariável no nosso modelo.
 
-## 8. Clusterização Hierárquica
+### 8. Clusterização Hierárquica
 
 A clusterização hierárquica agrupa as amostras com base na **distância euclidiana** entre seus perfis de expressão, construindo um **dendrograma**. Amostras com perfis mais similares são conectadas mais próximas na árvore.
 
 ```{r}
+#| fig-width: 14
+#| fig-height: 10
  # Transpor a matriz: cada amostra vira uma linha
 
 counts_vst_t <- t(counts_vst)
@@ -229,13 +232,13 @@ plot(clusters,
      cex = 1) # Font size
 ```
 
-### Como interpretar o dendrograma:
+#### Como interpretar o dendrograma:
 
 * Amostras que compartilham um ramo próximo possuem perfil de expressão semelhante.
 * O ideal é que as amostras se agrupem por **tratamento** (vancomicina vs. controle) e não por outras variáveis como o lote experimental.
 * Se amostras de grupos diferentes estiverem misturadas, isso pode indicar um efeito biológico fraco ou um forte efeito de *batch*.
 
-## 9. Análise de Covariáveis
+### 9. Análise de Covariáveis
 
 Uma análise de expressão diferencial é, em essência, **um modelo de regressão** aplicado a cada gene. A variável principal é o tratamento (vancomicina vs. controle), mas outras variáveis, como o grupo experimental (lote/batch), podem influenciar significativamente a expressão.
 
@@ -250,7 +253,7 @@ eigencorplot(pca_result,
 ```
 
 ::: {.callout-important}
-## Por que incluir covariáveis?
+### Por que incluir covariáveis?
 
 Se o `experiment_group` (lote biológico) se correlaciona fortemente com alguma das primeiras componentes, isso significa que parte da variabilidade que observamos vem do lote de cultivo celular, e não do efeito da vancomicina. Ao incluir essa variável no modelo do DESeq2 (`~ experiment_group + treatment`), "descontamos" esse efeito e aumentamos o poder estatístico para detectar os genes realmente alterados pelo tratamento.
 :::
@@ -261,13 +264,13 @@ Se o `experiment_group` (lote biológico) se correlaciona fortemente com alguma 
 
 ---
 
-# Análise de Expressão Diferencial de Genes (DGE)
+## Análise de Expressão Diferencial de Genes (DGE)
 
 Agora chegamos à pergunta central deste curso: **quais genes da *Candida albicans* mudaram de comportamento em resposta à vancomicina?**
 
 A análise de Expressão Diferencial de Genes (DGE) é, essencialmente, um modelo de regressão aplicado a cada gene individualmente. O DESeq2 implementa um **Modelo Linear Generalizado (GLM)** baseado na distribuição **Binomial Negativa**, que é particularmente adequada para dados de contagem de RNA-seq, onde a variância geralmente excede a média (sobredispersão).
 
-## 10. Rodando o DESeq2
+### 10. Rodando o DESeq2
 
 A função `DESeq()` congrega três etapas internas:
 
@@ -287,7 +290,7 @@ Na prática, o modelo estima para cada gene: *"quanto da expressão se explica p
 dds <- DESeq(dds)
 ```
 
-## 11. Extraindo os Resultados
+### 11. Extraindo os Resultados
 
 Precisamos agora extrair os resultados para o **contraste** que nos interessa. Um contraste é a comparação entre dois grupos de uma variável categórica. No nosso caso, queremos comparar **Vancomycin vs. Untreated (control)**.
 
@@ -303,7 +306,7 @@ res_dge <- DESeq2::results(dds,
 ```
 
 ::: {.callout-important}
-## A Ordem do Contraste Importa!
+### A Ordem do Contraste Importa!
 
 A interpretação do resultado depende diretamente da ordem com que o contraste é construído. No nosso caso, a referência é o grupo **controle** (não tratado). Portanto:
 
@@ -330,17 +333,17 @@ O data frame `res_dge` contém as seguintes colunas para cada gene:
 * **`padj`**: p-valor ajustado pelo método de Benjamini-Hochberg (FDR), que corrige para os múltiplos testes (um por gene).
 
 ::: {.callout-note}
-## Ponto Importante
+### Ponto Importante
 
 O DESeq2 atribui `NA` ao `padj` de genes com contagens muito baixas ou com dispersão extrema. Esses genes não possuem evidência estatística suficiente para serem testados e, na prática, são considerados não significativos.
 :::
 
-## 12. Definindo os Genes Diferencialmente Expressos
+### 12. Definindo os Genes Diferencialmente Expressos
 
 Para identificar os genes significativos, vamos utilizar o critério de **padj ≤ 0.1**. Além disso, vamos classificar cada gene como *Upregulated*, *Downregulated* de acordo com o log2FC ou *Not significant*:
 
 ::: {.callout-warning}
-## Nota Didática
+### Nota Didática
 
 Em publicações científicas, o corte mais comumente utilizado é **padj ≤ 0.05**. Neste minicurso, utilizamos um limiar mais permissivo (**padj ≤ 0.1**) para fins didáticos, permitindo que tenhamos um número maior de genes diferencialmente expressos para demonstrar as análises downstream (enriquecimento funcional e visualizações). Em um cenário de pesquisa real, recomendamos utilizar padj ≤ 0.05.
 :::
@@ -360,7 +363,7 @@ res_dge <- res_dge %>%
 table(res_dge$signif)
 ```
 
-## 13. MA Plot
+### 13. MA Plot
 
 O **MA Plot** é a primeira visualização diagnóstica da expressão diferencial. Ele relaciona a **expressão média** de cada gene (eixo X, em escala log) com o **log2 Fold Change** estimado (eixo Y). Genes significativos aparecem em destaque.
 
@@ -395,13 +398,13 @@ ggplot(res_dge, aes(x = log10(baseMean + 1), y = log2FoldChange, color = signif)
   )
 ```
 
-### Como interpretar o MA Plot:
+#### Como interpretar o MA Plot:
 
 * Genes à **esquerda** (baixo baseMean) possuem baixa expressão. Mudanças grandes nesse intervalo devem ser interpretadas com cautela, pois a incerteza estatística é alta.
 * Genes **significativos** (coloridos) que se afastam da linha central (log2FC = 0) são os que realmente mudaram de expressão entre as condições.
 * O ideal é que a nuvem de pontos cinza esteja **centralizada em zero**, indicando que a normalização foi adequada.
 
-## 14. Volcano Plot
+### 14. Volcano Plot
 
 O **Volcano Plot** é o gráfico mais utilizado para visualizar resultados de expressão diferencial. Ele combina a **significância estatística** (-log10 do p-valor ajustado, eixo Y) com a **magnitude da mudança** (log2FC, eixo X), permitindo identificar rapidamente os genes mais relevantes.
 
@@ -460,19 +463,19 @@ ggplot(res_dge, aes(x = log2FoldChange, y = -log10(padj), color = signif)) +
   )
 ```
 
-### Como interpretar o Volcano Plot:
+#### Como interpretar o Volcano Plot:
 
 * **Eixo X (log2FC)**: genes à direita estão upregulados sob o tratamento de vancomicina; genes à esquerda estão downregulados.
 * **Eixo Y (-log10 padj)**: quanto mais alto o ponto, mais significativa é a mudança. A linha tracejada marca o threshold de padj = `r padj_cutoff`.
 * Os **genes rotulados** são os top 10 mais significativos.
 
 ::: {.callout-tip}
-## O que o Volcano Plot nos diz biologicamente?
+### O que o Volcano Plot nos diz biologicamente?
 
 Observe a distribuição entre upregulados e downregulados. Se o tratamento com vancomicina remodela a resposta transcricional da *Candida*, esperamos ver genes envolvidos em **resistência a estresse**, **remodelamento da parede celular** e **virulência** entre os mais significativos. Genes de *housekeeping* devem permanecer na região cinza central.
 :::
 
-## 15. Heatmap dos Genes Diferencialmente Expressos
+### 15. Heatmap dos Genes Diferencialmente Expressos
 
 O **heatmap** nos permite visualizar o padrão de expressão dos genes significativos em todas as amostras simultaneamente. Para isso, utilizamos os valores de expressão normalizados transformados em **z-score** (escala por gene), o que evidencia as diferenças relativas entre condições.
 
@@ -516,7 +519,7 @@ pheatmap(exp_dge_z,
          main = "Heatmap — Genes Diferencialmente Expressos (z-score)")
 ```
 
-### Como interpretar o heatmap:
+#### Como interpretar o heatmap:
 
 * Cada **linha** é um gene diferencialmente expresso e cada **coluna** é uma amostra.
 * As **cores** representam o z-score: **vermelho** indica expressão acima da média daquele gene, enquanto **azul** indica expressão abaixo da média.
