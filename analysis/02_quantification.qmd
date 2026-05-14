@@ -41,6 +41,12 @@ nextflow run nf-core/rnaseq \
   * `--gtf`: O arquivo de anotação, que diz ao software as coordenadas exatas de onde cada gene começa e termina no genoma.
   * `-with-tower`: Permite o monitoramento remoto da execução via [Nextflow Tower](https://tower.nf/).
 
+### Recursos Esperados
+
+  * **Tempo Total:** 3 h 12 m 13 s
+  * **Tempo de CPU:** 113.0 h
+  * **Memória Máxima:** 16 GB
+
 ## 3\. Fontes de Dados: Ensembl Fungi
 
 Para organismos não-modelos ou patógenos fúngicos, a fonte para genomas e anotações é o [**Ensembl Fungi**](https://fungi.ensembl.org/).

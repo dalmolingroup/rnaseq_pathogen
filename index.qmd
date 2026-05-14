@@ -34,8 +34,6 @@ Ao final do curso, os alunos serão capazes de:
 4.  **Interpretar** assinaturas biológicas por meio de análise de enriquecimento funcional (GO/KEGG). [Avaliar]
 5.  **Visualizar** dados complexos através de PCA, heatmaps e volcano plots para interpretação biológica. [Criar]
 
-⌛ **Tempo estimado**: 180 minutos
-
 ⚙️ **Requisitos:** Os participantes devem ter acesso a um notebook com R e RStudio instalados para a etapa de análise estatística.
 
 🙏 **Agradecimentos**:

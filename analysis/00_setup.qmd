@@ -4,7 +4,7 @@ title: "Configuração e Descrição do Conjunto de Dados"
 
 ## Conjunto de Dados
 
-Os dados utilizados nestas análises provêm do BioProject **PRJNA1120019**. Este estudo investiga os mecanismos pelos quais o antibiótico vancomicina afeta a resposta imune antifúngica em macrófagos.
+Os dados utilizados nestas análises provêm do BioProject **PRJNA1120019**. Este estudo investiga os mecanismos pelos quais o antibiótico vancomicina afeta a resposta imune antifúngica em macrófagos (para mais detalhes, consulte o [artigo original publicado na mBio](https://journals.asm.org/doi/pdf/10.1128/mbio.00580-26)).
 
 ### Descrição do Experimento
 

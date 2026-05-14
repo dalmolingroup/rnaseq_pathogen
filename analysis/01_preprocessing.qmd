@@ -76,6 +76,12 @@ nextflow run nf-core/detaxizer \
 * `--kraken2db`: Aponta para o banco de dados taxonômico usado para a identificação.
 * `--filter_trimmed`: Aplica a filtragem nas reads já processadas pelo `fastp`.
 
+### Recursos Esperados
+
+* **Tempo Total:** 17 h 45 m 53 s
+* **Tempo de CPU:** 35.2 h
+* **Memória Máxima:** 104.7 GB
+
 ::: {.callout-tip}
 Sobre o Banco de Dados Kraken2 (PlusPF)
 
