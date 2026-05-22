@@ -114,7 +114,7 @@ cat("Total DEGs:", length(genes_all), "\n")
 Os nossos identificadores de genes seguem o padrão do Ensembl Fungi (ex: `C1_00010W_A`), mas o KEGG utiliza um formato próprio para *C. albicans* (ex: `CAALFM_C100010WA`). Precisamos construir o dicionário para conversão:
 
 ```{r}
-# Baixar todos os genes de C. albicans (cal) do KEGG
+# Baixar os nomes dos genes de C. albicans (cal) do KEGG
 kegg_genes <- keggList("cal")
 
 # Criar tabela de mapeamento
@@ -143,276 +143,248 @@ cat("Genes mapeados para KEGG:", genes_com_kegg, "de", nrow(res_dge), "\n")
 ```{r}
 # Criar dicionário: Ensembl → KEGG
 ensembl_to_kegg <- setNames(kegg_mapping$kegg_id, kegg_mapping$ensembl_id)
-
-# Converter cada conjunto de genes
-genes_up_kegg <- unname(ensembl_to_kegg[genes_up[genes_up %in% names(ensembl_to_kegg)]])
-genes_down_kegg <- unname(ensembl_to_kegg[genes_down[genes_down %in% names(ensembl_to_kegg)]])
-genes_all_kegg <- unname(ensembl_to_kegg[genes_all[genes_all %in% names(ensembl_to_kegg)]])
-
-cat("UP com KEGG ID:", length(genes_up_kegg), "\n")
-cat("DOWN com KEGG ID:", length(genes_down_kegg), "\n")
-cat("ALL com KEGG ID:", length(genes_all_kegg), "\n")
 ```
+
+Esse dicionário será usado adiante tanto para o enriquecimento KEGG via GSEA (seção 5) quanto para a construção da rede PPI com o STRING (seção 11).
 
 ---
 
-## 5. Enriquecimento KEGG — ORA
+## 5. Enriquecimento KEGG — GSEA
 
-Vamos rodar a ORA com o KEGG Pathways separadamente para genes upregulados, downregulados e todos os DEGs:
+Diferente do **ORA**, que parte de uma lista discreta de DEGs (filtrada por um cutoff de significância), o **GSEA (Gene Set Enrichment Analysis)** considera **todos os genes** ranqueados por uma métrica contínua — tipicamente o `log2FoldChange` — e verifica se os membros de cada via biológica se concentram nas extremidades do ranking. A pergunta muda:
+
+* **ORA**: "Há mais DEGs nesta via do que o esperado ao acaso?"
+* **GSEA**: "Os genes desta via estão sistematicamente entre os mais up- ou down-regulados?"
+
+A vantagem é que o GSEA **não precisa de cutoff**: ele aproveita o sinal coordenado de muitos genes com mudanças pequenas, que o ORA descartaria. O resultado vem na forma de um **Normalized Enrichment Score (NES)**: positivo indica que a via está enriquecida na ponta UP do ranking, negativo na ponta DOWN.
+
+### Construindo o vetor ranqueado
+
+Para o GSEA, precisamos transformar a tabela `res_dge` em um **vetor numérico nomeado** com todos os genes ranqueados por log2FC e identificados pelo formato KEGG (`CAALFM_`). Vamos usar o dicionário `ensembl_to_kegg` que construímos na seção 4:
 
 ```{r}
-# KEGG ORA — Upregulados
-kegg_up <- enrichKEGG(
-  gene = genes_up_kegg, organism = "cal", keyType = "kegg",
-  pvalueCutoff = 0.5, qvalueCutoff = 0.5, pAdjustMethod = "BH"
-)
+#| message: false
+#| warning: false
+suppressPackageStartupMessages(library(stringr))
 
-# KEGG ORA — Downregulados
-kegg_down <- enrichKEGG(
-  gene = genes_down_kegg, organism = "cal", keyType = "kegg",
-  pvalueCutoff = 0.5, qvalueCutoff = 0.5, pAdjustMethod = "BH"
-)
+# Vetor: log2FC com nome = Ensembl ID
+ranks <- res_dge$log2FoldChange
+names(ranks) <- rownames(res_dge)
+ranks <- ranks[!is.na(ranks)]
 
-# KEGG ORA — Todos os DEGs
-kegg_all <- enrichKEGG(
-  gene = genes_all_kegg, organism = "cal", keyType = "kegg",
-  pvalueCutoff = 0.5, qvalueCutoff = 0.5, pAdjustMethod = "BH"
-)
+# Converter os nomes para IDs KEGG e ordenar decrescentemente
+ranks_kegg <- ranks[names(ranks) %in% names(ensembl_to_kegg)]
+names(ranks_kegg) <- ensembl_to_kegg[names(ranks_kegg)]
+ranks_kegg <- sort(ranks_kegg[!duplicated(names(ranks_kegg))], decreasing = TRUE)
+
+cat("Genes no ranking (KEGG IDs únicos):", length(ranks_kegg), "\n")
+cat("log2FC — máximo (topo do ranking) :", round(max(ranks_kegg), 2), "\n")
+cat("log2FC — mínimo (base do ranking) :", round(min(ranks_kegg), 2), "\n")
 ```
 
-### Dotplot — KEGG Upregulados
+### Rodando gseKEGG()
+
+A função `gseKEGG()` consulta a API REST do KEGG em tempo real para obter as anotações de vias da *C. albicans* (organism = `"cal"`) e roda o algoritmo de permutação. Como o GSEA é estocástico, fixamos uma semente com `set.seed()` para garantir que duas execuções da mesma versão do banco produzam exatamente o mesmo resultado:
 
 ```{r}
-#| fig-width: 9
-#| fig-height: 6
-if (!is.null(kegg_up) && nrow(as.data.frame(kegg_up)) > 0) {
-  dotplot(kegg_up,
+set.seed(42)  # GSEA é estocástica (usa permutações); set.seed garante reprodutibilidade
+gsea_kegg <- gseKEGG(
+  geneList      = ranks_kegg,
+  organism      = "cal",
+  keyType       = "kegg",
+  minGSSize     = 5,
+  maxGSSize     = 500,
+  pvalueCutoff  = 0.5,
+  pAdjustMethod = "BH",
+  eps           = 0,
+  verbose       = FALSE
+)
+
+cat("Vias enriquecidas (GSEA):", nrow(as.data.frame(gsea_kegg)), "\n")
+```
+
+### Dotplot — GSEA KEGG (UP vs. DOWN)
+
+Diferente do dotplot do ORA, o do GSEA já vem separado por direção: cada via aparece no painel **activated** (NES > 0, regulada para cima) ou **suppressed** (NES < 0, regulada para baixo).
+
+```{r}
+#| fig-width: 11
+#| fig-height: 8
+if (!is.null(gsea_kegg) && nrow(as.data.frame(gsea_kegg)) > 0) {
+  dotplot(gsea_kegg,
           showCategory = 15,
-          title = "KEGG — Genes Upregulados",
-          color = "p.adjust") +
-    theme(axis.text.y = element_text(size = 10)) +
+          split = ".sign",
+          title = "GSEA-KEGG — Vias enriquecidas") +
+    facet_grid(. ~ .sign) +
     scale_color_gradient(low = "#E31A1C", high = "#FCBBA1", name = "p-valor\najustado")
 } else {
-  cat("Nenhuma via KEGG enriquecida para genes upregulados.\n")
+  cat("Nenhuma via KEGG enriquecida.\n")
 }
 ```
 
-### Dotplot — KEGG Downregulados
+### Ridgeplot — distribuição de log2FC por via
+
+O ridgeplot mostra, para cada via enriquecida, a distribuição dos `log2FC` dos seus genes membros. Vias "puxadas" para a direita estão dominantes em UP; para a esquerda, em DOWN.
 
 ```{r}
-#| fig-width: 9
-#| fig-height: 6
-if (!is.null(kegg_down) && nrow(as.data.frame(kegg_down)) > 0) {
-  dotplot(kegg_down,
-          showCategory = 15,
-          title = "KEGG — Genes Downregulados",
-          color = "p.adjust") +
-    theme(axis.text.y = element_text(size = 10)) +
-    scale_color_gradient(low = "#1F78B4", high = "#C6DBEF", name = "p-valor\najustado")
+#| fig-width: 11
+#| fig-height: 8
+if (!is.null(gsea_kegg) && nrow(as.data.frame(gsea_kegg)) > 0) {
+  ridgeplot(gsea_kegg, showCategory = 15) +
+    labs(title = "GSEA-KEGG — Distribuição de log2FC por via",
+         x = "log2 Fold Change") +
+    theme(plot.title = element_text(face = "bold", hjust = 0.5))
 } else {
-  cat("Nenhuma via KEGG enriquecida para genes downregulados.\n")
+  cat("Nenhuma via KEGG enriquecida.\n")
 }
 ```
 
-### Dotplot — KEGG Todos os DEGs
+### Curva de Running Enrichment Score — Top 3 vias
 
-```{r}
-#| fig-width: 9
-#| fig-height: 6
-if (!is.null(kegg_all) && nrow(as.data.frame(kegg_all)) > 0) {
-  dotplot(kegg_all,
-          showCategory = 15,
-          title = "KEGG — Todos os DEGs",
-          color = "p.adjust") +
-    theme(axis.text.y = element_text(size = 10)) +
-    scale_color_gradient(low = "grey20", high = "grey70", name = "p-valor\najustado")
-} else {
-  cat("Nenhuma via KEGG enriquecida para todos os DEGs.\n")
-}
-```
-
-### Barplot Bidirecional — KEGG UP vs. DOWN
-
-Para comparar diretamente quais vias estão ativadas (UP) e reprimidas (DOWN), podemos construir um **barplot bidirecional** onde as barras vermelhas (UP) se estendem para a direita e as azuis (DOWN) para a esquerda:
+A curva clássica do GSEA mostra como o Enrichment Score "cresce" ou "decresce" à medida que percorremos o ranking do topo (mais UP) até a base (mais DOWN). Picos positivos no início indicam vias UP; vales negativos no final indicam vias DOWN. As marcas verticais (`|`) abaixo da curva indicam onde caem, no ranking, os genes da via:
 
 ```{r}
 #| fig-width: 10
 #| fig-height: 7
-# Extrair resultados de UP e DOWN
-df_kegg_up <- if (!is.null(kegg_up) && nrow(as.data.frame(kegg_up)) > 0) {
-  as.data.frame(kegg_up) %>% mutate(Direction = "Upregulated", Count_dir = Count)
-} else { data.frame() }
-
-df_kegg_down <- if (!is.null(kegg_down) && nrow(as.data.frame(kegg_down)) > 0) {
-  as.data.frame(kegg_down) %>% mutate(Direction = "Downregulated", Count_dir = -Count)
-} else { data.frame() }
-
-if (nrow(df_kegg_up) > 0 || nrow(df_kegg_down) > 0) {
-  df_kegg_bidir <- bind_rows(
-    df_kegg_up %>% head(10),
-    df_kegg_down %>% head(10)
-  )
-
-  ggplot(df_kegg_bidir, aes(x = Count_dir, y = reorder(Description, Count_dir), fill = Direction)) +
-    geom_col(width = 0.7) +
-    scale_fill_manual(values = c("Upregulated" = "#E31A1C", "Downregulated" = "#1F78B4")) +
-    geom_vline(xintercept = 0, linewidth = 0.5) +
-    labs(title = "KEGG — UP vs. DOWN",
-         x = "Número de Genes", y = NULL, fill = "Regulação") +
-    theme_minimal(base_size = 13) +
-    theme(plot.title = element_text(hjust = 0.5, face = "bold"),
-          axis.text.y = element_text(size = 9),
-          legend.position = "bottom")
+if (!is.null(gsea_kegg) && nrow(as.data.frame(gsea_kegg)) > 0) {
+  top3 <- as.data.frame(gsea_kegg) %>%
+    arrange(p.adjust) %>%
+    head(3) %>%
+    pull(ID)
+  gseaplot2(gsea_kegg, geneSetID = top3,
+            title = "GSEA-KEGG — Top 3 vias (running ES)")
 } else {
-  cat("Nenhuma via KEGG enriquecida para gerar o barplot bidirecional.\n")
+  cat("Nenhuma via KEGG enriquecida.\n")
 }
 ```
 
-### Barplot — KEGG Todos os DEGs
+### Barplot Bidirecional — NES por via
+
+O análogo direto do barplot bidirecional do ORA é usar o **NES** como métrica: barras vermelhas (UP, NES > 0) crescem para a direita; azuis (DOWN, NES < 0) crescem para a esquerda, compartilhando o mesmo eixo Y:
 
 ```{r}
-#| fig-width: 9
-#| fig-height: 6
-if (!is.null(kegg_all) && nrow(as.data.frame(kegg_all)) > 0) {
-  barplot(kegg_all,
-          showCategory = 15,
-          title = "KEGG — Todos os DEGs",
-          color = "p.adjust") +
-    theme(axis.text.y = element_text(size = 10)) +
-    scale_fill_gradient(low = "grey20", high = "grey70", name = "p-valor\najustado")
+#| fig-width: 11
+#| fig-height: 8
+if (!is.null(gsea_kegg) && nrow(as.data.frame(gsea_kegg)) > 0) {
+  df_gsea <- as.data.frame(gsea_kegg) %>%
+    mutate(Direction = ifelse(NES > 0, "Upregulated", "Downregulated"),
+           term_lbl  = str_wrap(Description, 45)) %>%
+    arrange(desc(abs(NES))) %>%
+    head(15)
+
+  ggplot(df_gsea, aes(x = NES, y = reorder(term_lbl, NES), fill = Direction)) +
+    geom_col(width = 0.7) +
+    scale_fill_manual(values = c("Upregulated"   = "#E31A1C",
+                                 "Downregulated" = "#1F78B4")) +
+    geom_vline(xintercept = 0, linewidth = 0.5) +
+    labs(title = "GSEA-KEGG — NES por via",
+         x = "Normalized Enrichment Score (NES)",
+         y = NULL, fill = "Direção") +
+    theme_minimal(base_size = 13) +
+    theme(plot.title  = element_text(hjust = 0.5, face = "bold"),
+          axis.text.y = element_text(size = 9),
+          legend.position = "bottom")
 } else {
-  cat("Nenhuma via KEGG enriquecida para todos os DEGs.\n")
+  cat("Nenhuma via KEGG enriquecida para gerar o barplot.\n")
 }
 ```
 
 ### Como interpretar os gráficos:
 
-* **Dotplot**: cada ponto representa uma via enriquecida. O **tamanho** indica quantos DEGs pertencem àquela via (Count); a **cor** indica o p-valor ajustado.
-* **Barplot bidirecional**: permite comparar diretamente as vias UP (vermelho, à direita) e DOWN (azul, à esquerda) em um único gráfico.
-* **Barplot (ALL)**: mostra as vias enriquecidas considerando todos os DEGs juntos, com a cor indicando o p-valor ajustado.
+* **Dotplot**: cada ponto é uma via enriquecida, separada nos painéis `activated` (NES > 0) e `suppressed` (NES < 0). O **tamanho** indica o número de genes da via (`setSize`); a **cor** indica o p-valor ajustado.
+* **Ridgeplot**: a curva de densidade mostra como os `log2FC` dos genes daquela via estão distribuídos — concentração à direita = UP, à esquerda = DOWN.
+* **Running ES**: a curva clássica do GSEA. Picos no topo do ranking (esquerda) indicam vias UP; vales na base (direita), vias DOWN. As marcas (`|`) mostram onde os genes da via caem no ranking.
+* **Barplot bidirecional (NES)**: análogo direto do barplot do ORA, mas usando NES como métrica de direção e magnitude — barras vermelhas (UP) à direita, azuis (DOWN) à esquerda.
 
 ---
 
-## 6. Obtendo Anotações GO do Candida Genome Database (CGD)
+## 6. Enriquecimento GO com g:Profiler
 
-O **Candida Genome Database (CGD)** disponibiliza um arquivo GAF (*Gene Association File*) com anotações de Gene Ontology curadas manualmente e computacionalmente, específicas para *C. albicans* SC5314. Esse arquivo contém mais de 33 mil anotações — significativamente mais completo do que o disponível via Ensembl Fungi.
+Vamos rodar a ORA com Gene Ontology (Biological Process) separadamente para cada conjunto de genes (upregulados, downregulados e todos os DEGs), usando o **corte didático** de p-valor ajustado **≤ 0.5** com correção **FDR** (Benjamini-Hochberg). Observe que diferentemente do `enrichKEGG()`, aqui passamos os identificadores no formato original do Ensembl Fungi (ex: `C1_00210C_A`) — o g:Profiler reconhece e mapeia internamente, sem precisar de dicionário de conversão.
+
+## 7. Sobre o pacote g:Profiler
+
+Uma alternativa para o enriquecimento usando o Gene Ontology é o **g:Profiler**, uma ferramenta mantida pela Universidade de Tartu que indexa anotações funcionais do **Ensembl** e do **Ensembl Genomes** (incluindo o Ensembl Fungi) e oferece uma API REST consultável a partir do R via o pacote `gprofiler2`. A função central do pacote é `gost()`, que envia uma lista de genes ao servidor, executa o teste hipergeométrico contra cada termo da ontologia e retorna uma tabela com os resultados.
+
+A principal vantagem do g:Profiler é a **reprodutibilidade por release**: cada versão do banco recebe um identificador citável (ex: `e114_eg62_p19`) e fica permanentemente arquivada, o que permite que análises sejam refeitas exatamente como na data original.
 
 ::: {.callout-note}
-## Ponto Importante
+## Ponto Importante — g:Profiler e Organismos Não-Modelo
 
-O arquivo GAF pode ser baixado diretamente de: [candidagenome.org/download/go/](http://www.candidagenome.org/download/go/). Nós já o baixamos e descompactamos em `data/cgd/`.
+O g:Profiler suporta **mais de 200 organismos** via Ensembl e Ensembl Genomes, incluindo *C. albicans* SC5314 (código de organismo: `calbicans`). No entanto, a integração com **KEGG, Reactome e WikiPathways** está disponível apenas para organismos-modelo (humano, camundongo, rato, levedura, etc.). Para *C. albicans*, somente as três sub-ontologias do Gene Ontology (**Biological Process**, **Molecular Function** e **Cellular Component**) estão indexadas. Por isso, mantemos a análise KEGG da seção anterior e usamos o g:Profiler aqui apenas para GO (Biological Process).
 :::
 
-### Parsear o arquivo GAF
+### Carregando o pacote gprofiler2
 
 ```{r}
-# Ler o arquivo GAF (pulando linhas de comentário)
-gaf_raw <- read.delim(
-  here::here("data/cgd/cgd_C_albicans_SC5314.gaf"),
-  header = FALSE,
-  comment.char = "!",
-  quote = "",
-  stringsAsFactors = FALSE
-)
-
-# Nomear as colunas relevantes do GAF 2.2
-colnames(gaf_raw)[c(1, 2, 3, 4, 5, 7, 9, 11)] <- c(
-  "DB", "DB_Object_ID", "Gene_Symbol", "Qualifier", "GO_ID",
-  "Evidence_Code", "Aspect", "Synonyms"
-)
-
-cat("Total de anotações no GAF:", nrow(gaf_raw), "\n")
+#| message: false
+#| warning: false
+suppressPackageStartupMessages({
+  library(gprofiler2)
+  library(stringr)
+})
 ```
 
-### Extrair IDs Ensembl dos Sinônimos
+```{r}
+gost_up <- gost(
+  query             = genes_up,
+  organism          = "calbicans",
+  sources           = "GO:BP",
+  user_threshold    = 0.5,
+  correction_method = "fdr"
+)
+
+gost_down <- gost(
+  query             = genes_down,
+  organism          = "calbicans",
+  sources           = "GO:BP",
+  user_threshold    = 0.5,
+  correction_method = "fdr"
+)
+
+gost_all <- gost(
+  query             = genes_all,
+  organism          = "calbicans",
+  sources           = "GO:BP",
+  user_threshold    = 0.5,
+  correction_method = "fdr"
+)
+
+# Versão do banco consultado (citável nos métodos)
+cat("Versão do g:Profiler:", gost_all$meta$version, "\n\n")
+
+cat("Termos GO BP enriquecidos:\n")
+cat("  UP   :", if (is.null(gost_up))   0 else nrow(gost_up$result),   "\n")
+cat("  DOWN :", if (is.null(gost_down)) 0 else nrow(gost_down$result), "\n")
+cat("  ALL  :", if (is.null(gost_all))  0 else nrow(gost_all$result),  "\n")
+```
+
+Como o objeto retornado pelo `gost()` é uma lista (não um `enrichResult` do `clusterProfiler`), as funções `dotplot()` e `barplot()` do `enrichplot` não funcionam diretamente. Definimos abaixo uma pequena função auxiliar que monta dotplots no mesmo estilo dos da seção KEGG: o eixo X traz o **GeneRatio** (proporção de DEGs caindo no termo), a **cor** representa o p-valor ajustado e o **tamanho do ponto** indica quantos DEGs pertencem ao termo (`Count`).
 
 ```{r}
-# Função para extrair o ID Ensembl (_A) dos sinônimos
-extract_ensembl_id <- function(synonyms) {
-  syns <- unlist(strsplit(synonyms, "\\|"))
-  match <- grep("^C[0-9R]+_\\d{5}[WC]_A$", syns, value = TRUE)
-  if (length(match) > 0) return(match[1])
-  return(NA_character_)
+# Função para criar o gráfico
+dotplot_gost <- function(gost_res, titulo, cor_low, cor_high) {
+  df <- gost_res$result %>%
+    mutate(
+      GeneRatio = intersection_size / query_size,
+      term_lbl  = str_wrap(term_name, 45)
+    ) %>%
+    arrange(p_value) %>%
+    head(15) %>%
+    mutate(term_lbl = factor(term_lbl,
+                             levels = unique(term_lbl[order(GeneRatio)])))
+
+  ggplot(df, aes(x = GeneRatio, y = term_lbl,
+                 color = p_value, size = intersection_size)) +
+    geom_point() +
+    scale_color_gradient(low = cor_low, high = cor_high,
+                         name = "p-valor\najustado") +
+    scale_size_continuous(name = "Count", range = c(3, 8)) +
+    labs(title = titulo, x = "GeneRatio", y = NULL) +
+    theme_minimal(base_size = 11) +
+    theme(plot.title  = element_text(face = "bold", hjust = 0.5),
+          axis.text.y = element_text(size = 9))
 }
-
-# Aplicar a extração
-gaf_raw$ensembl_id <- sapply(gaf_raw$Synonyms, extract_ensembl_id)
-
-# Verificar taxa de mapeamento
-mapped <- sum(!is.na(gaf_raw$ensembl_id))
-cat("Anotações com ID Ensembl mapeado:", mapped, "de", nrow(gaf_raw), "\n")
-```
-
-### Construir TERM2GENE e TERM2NAME
-
-```{r}
-# Filtrar anotações válidas
-gaf_mapped <- gaf_raw %>%
-  filter(!is.na(ensembl_id)) %>%
-  dplyr::select(ensembl_id, GO_ID, Gene_Symbol, Aspect)
-
-# TERM2GENE: GO_ID → ensembl_id
-term2gene_cgd <- gaf_mapped %>%
-  dplyr::select(GO_ID, ensembl_id) %>%
-  distinct()
-
-# Obter nomes dos termos GO via GO.db
-go_terms <- AnnotationDbi::select(GO.db, 
-                                   keys = unique(term2gene_cgd$GO_ID), 
-                                   columns = c("GOID", "TERM", "ONTOLOGY"), 
-                                   keytype = "GOID")
-go_terms <- go_terms[!is.na(go_terms$TERM), ]
-
-term2name_cgd <- data.frame(
-  GO_ID = go_terms$GOID,
-  Name = go_terms$TERM
-)
-
-cat("Total de mapeamentos gene-GO:", nrow(term2gene_cgd), "\n")
-cat("Termos GO únicos:", length(unique(term2gene_cgd$GO_ID)), "\n")
-cat("Genes únicos com GO:", length(unique(term2gene_cgd$ensembl_id)), "\n")
-```
-
-```{r}
-# Separar por ontologia
-bp_terms <- go_terms %>% filter(ONTOLOGY == "BP")
-
-term2gene_cgd_bp <- term2gene_cgd %>% filter(GO_ID %in% bp_terms$GOID)
-term2name_cgd_bp <- term2name_cgd %>% filter(GO_ID %in% bp_terms$GOID)
-
-cat("Termos BP:", length(unique(term2gene_cgd_bp$GO_ID)), "\n")
-```
-
----
-
-## 7. Enriquecimento GO — ORA (CGD)
-
-Vamos rodar a ORA com Gene Ontology (Biological Process) separadamente para cada conjunto:
-
-```{r}
-# GO ORA — Upregulados
-go_up <- enricher(
-  gene = genes_up,
-  TERM2GENE = term2gene_cgd_bp,
-  TERM2NAME = term2name_cgd_bp,
-  pvalueCutoff = 0.5, qvalueCutoff = 0.5, pAdjustMethod = "BH"
-)
-
-# GO ORA — Downregulados
-go_down <- enricher(
-  gene = genes_down,
-  TERM2GENE = term2gene_cgd_bp,
-  TERM2NAME = term2name_cgd_bp,
-  pvalueCutoff = 0.5, qvalueCutoff = 0.5, pAdjustMethod = "BH"
-)
-
-# GO ORA — Todos os DEGs
-go_all <- enricher(
-  gene = genes_all,
-  TERM2GENE = term2gene_cgd_bp,
-  TERM2NAME = term2name_cgd_bp,
-  pvalueCutoff = 0.5, qvalueCutoff = 0.5, pAdjustMethod = "BH"
-)
 ```
 
 ### Dotplot — GO BP Upregulados
@@ -420,13 +392,10 @@ go_all <- enricher(
 ```{r}
 #| fig-width: 10
 #| fig-height: 7
-if (!is.null(go_up) && nrow(as.data.frame(go_up)) > 0) {
-  dotplot(go_up,
-          showCategory = 15,
-          title = "GO Biological Process — Genes Upregulados (CGD)",
-          color = "p.adjust") +
-    theme(axis.text.y = element_text(size = 9)) +
-    scale_color_gradient(low = "#E31A1C", high = "#FCBBA1", name = "p-valor\najustado")
+if (!is.null(gost_up) && nrow(gost_up$result) > 0) {
+  dotplot_gost(gost_up,
+               "GO Biological Process — Genes Upregulados (g:Profiler)",
+               cor_low = "#E31A1C", cor_high = "#FCBBA1")
 } else {
   cat("Nenhum processo biológico enriquecido para genes upregulados.\n")
 }
@@ -437,13 +406,10 @@ if (!is.null(go_up) && nrow(as.data.frame(go_up)) > 0) {
 ```{r}
 #| fig-width: 10
 #| fig-height: 7
-if (!is.null(go_down) && nrow(as.data.frame(go_down)) > 0) {
-  dotplot(go_down,
-          showCategory = 15,
-          title = "GO Biological Process — Genes Downregulados (CGD)",
-          color = "p.adjust") +
-    theme(axis.text.y = element_text(size = 9)) +
-    scale_color_gradient(low = "#1F78B4", high = "#C6DBEF", name = "p-valor\najustado")
+if (!is.null(gost_down) && nrow(gost_down$result) > 0) {
+  dotplot_gost(gost_down,
+               "GO Biological Process — Genes Downregulados (g:Profiler)",
+               cor_low = "#1F78B4", cor_high = "#C6DBEF")
 } else {
   cat("Nenhum processo biológico enriquecido para genes downregulados.\n")
 }
@@ -454,13 +420,10 @@ if (!is.null(go_down) && nrow(as.data.frame(go_down)) > 0) {
 ```{r}
 #| fig-width: 10
 #| fig-height: 7
-if (!is.null(go_all) && nrow(as.data.frame(go_all)) > 0) {
-  dotplot(go_all,
-          showCategory = 15,
-          title = "GO Biological Process — Todos os DEGs (CGD)",
-          color = "p.adjust") +
-    theme(axis.text.y = element_text(size = 9)) +
-    scale_color_gradient(low = "grey20", high = "grey70", name = "p-valor\najustado")
+if (!is.null(gost_all) && nrow(gost_all$result) > 0) {
+  dotplot_gost(gost_all,
+               "GO Biological Process — Todos os DEGs (g:Profiler)",
+               cor_low = "pink", cor_high = "purple")
 } else {
   cat("Nenhum processo biológico enriquecido para todos os DEGs.\n")
 }
@@ -468,32 +431,38 @@ if (!is.null(go_all) && nrow(as.data.frame(go_all)) > 0) {
 
 ### Barplot Bidirecional — GO BP UP vs. DOWN
 
+Como fizemos na seção KEGG, podemos comparar diretamente os termos enriquecidos em UP e DOWN num único gráfico bidirecional — as barras vermelhas (UP) crescem para a direita e as azuis (DOWN) para a esquerda, compartilhando o mesmo eixo Y:
+
 ```{r}
 #| fig-width: 11
 #| fig-height: 8
-# Extrair resultados de UP e DOWN
-df_go_up <- if (!is.null(go_up) && nrow(as.data.frame(go_up)) > 0) {
-  as.data.frame(go_up) %>% mutate(Direction = "Upregulated", Count_dir = Count)
+df_gost_up <- if (!is.null(gost_up) && nrow(gost_up$result) > 0) {
+  gost_up$result %>%
+    mutate(Direction = "Upregulated", Count_dir = intersection_size)
 } else { data.frame() }
 
-df_go_down <- if (!is.null(go_down) && nrow(as.data.frame(go_down)) > 0) {
-  as.data.frame(go_down) %>% mutate(Direction = "Downregulated", Count_dir = -Count)
+df_gost_down <- if (!is.null(gost_down) && nrow(gost_down$result) > 0) {
+  gost_down$result %>%
+    mutate(Direction = "Downregulated", Count_dir = -intersection_size)
 } else { data.frame() }
 
-if (nrow(df_go_up) > 0 || nrow(df_go_down) > 0) {
-  df_go_bidir <- bind_rows(
-    df_go_up %>% head(10),
-    df_go_down %>% head(10)
-  )
+if (nrow(df_gost_up) > 0 || nrow(df_gost_down) > 0) {
+  df_gost_bidir <- bind_rows(
+    df_gost_up   %>% arrange(p_value) %>% head(10),
+    df_gost_down %>% arrange(p_value) %>% head(10)
+  ) %>%
+    mutate(term_lbl = str_wrap(term_name, 45))
 
-  ggplot(df_go_bidir, aes(x = Count_dir, y = reorder(Description, Count_dir), fill = Direction)) +
+  ggplot(df_gost_bidir,
+         aes(x = Count_dir, y = reorder(term_lbl, Count_dir), fill = Direction)) +
     geom_col(width = 0.7) +
-    scale_fill_manual(values = c("Upregulated" = "#E31A1C", "Downregulated" = "#1F78B4")) +
+    scale_fill_manual(values = c("Upregulated"   = "#E31A1C",
+                                 "Downregulated" = "#1F78B4")) +
     geom_vline(xintercept = 0, linewidth = 0.5) +
-    labs(title = "GO Biological Process — UP vs. DOWN (CGD)",
+    labs(title = "GO Biological Process — UP vs. DOWN (g:Profiler)",
          x = "Número de Genes", y = NULL, fill = "Regulação") +
     theme_minimal(base_size = 13) +
-    theme(plot.title = element_text(hjust = 0.5, face = "bold"),
+    theme(plot.title  = element_text(hjust = 0.5, face = "bold"),
           axis.text.y = element_text(size = 9),
           legend.position = "bottom")
 } else {
@@ -503,20 +472,34 @@ if (nrow(df_go_up) > 0 || nrow(df_go_down) > 0) {
 
 ### Barplot — GO BP Todos os DEGs
 
+Finalmente, o barplot considerando todos os DEGs juntos, em tom roxo para diferenciá-lo do par UP/DOWN:
+
 ```{r}
 #| fig-width: 10
 #| fig-height: 7
-if (!is.null(go_all) && nrow(as.data.frame(go_all)) > 0) {
-  barplot(go_all,
-          showCategory = 15,
-          title = "GO Biological Process — Todos os DEGs (CGD)",
-          color = "p.adjust") +
-    theme(axis.text.y = element_text(size = 9)) +
-    scale_fill_gradient(low = "grey20", high = "grey70", name = "p-valor\najustado")
+if (!is.null(gost_all) && nrow(gost_all$result) > 0) {
+  gost_all$result %>%
+    arrange(p_value) %>%
+    head(15) %>%
+    mutate(term_lbl = str_wrap(term_name, 45)) %>%
+    ggplot(aes(x = intersection_size,
+               y = reorder(term_lbl, intersection_size))) +
+    geom_col(fill = "#6A3D9A", width = 0.7) +
+    labs(title = "GO Biological Process — Todos os DEGs (g:Profiler)",
+         x = "Número de Genes", y = NULL) +
+    theme_minimal(base_size = 13) +
+    theme(plot.title  = element_text(hjust = 0.5, face = "bold"),
+          axis.text.y = element_text(size = 9))
 } else {
   cat("Nenhum processo biológico enriquecido para todos os DEGs.\n")
 }
 ```
+
+### Como interpretar os gráficos:
+
+* **Dotplot**: cada ponto representa um termo GO BP enriquecido. O **tamanho** indica quantos DEGs pertencem ao termo (`Count`); a **cor** indica o p-valor ajustado (FDR).
+* **Barplot bidirecional**: permite comparar diretamente os termos UP (vermelho, à direita) e DOWN (azul, à esquerda) em um único gráfico, com o eixo Y compartilhado.
+* **Barplot (ALL)**: mostra os termos GO BP enriquecidos considerando todos os DEGs juntos, ordenados pelo número de genes que pertencem a cada termo.
 
 ---
 
@@ -527,36 +510,30 @@ cat("=== Resumo do Enriquecimento Funcional ===\n\n")
 cat("Genes UP:", length(genes_up), "| DOWN:", length(genes_down),
     "| Total:", length(genes_all), "\n\n")
 
-cat("--- KEGG ---\n")
+cat("--- KEGG (GSEA) ---\n")
+if (!is.null(gsea_kegg) && nrow(as.data.frame(gsea_kegg)) > 0) {
+  df_gsea_sum <- as.data.frame(gsea_kegg)
+  cat("  Activated (NES > 0):", sum(df_gsea_sum$NES > 0), "vias\n")
+  cat("  Suppressed (NES < 0):", sum(df_gsea_sum$NES < 0), "vias\n")
+  cat("  Total              :", nrow(df_gsea_sum), "vias\n")
+} else {
+  cat("  nenhuma via enriquecida\n")
+}
+
+cat("\n--- GO Biological Process (g:Profiler) ---\n")
 cat("  UP:   ")
-if (!is.null(kegg_up) && nrow(as.data.frame(kegg_up)) > 0) {
-  cat(nrow(as.data.frame(kegg_up)), "vias\n")
-} else { cat("nenhuma via\n") }
-
-cat("  DOWN: ")
-if (!is.null(kegg_down) && nrow(as.data.frame(kegg_down)) > 0) {
-  cat(nrow(as.data.frame(kegg_down)), "vias\n")
-} else { cat("nenhuma via\n") }
-
-cat("  ALL:  ")
-if (!is.null(kegg_all) && nrow(as.data.frame(kegg_all)) > 0) {
-  cat(nrow(as.data.frame(kegg_all)), "vias\n")
-} else { cat("nenhuma via\n") }
-
-cat("\n--- GO Biological Process (CGD) ---\n")
-cat("  UP:   ")
-if (!is.null(go_up) && nrow(as.data.frame(go_up)) > 0) {
-  cat(nrow(as.data.frame(go_up)), "termos\n")
+if (!is.null(gost_up) && nrow(gost_up$result) > 0) {
+  cat(nrow(gost_up$result), "termos\n")
 } else { cat("nenhum termo\n") }
 
 cat("  DOWN: ")
-if (!is.null(go_down) && nrow(as.data.frame(go_down)) > 0) {
-  cat(nrow(as.data.frame(go_down)), "termos\n")
+if (!is.null(gost_down) && nrow(gost_down$result) > 0) {
+  cat(nrow(gost_down$result), "termos\n")
 } else { cat("nenhum termo\n") }
 
 cat("  ALL:  ")
-if (!is.null(go_all) && nrow(as.data.frame(go_all)) > 0) {
-  cat(nrow(as.data.frame(go_all)), "termos\n")
+if (!is.null(gost_all) && nrow(gost_all$result) > 0) {
+  cat(nrow(gost_all$result), "termos\n")
 } else { cat("nenhum termo\n") }
 ```
 

@@ -40,8 +40,9 @@ Antes de iniciar as análises práticas, certifique-se de instalar as biblioteca
 
 ```r
 # Pacotes do CRAN
-install.packages(c("dplyr", "readr", "tibble", "ggplot2", "pheatmap", 
-                   "RCurl", "igraph", "ggraph", "scales", "devtools"))
+install.packages(c("dplyr", "readr", "tibble", "ggplot2", "pheatmap",
+                   "RCurl", "igraph", "ggraph", "scales", "devtools",
+                   "here", "stringr", "gprofiler2", "ggridges"))
 
 # Pacotes do Bioconductor
 if (!require("BiocManager", quietly = TRUE)) install.packages("BiocManager")
