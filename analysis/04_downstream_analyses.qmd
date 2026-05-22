@@ -209,7 +209,7 @@ Diferente do dotplot do ORA, o do GSEA já vem separado por direção: cada via 
 
 ```{r}
 #| fig-width: 11
-#| fig-height: 8
+#| fig-height: 13
 if (!is.null(gsea_kegg) && nrow(as.data.frame(gsea_kegg)) > 0) {
   dotplot(gsea_kegg,
           showCategory = 15,
@@ -263,8 +263,8 @@ if (!is.null(gsea_kegg) && nrow(as.data.frame(gsea_kegg)) > 0) {
 O análogo direto do barplot bidirecional do ORA é usar o **NES** como métrica: barras vermelhas (UP, NES > 0) crescem para a direita; azuis (DOWN, NES < 0) crescem para a esquerda, compartilhando o mesmo eixo Y:
 
 ```{r}
-#| fig-width: 11
-#| fig-height: 8
+#| fig-width: 9
+#| fig-height: 6
 if (!is.null(gsea_kegg) && nrow(as.data.frame(gsea_kegg)) > 0) {
   df_gsea <- as.data.frame(gsea_kegg) %>%
     mutate(Direction = ifelse(NES > 0, "Upregulated", "Downregulated"),
@@ -889,4 +889,4 @@ ggraph(g, layout = layout_ppi) +
 
 ---
 
-**Concluímos a análise completa de RNA-seq da *Candida albicans* em resposta à vancomicina. Desde a descontaminação das leituras do hospedeiro com o nf-core/detaxizer, passando pela quantificação com o nf-core/rnaseq, a análise de expressão diferencial com DESeq2, o enriquecimento funcional com KEGG e GO, até a construção e visualização de redes de interação proteína-proteína com o STRING — percorremos um pipeline completo e reprodutível para transcriptômica de patógenos, enfrentando os desafios específicos de um organismo não-modelo.**
+*Concluímos a análise completa de RNA-seq da *Candida albicans* em resposta à vancomicina. Desde a descontaminação das leituras do hospedeiro com o nf-core/detaxizer, passando pela quantificação com o nf-core/rnaseq, a análise de expressão diferencial com DESeq2, o enriquecimento funcional com KEGG e GO, até a construção e visualização de redes de interação proteína-proteína com o STRING — percorremos um pipeline completo e reprodutível para transcriptômica de patógenos, enfrentando os desafios específicos de um organismo não-modelo.*

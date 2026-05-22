@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta charset="UTF-8">
-<meta name="generator" content="quarto-1.9.14">
+<meta name="generator" content="quarto-1.9.37">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Dalmolin Systems Biology Group">
 <title>6&nbsp; Análises Downstream – RNA-seq: Patógenos associados a hospedeiros</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -65,19 +68,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../content/images/dalmolin_icon.svg" rel="icon" type="image/svg+xml">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-3485b2d93be123e8f777e710cba6c06e.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-59ef0155341c95c0b31ded8cf1727339.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-3485b2d93be123e8f777e710cba6c06e.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-acf12a64177840b8d86f2d4f01b2e9fb.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-23bbe8b5e4efc1e257f6d59dce478b08.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-acf12a64177840b8d86f2d4f01b2e9fb.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-9bbd077d4201944d018d0c4cb6950598.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-19bb26631b5c8e2903ac015273b5d5f6.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-9bbd077d4201944d018d0c4cb6950598.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="../site_libs/bootstrap/bootstrap-49fd1f1441fd54ec71df2da41e3b08e6.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-9082959d1594bdca9ab86728af60ead1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-49fd1f1441fd54ec71df2da41e3b08e6.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -103,7 +105,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -391,32 +393,28 @@ window.Quarto = {
   <li><a href="#preparando-os-conjuntos-de-genes" id="toc-preparando-os-conjuntos-de-genes" class="nav-link" data-scroll-target="#preparando-os-conjuntos-de-genes"><span class="header-section-number">7.5</span> 3. Preparando os Conjuntos de Genes</a></li>
   <li><a href="#convers%C3%A3o-de-identificadores-para-o-kegg" id="toc-conversão-de-identificadores-para-o-kegg" class="nav-link" data-scroll-target="#convers%C3%A3o-de-identificadores-para-o-kegg"><span class="header-section-number">7.6</span> 4. Conversão de Identificadores para o KEGG</a></li>
   <li>
-<a href="#enriquecimento-kegg-ora" id="toc-enriquecimento-kegg-ora" class="nav-link" data-scroll-target="#enriquecimento-kegg-ora"><span class="header-section-number">7.7</span> 5. Enriquecimento KEGG — ORA</a>
+<a href="#enriquecimento-kegg-gsea" id="toc-enriquecimento-kegg-gsea" class="nav-link" data-scroll-target="#enriquecimento-kegg-gsea"><span class="header-section-number">7.7</span> 5. Enriquecimento KEGG — GSEA</a>
   <ul class="collapse">
-<li><a href="#dotplot-kegg-upregulados" id="toc-dotplot-kegg-upregulados" class="nav-link" data-scroll-target="#dotplot-kegg-upregulados"><span class="header-section-number">7.7.1</span> Dotplot — KEGG Upregulados</a></li>
-  <li><a href="#dotplot-kegg-downregulados" id="toc-dotplot-kegg-downregulados" class="nav-link" data-scroll-target="#dotplot-kegg-downregulados"><span class="header-section-number">7.7.2</span> Dotplot — KEGG Downregulados</a></li>
-  <li><a href="#dotplot-kegg-todos-os-degs" id="toc-dotplot-kegg-todos-os-degs" class="nav-link" data-scroll-target="#dotplot-kegg-todos-os-degs"><span class="header-section-number">7.7.3</span> Dotplot — KEGG Todos os DEGs</a></li>
-  <li><a href="#barplot-bidirecional-kegg-up-vs.-down" id="toc-barplot-bidirecional-kegg-up-vs.-down" class="nav-link" data-scroll-target="#barplot-bidirecional-kegg-up-vs.-down"><span class="header-section-number">7.7.4</span> Barplot Bidirecional — KEGG UP vs.&nbsp;DOWN</a></li>
-  <li><a href="#barplot-kegg-todos-os-degs" id="toc-barplot-kegg-todos-os-degs" class="nav-link" data-scroll-target="#barplot-kegg-todos-os-degs"><span class="header-section-number">7.7.5</span> Barplot — KEGG Todos os DEGs</a></li>
-  <li><a href="#como-interpretar-os-gr%C3%A1ficos" id="toc-como-interpretar-os-gráficos" class="nav-link" data-scroll-target="#como-interpretar-os-gr%C3%A1ficos"><span class="header-section-number">7.7.6</span> Como interpretar os gráficos:</a></li>
+<li><a href="#construindo-o-vetor-ranqueado" id="toc-construindo-o-vetor-ranqueado" class="nav-link" data-scroll-target="#construindo-o-vetor-ranqueado"><span class="header-section-number">7.7.1</span> Construindo o vetor ranqueado</a></li>
+  <li><a href="#rodando-gsekegg" id="toc-rodando-gsekegg" class="nav-link" data-scroll-target="#rodando-gsekegg"><span class="header-section-number">7.7.2</span> Rodando gseKEGG()</a></li>
+  <li><a href="#dotplot-gsea-kegg-up-vs.-down" id="toc-dotplot-gsea-kegg-up-vs.-down" class="nav-link" data-scroll-target="#dotplot-gsea-kegg-up-vs.-down"><span class="header-section-number">7.7.3</span> Dotplot — GSEA KEGG (UP vs.&nbsp;DOWN)</a></li>
+  <li><a href="#ridgeplot-distribui%C3%A7%C3%A3o-de-log2fc-por-via" id="toc-ridgeplot-distribuição-de-log2fc-por-via" class="nav-link" data-scroll-target="#ridgeplot-distribui%C3%A7%C3%A3o-de-log2fc-por-via"><span class="header-section-number">7.7.4</span> Ridgeplot — distribuição de log2FC por via</a></li>
+  <li><a href="#curva-de-running-enrichment-score-top-3-vias" id="toc-curva-de-running-enrichment-score-top-3-vias" class="nav-link" data-scroll-target="#curva-de-running-enrichment-score-top-3-vias"><span class="header-section-number">7.7.5</span> Curva de Running Enrichment Score — Top 3 vias</a></li>
+  <li><a href="#barplot-bidirecional-nes-por-via" id="toc-barplot-bidirecional-nes-por-via" class="nav-link" data-scroll-target="#barplot-bidirecional-nes-por-via"><span class="header-section-number">7.7.6</span> Barplot Bidirecional — NES por via</a></li>
+  <li><a href="#como-interpretar-os-gr%C3%A1ficos" id="toc-como-interpretar-os-gráficos" class="nav-link" data-scroll-target="#como-interpretar-os-gr%C3%A1ficos"><span class="header-section-number">7.7.7</span> Como interpretar os gráficos:</a></li>
   </ul>
 </li>
+  <li><a href="#enriquecimento-go-com-gprofiler" id="toc-enriquecimento-go-com-gprofiler" class="nav-link" data-scroll-target="#enriquecimento-go-com-gprofiler"><span class="header-section-number">7.8</span> 6. Enriquecimento GO com g:Profiler</a></li>
   <li>
-<a href="#obtendo-anota%C3%A7%C3%B5es-go-do-candida-genome-database-cgd" id="toc-obtendo-anotações-go-do-candida-genome-database-cgd" class="nav-link" data-scroll-target="#obtendo-anota%C3%A7%C3%B5es-go-do-candida-genome-database-cgd"><span class="header-section-number">7.8</span> 6. Obtendo Anotações GO do Candida Genome Database (CGD)</a>
+<a href="#sobre-o-pacote-gprofiler" id="toc-sobre-o-pacote-gprofiler" class="nav-link" data-scroll-target="#sobre-o-pacote-gprofiler"><span class="header-section-number">7.9</span> 7. Sobre o pacote g:Profiler</a>
   <ul class="collapse">
-<li><a href="#parsear-o-arquivo-gaf" id="toc-parsear-o-arquivo-gaf" class="nav-link" data-scroll-target="#parsear-o-arquivo-gaf"><span class="header-section-number">7.8.1</span> Parsear o arquivo GAF</a></li>
-  <li><a href="#extrair-ids-ensembl-dos-sin%C3%B4nimos" id="toc-extrair-ids-ensembl-dos-sinônimos" class="nav-link" data-scroll-target="#extrair-ids-ensembl-dos-sin%C3%B4nimos"><span class="header-section-number">7.8.2</span> Extrair IDs Ensembl dos Sinônimos</a></li>
-  <li><a href="#construir-term2gene-e-term2name" id="toc-construir-term2gene-e-term2name" class="nav-link" data-scroll-target="#construir-term2gene-e-term2name"><span class="header-section-number">7.8.3</span> Construir TERM2GENE e TERM2NAME</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#enriquecimento-go-ora-cgd" id="toc-enriquecimento-go-ora-cgd" class="nav-link" data-scroll-target="#enriquecimento-go-ora-cgd"><span class="header-section-number">7.9</span> 7. Enriquecimento GO — ORA (CGD)</a>
-  <ul class="collapse">
-<li><a href="#dotplot-go-bp-upregulados" id="toc-dotplot-go-bp-upregulados" class="nav-link" data-scroll-target="#dotplot-go-bp-upregulados"><span class="header-section-number">7.9.1</span> Dotplot — GO BP Upregulados</a></li>
-  <li><a href="#dotplot-go-bp-downregulados" id="toc-dotplot-go-bp-downregulados" class="nav-link" data-scroll-target="#dotplot-go-bp-downregulados"><span class="header-section-number">7.9.2</span> Dotplot — GO BP Downregulados</a></li>
-  <li><a href="#dotplot-go-bp-todos-os-degs" id="toc-dotplot-go-bp-todos-os-degs" class="nav-link" data-scroll-target="#dotplot-go-bp-todos-os-degs"><span class="header-section-number">7.9.3</span> Dotplot — GO BP Todos os DEGs</a></li>
-  <li><a href="#barplot-bidirecional-go-bp-up-vs.-down" id="toc-barplot-bidirecional-go-bp-up-vs.-down" class="nav-link" data-scroll-target="#barplot-bidirecional-go-bp-up-vs.-down"><span class="header-section-number">7.9.4</span> Barplot Bidirecional — GO BP UP vs.&nbsp;DOWN</a></li>
-  <li><a href="#barplot-go-bp-todos-os-degs" id="toc-barplot-go-bp-todos-os-degs" class="nav-link" data-scroll-target="#barplot-go-bp-todos-os-degs"><span class="header-section-number">7.9.5</span> Barplot — GO BP Todos os DEGs</a></li>
+<li><a href="#carregando-o-pacote-gprofiler2" id="toc-carregando-o-pacote-gprofiler2" class="nav-link" data-scroll-target="#carregando-o-pacote-gprofiler2"><span class="header-section-number">7.9.1</span> Carregando o pacote gprofiler2</a></li>
+  <li><a href="#dotplot-go-bp-upregulados" id="toc-dotplot-go-bp-upregulados" class="nav-link" data-scroll-target="#dotplot-go-bp-upregulados"><span class="header-section-number">7.9.2</span> Dotplot — GO BP Upregulados</a></li>
+  <li><a href="#dotplot-go-bp-downregulados" id="toc-dotplot-go-bp-downregulados" class="nav-link" data-scroll-target="#dotplot-go-bp-downregulados"><span class="header-section-number">7.9.3</span> Dotplot — GO BP Downregulados</a></li>
+  <li><a href="#dotplot-go-bp-todos-os-degs" id="toc-dotplot-go-bp-todos-os-degs" class="nav-link" data-scroll-target="#dotplot-go-bp-todos-os-degs"><span class="header-section-number">7.9.4</span> Dotplot — GO BP Todos os DEGs</a></li>
+  <li><a href="#barplot-bidirecional-go-bp-up-vs.-down" id="toc-barplot-bidirecional-go-bp-up-vs.-down" class="nav-link" data-scroll-target="#barplot-bidirecional-go-bp-up-vs.-down"><span class="header-section-number">7.9.5</span> Barplot Bidirecional — GO BP UP vs.&nbsp;DOWN</a></li>
+  <li><a href="#barplot-go-bp-todos-os-degs" id="toc-barplot-go-bp-todos-os-degs" class="nav-link" data-scroll-target="#barplot-go-bp-todos-os-degs"><span class="header-section-number">7.9.6</span> Barplot — GO BP Todos os DEGs</a></li>
+  <li><a href="#como-interpretar-os-gr%C3%A1ficos-1" id="toc-como-interpretar-os-gráficos-1" class="nav-link" data-scroll-target="#como-interpretar-os-gr%C3%A1ficos-1"><span class="header-section-number">7.9.7</span> Como interpretar os gráficos:</a></li>
   </ul>
 </li>
   <li><a href="#resumo-e-interpreta%C3%A7%C3%A3o" id="toc-resumo-e-interpretação" class="nav-link" data-scroll-target="#resumo-e-interpreta%C3%A7%C3%A3o"><span class="header-section-number">7.10</span> 8. Resumo e Interpretação</a></li>
@@ -631,7 +629,7 @@ C1_00060W_A Not significant</code></pre>
 <span class="header-section-number">7.6</span> 4. Conversão de Identificadores para o KEGG</h2>
 <p>Os nossos identificadores de genes seguem o padrão do Ensembl Fungi (ex: <code>C1_00010W_A</code>), mas o KEGG utiliza um formato próprio para <em>C. albicans</em> (ex: <code>CAALFM_C100010WA</code>). Precisamos construir o dicionário para conversão:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Baixar todos os genes de C. albicans (cal) do KEGG</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Baixar os nomes dos genes de C. albicans (cal) do KEGG</span></span>
 <span><span class="va">kegg_genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/KEGGREST/man/keggList.html">keggList</a></span><span class="op">(</span><span class="st">"cal"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Criar tabela de mapeamento</span></span>
@@ -661,139 +659,123 @@ C1_00060W_A Not significant</code></pre>
 </div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Criar dicionário: Ensembl → KEGG</span></span>
-<span><span class="va">ensembl_to_kegg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html">setNames</a></span><span class="op">(</span><span class="va">kegg_mapping</span><span class="op">$</span><span class="va">kegg_id</span>, <span class="va">kegg_mapping</span><span class="op">$</span><span class="va">ensembl_id</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Converter cada conjunto de genes</span></span>
-<span><span class="va">genes_up_kegg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html">unname</a></span><span class="op">(</span><span class="va">ensembl_to_kegg</span><span class="op">[</span><span class="va">genes_up</span><span class="op">[</span><span class="va">genes_up</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">ensembl_to_kegg</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="va">genes_down_kegg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html">unname</a></span><span class="op">(</span><span class="va">ensembl_to_kegg</span><span class="op">[</span><span class="va">genes_down</span><span class="op">[</span><span class="va">genes_down</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">ensembl_to_kegg</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="va">genes_all_kegg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html">unname</a></span><span class="op">(</span><span class="va">ensembl_to_kegg</span><span class="op">[</span><span class="va">genes_all</span><span class="op">[</span><span class="va">genes_all</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">ensembl_to_kegg</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"UP com KEGG ID:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">genes_up_kegg</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>UP com KEGG ID: 40 </code></pre>
+<span><span class="va">ensembl_to_kegg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html">setNames</a></span><span class="op">(</span><span class="va">kegg_mapping</span><span class="op">$</span><span class="va">kegg_id</span>, <span class="va">kegg_mapping</span><span class="op">$</span><span class="va">ensembl_id</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"DOWN com KEGG ID:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">genes_down_kegg</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>DOWN com KEGG ID: 35 </code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"ALL com KEGG ID:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">genes_all_kegg</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>ALL com KEGG ID: 75 </code></pre>
-</div>
-</div>
-<hr></section><section id="enriquecimento-kegg-ora" class="level2" data-number="7.7"><h2 data-number="7.7" class="anchored" data-anchor-id="enriquecimento-kegg-ora">
-<span class="header-section-number">7.7</span> 5. Enriquecimento KEGG — ORA</h2>
-<p>Vamos rodar a ORA com o KEGG Pathways separadamente para genes upregulados, downregulados e todos os DEGs:</p>
+<p>Esse dicionário será usado adiante tanto para o enriquecimento KEGG via GSEA (seção 5) quanto para a construção da rede PPI com o STRING (seção 11).</p>
+<hr></section><section id="enriquecimento-kegg-gsea" class="level2" data-number="7.7"><h2 data-number="7.7" class="anchored" data-anchor-id="enriquecimento-kegg-gsea">
+<span class="header-section-number">7.7</span> 5. Enriquecimento KEGG — GSEA</h2>
+<p>Diferente do <strong>ORA</strong>, que parte de uma lista discreta de DEGs (filtrada por um cutoff de significância), o <strong>GSEA (Gene Set Enrichment Analysis)</strong> considera <strong>todos os genes</strong> ranqueados por uma métrica contínua — tipicamente o <code>log2FoldChange</code> — e verifica se os membros de cada via biológica se concentram nas extremidades do ranking. A pergunta muda:</p>
+<ul>
+<li>
+<strong>ORA</strong>: “Há mais DEGs nesta via do que o esperado ao acaso?”</li>
+<li>
+<strong>GSEA</strong>: “Os genes desta via estão sistematicamente entre os mais up- ou down-regulados?”</li>
+</ul>
+<p>A vantagem é que o GSEA <strong>não precisa de cutoff</strong>: ele aproveita o sinal coordenado de muitos genes com mudanças pequenas, que o ORA descartaria. O resultado vem na forma de um <strong>Normalized Enrichment Score (NES)</strong>: positivo indica que a via está enriquecida na ponta UP do ranking, negativo na ponta DOWN.</p>
+<section id="construindo-o-vetor-ranqueado" class="level3" data-number="7.7.1"><h3 data-number="7.7.1" class="anchored" data-anchor-id="construindo-o-vetor-ranqueado">
+<span class="header-section-number">7.7.1</span> Construindo o vetor ranqueado</h3>
+<p>Para o GSEA, precisamos transformar a tabela <code>res_dge</code> em um <strong>vetor numérico nomeado</strong> com todos os genes ranqueados por log2FC e identificados pelo formato KEGG (<code>CAALFM_</code>). Vamos usar o dicionário <code>ensembl_to_kegg</code> que construímos na seção 4:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># KEGG ORA — Upregulados</span></span>
-<span><span class="va">kegg_up</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/enrichKEGG.html">enrichKEGG</a></span><span class="op">(</span></span>
-<span>  gene <span class="op">=</span> <span class="va">genes_up_kegg</span>, organism <span class="op">=</span> <span class="st">"cal"</span>, keyType <span class="op">=</span> <span class="st">"kegg"</span>,</span>
-<span>  pvalueCutoff <span class="op">=</span> <span class="fl">0.5</span>, qvalueCutoff <span class="op">=</span> <span class="fl">0.5</span>, pAdjustMethod <span class="op">=</span> <span class="st">"BH"</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://stringr.tidyverse.org">stringr</a></span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Vetor: log2FC com nome = Ensembl ID</span></span>
+<span><span class="va">ranks</span> <span class="op">&lt;-</span> <span class="va">res_dge</span><span class="op">$</span><span class="va">log2FoldChange</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">ranks</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">res_dge</span><span class="op">)</span></span>
+<span><span class="va">ranks</span> <span class="op">&lt;-</span> <span class="va">ranks</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">ranks</span><span class="op">)</span><span class="op">]</span></span>
+<span></span>
+<span><span class="co"># Converter os nomes para IDs KEGG e ordenar decrescentemente</span></span>
+<span><span class="va">ranks_kegg</span> <span class="op">&lt;-</span> <span class="va">ranks</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">ranks</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">ensembl_to_kegg</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">ranks_kegg</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">ensembl_to_kegg</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">ranks_kegg</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">ranks_kegg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="va">ranks_kegg</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/duplicated.html">duplicated</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">ranks_kegg</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>, decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Genes no ranking (KEGG IDs únicos):"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">ranks_kegg</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Genes no ranking (KEGG IDs únicos): 6023 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"log2FC — máximo (topo do ranking) :"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">ranks_kegg</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>log2FC — máximo (topo do ranking) : 2.82 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"log2FC — mínimo (base do ranking) :"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">ranks_kegg</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>log2FC — mínimo (base do ranking) : -2.62 </code></pre>
+</div>
+</div>
+</section><section id="rodando-gsekegg" class="level3" data-number="7.7.2"><h3 data-number="7.7.2" class="anchored" data-anchor-id="rodando-gsekegg">
+<span class="header-section-number">7.7.2</span> Rodando gseKEGG()</h3>
+<p>A função <code><a href="https://rdrr.io/pkg/clusterProfiler/man/gseKEGG.html">gseKEGG()</a></code> consulta a API REST do KEGG em tempo real para obter as anotações de vias da <em>C. albicans</em> (organism = <code>"cal"</code>) e roda o algoritmo de permutação. Como o GSEA é estocástico, fixamos uma semente com <code><a href="https://rdrr.io/r/base/Random.html">set.seed()</a></code> para garantir que duas execuções da mesma versão do banco produzam exatamente o mesmo resultado:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span>  <span class="co"># GSEA é estocástica (usa permutações); set.seed garante reprodutibilidade</span></span>
+<span><span class="va">gsea_kegg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/gseKEGG.html">gseKEGG</a></span><span class="op">(</span></span>
+<span>  geneList      <span class="op">=</span> <span class="va">ranks_kegg</span>,</span>
+<span>  organism      <span class="op">=</span> <span class="st">"cal"</span>,</span>
+<span>  keyType       <span class="op">=</span> <span class="st">"kegg"</span>,</span>
+<span>  minGSSize     <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  maxGSSize     <span class="op">=</span> <span class="fl">500</span>,</span>
+<span>  pvalueCutoff  <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  pAdjustMethod <span class="op">=</span> <span class="st">"BH"</span>,</span>
+<span>  eps           <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  verbose       <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># KEGG ORA — Downregulados</span></span>
-<span><span class="va">kegg_down</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/enrichKEGG.html">enrichKEGG</a></span><span class="op">(</span></span>
-<span>  gene <span class="op">=</span> <span class="va">genes_down_kegg</span>, organism <span class="op">=</span> <span class="st">"cal"</span>, keyType <span class="op">=</span> <span class="st">"kegg"</span>,</span>
-<span>  pvalueCutoff <span class="op">=</span> <span class="fl">0.5</span>, qvalueCutoff <span class="op">=</span> <span class="fl">0.5</span>, pAdjustMethod <span class="op">=</span> <span class="st">"BH"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># KEGG ORA — Todos os DEGs</span></span>
-<span><span class="va">kegg_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/enrichKEGG.html">enrichKEGG</a></span><span class="op">(</span></span>
-<span>  gene <span class="op">=</span> <span class="va">genes_all_kegg</span>, organism <span class="op">=</span> <span class="st">"cal"</span>, keyType <span class="op">=</span> <span class="st">"kegg"</span>,</span>
-<span>  pvalueCutoff <span class="op">=</span> <span class="fl">0.5</span>, qvalueCutoff <span class="op">=</span> <span class="fl">0.5</span>, pAdjustMethod <span class="op">=</span> <span class="st">"BH"</span></span>
-<span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Vias enriquecidas (GSEA):"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">gsea_kegg</span><span class="op">)</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Vias enriquecidas (GSEA): 62 </code></pre>
 </div>
-<section id="dotplot-kegg-upregulados" class="level3" data-number="7.7.1"><h3 data-number="7.7.1" class="anchored" data-anchor-id="dotplot-kegg-upregulados">
-<span class="header-section-number">7.7.1</span> Dotplot — KEGG Upregulados</h3>
+</div>
+</section><section id="dotplot-gsea-kegg-up-vs.-down" class="level3" data-number="7.7.3"><h3 data-number="7.7.3" class="anchored" data-anchor-id="dotplot-gsea-kegg-up-vs.-down">
+<span class="header-section-number">7.7.3</span> Dotplot — GSEA KEGG (UP vs.&nbsp;DOWN)</h3>
+<p>Diferente do dotplot do ORA, o do GSEA já vem separado por direção: cada via aparece no painel <strong>activated</strong> (NES &gt; 0, regulada para cima) ou <strong>suppressed</strong> (NES &lt; 0, regulada para baixo).</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">kegg_up</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">kegg_up</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot</a></span><span class="op">(</span><span class="va">kegg_up</span>,</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">gsea_kegg</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">gsea_kegg</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot</a></span><span class="op">(</span><span class="va">gsea_kegg</span>,</span>
 <span>          showCategory <span class="op">=</span> <span class="fl">15</span>,</span>
-<span>          title <span class="op">=</span> <span class="st">"KEGG — Genes Upregulados"</span>,</span>
-<span>          color <span class="op">=</span> <span class="st">"p.adjust"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>axis.text.y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>          split <span class="op">=</span> <span class="st">".sign"</span>,</span>
+<span>          title <span class="op">=</span> <span class="st">"GSEA-KEGG — Vias enriquecidas"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html">facet_grid</a></span><span class="op">(</span><span class="va">.</span> <span class="op">~</span> <span class="va">.sign</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html">scale_color_gradient</a></span><span class="op">(</span>low <span class="op">=</span> <span class="st">"#E31A1C"</span>, high <span class="op">=</span> <span class="st">"#FCBBA1"</span>, name <span class="op">=</span> <span class="st">"p-valor\najustado"</span><span class="op">)</span></span>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Nenhuma via KEGG enriquecida para genes upregulados.\n"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Nenhuma via KEGG enriquecida.\n"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="04_downstream_analyses_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="864"></p>
+<figure class="figure"><p><img src="04_downstream_analyses_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="1056"></p>
 </figure>
 </div>
 </div>
 </div>
-</section><section id="dotplot-kegg-downregulados" class="level3" data-number="7.7.2"><h3 data-number="7.7.2" class="anchored" data-anchor-id="dotplot-kegg-downregulados">
-<span class="header-section-number">7.7.2</span> Dotplot — KEGG Downregulados</h3>
+</section><section id="ridgeplot-distribuição-de-log2fc-por-via" class="level3" data-number="7.7.4"><h3 data-number="7.7.4" class="anchored" data-anchor-id="ridgeplot-distribuição-de-log2fc-por-via">
+<span class="header-section-number">7.7.4</span> Ridgeplot — distribuição de log2FC por via</h3>
+<p>O ridgeplot mostra, para cada via enriquecida, a distribuição dos <code>log2FC</code> dos seus genes membros. Vias “puxadas” para a direita estão dominantes em UP; para a esquerda, em DOWN.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">kegg_down</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">kegg_down</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot</a></span><span class="op">(</span><span class="va">kegg_down</span>,</span>
-<span>          showCategory <span class="op">=</span> <span class="fl">15</span>,</span>
-<span>          title <span class="op">=</span> <span class="st">"KEGG — Genes Downregulados"</span>,</span>
-<span>          color <span class="op">=</span> <span class="st">"p.adjust"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>axis.text.y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html">scale_color_gradient</a></span><span class="op">(</span>low <span class="op">=</span> <span class="st">"#1F78B4"</span>, high <span class="op">=</span> <span class="st">"#C6DBEF"</span>, name <span class="op">=</span> <span class="st">"p-valor\najustado"</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">gsea_kegg</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">gsea_kegg</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/ridgeplot.html">ridgeplot</a></span><span class="op">(</span><span class="va">gsea_kegg</span>, showCategory <span class="op">=</span> <span class="fl">15</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"GSEA-KEGG — Distribuição de log2FC por via"</span>,</span>
+<span>         x <span class="op">=</span> <span class="st">"log2 Fold Change"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>face <span class="op">=</span> <span class="st">"bold"</span>, hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Nenhuma via KEGG enriquecida para genes downregulados.\n"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Nenhuma via KEGG enriquecida.\n"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="04_downstream_analyses_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="864"></p>
+<figure class="figure"><p><img src="04_downstream_analyses_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="1056"></p>
 </figure>
 </div>
 </div>
 </div>
-</section><section id="dotplot-kegg-todos-os-degs" class="level3" data-number="7.7.3"><h3 data-number="7.7.3" class="anchored" data-anchor-id="dotplot-kegg-todos-os-degs">
-<span class="header-section-number">7.7.3</span> Dotplot — KEGG Todos os DEGs</h3>
+</section><section id="curva-de-running-enrichment-score-top-3-vias" class="level3" data-number="7.7.5"><h3 data-number="7.7.5" class="anchored" data-anchor-id="curva-de-running-enrichment-score-top-3-vias">
+<span class="header-section-number">7.7.5</span> Curva de Running Enrichment Score — Top 3 vias</h3>
+<p>A curva clássica do GSEA mostra como o Enrichment Score “cresce” ou “decresce” à medida que percorremos o ranking do topo (mais UP) até a base (mais DOWN). Picos positivos no início indicam vias UP; vales negativos no final indicam vias DOWN. As marcas verticais (<code>|</code>) abaixo da curva indicam onde caem, no ranking, os genes da via:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">kegg_all</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">kegg_all</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot</a></span><span class="op">(</span><span class="va">kegg_all</span>,</span>
-<span>          showCategory <span class="op">=</span> <span class="fl">15</span>,</span>
-<span>          title <span class="op">=</span> <span class="st">"KEGG — Todos os DEGs"</span>,</span>
-<span>          color <span class="op">=</span> <span class="st">"p.adjust"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>axis.text.y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html">scale_color_gradient</a></span><span class="op">(</span>low <span class="op">=</span> <span class="st">"grey20"</span>, high <span class="op">=</span> <span class="st">"grey70"</span>, name <span class="op">=</span> <span class="st">"p-valor\najustado"</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">gsea_kegg</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">gsea_kegg</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">top3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">gsea_kegg</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">p.adjust</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">ID</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/gseaplot2.html">gseaplot2</a></span><span class="op">(</span><span class="va">gsea_kegg</span>, geneSetID <span class="op">=</span> <span class="va">top3</span>,</span>
+<span>            title <span class="op">=</span> <span class="st">"GSEA-KEGG — Top 3 vias (running ES)"</span><span class="op">)</span></span>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Nenhuma via KEGG enriquecida para todos os DEGs.\n"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><img src="04_downstream_analyses_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="864"></p>
-</figure>
-</div>
-</div>
-</div>
-</section><section id="barplot-bidirecional-kegg-up-vs.-down" class="level3" data-number="7.7.4"><h3 data-number="7.7.4" class="anchored" data-anchor-id="barplot-bidirecional-kegg-up-vs.-down">
-<span class="header-section-number">7.7.4</span> Barplot Bidirecional — KEGG UP vs.&nbsp;DOWN</h3>
-<p>Para comparar diretamente quais vias estão ativadas (UP) e reprimidas (DOWN), podemos construir um <strong>barplot bidirecional</strong> onde as barras vermelhas (UP) se estendem para a direita e as azuis (DOWN) para a esquerda:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Extrair resultados de UP e DOWN</span></span>
-<span><span class="va">df_kegg_up</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">kegg_up</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">kegg_up</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">kegg_up</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Direction <span class="op">=</span> <span class="st">"Upregulated"</span>, Count_dir <span class="op">=</span> <span class="va">Count</span><span class="op">)</span></span>
-<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">}</span></span>
-<span></span>
-<span><span class="va">df_kegg_down</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">kegg_down</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">kegg_down</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">kegg_down</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Direction <span class="op">=</span> <span class="st">"Downregulated"</span>, Count_dir <span class="op">=</span> <span class="op">-</span><span class="va">Count</span><span class="op">)</span></span>
-<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">}</span></span>
-<span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">df_kegg_up</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span> <span class="op">||</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">df_kegg_down</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">df_kegg_bidir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html">bind_rows</a></span><span class="op">(</span></span>
-<span>    <span class="va">df_kegg_up</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>,</span>
-<span>    <span class="va">df_kegg_down</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">df_kegg_bidir</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Count_dir</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/reorder.factor.html">reorder</a></span><span class="op">(</span><span class="va">Description</span>, <span class="va">Count_dir</span><span class="op">)</span>, fill <span class="op">=</span> <span class="va">Direction</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_col</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Upregulated"</span> <span class="op">=</span> <span class="st">"#E31A1C"</span>, <span class="st">"Downregulated"</span> <span class="op">=</span> <span class="st">"#1F78B4"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">0</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"KEGG — UP vs. DOWN"</span>,</span>
-<span>         x <span class="op">=</span> <span class="st">"Número de Genes"</span>, y <span class="op">=</span> <span class="cn">NULL</span>, fill <span class="op">=</span> <span class="st">"Regulação"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">13</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span>, face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
-<span>          axis.text.y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">9</span><span class="op">)</span>,</span>
-<span>          legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span>
-<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Nenhuma via KEGG enriquecida para gerar o barplot bidirecional.\n"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Nenhuma via KEGG enriquecida.\n"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
@@ -802,18 +784,31 @@ C1_00060W_A Not significant</code></pre>
 </div>
 </div>
 </div>
-</section><section id="barplot-kegg-todos-os-degs" class="level3" data-number="7.7.5"><h3 data-number="7.7.5" class="anchored" data-anchor-id="barplot-kegg-todos-os-degs">
-<span class="header-section-number">7.7.5</span> Barplot — KEGG Todos os DEGs</h3>
+</section><section id="barplot-bidirecional-nes-por-via" class="level3" data-number="7.7.6"><h3 data-number="7.7.6" class="anchored" data-anchor-id="barplot-bidirecional-nes-por-via">
+<span class="header-section-number">7.7.6</span> Barplot Bidirecional — NES por via</h3>
+<p>O análogo direto do barplot bidirecional do ORA é usar o <strong>NES</strong> como métrica: barras vermelhas (UP, NES &gt; 0) crescem para a direita; azuis (DOWN, NES &lt; 0) crescem para a esquerda, compartilhando o mesmo eixo Y:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">kegg_all</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">kegg_all</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html">barplot</a></span><span class="op">(</span><span class="va">kegg_all</span>,</span>
-<span>          showCategory <span class="op">=</span> <span class="fl">15</span>,</span>
-<span>          title <span class="op">=</span> <span class="st">"KEGG — Todos os DEGs"</span>,</span>
-<span>          color <span class="op">=</span> <span class="st">"p.adjust"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>axis.text.y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html">scale_fill_gradient</a></span><span class="op">(</span>low <span class="op">=</span> <span class="st">"grey20"</span>, high <span class="op">=</span> <span class="st">"grey70"</span>, name <span class="op">=</span> <span class="st">"p-valor\najustado"</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">gsea_kegg</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">gsea_kegg</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">df_gsea</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">gsea_kegg</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Direction <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">NES</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="st">"Upregulated"</span>, <span class="st">"Downregulated"</span><span class="op">)</span>,</span>
+<span>           term_lbl  <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_wrap.html">str_wrap</a></span><span class="op">(</span><span class="va">Description</span>, <span class="fl">45</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html">desc</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">NES</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">df_gsea</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">NES</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/reorder.factor.html">reorder</a></span><span class="op">(</span><span class="va">term_lbl</span>, <span class="va">NES</span><span class="op">)</span>, fill <span class="op">=</span> <span class="va">Direction</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_col</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Upregulated"</span>   <span class="op">=</span> <span class="st">"#E31A1C"</span>,</span>
+<span>                                 <span class="st">"Downregulated"</span> <span class="op">=</span> <span class="st">"#1F78B4"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">0</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"GSEA-KEGG — NES por via"</span>,</span>
+<span>         x <span class="op">=</span> <span class="st">"Normalized Enrichment Score (NES)"</span>,</span>
+<span>         y <span class="op">=</span> <span class="cn">NULL</span>, fill <span class="op">=</span> <span class="st">"Direção"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">13</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>plot.title  <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span>, face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
+<span>          axis.text.y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">9</span><span class="op">)</span>,</span>
+<span>          legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Nenhuma via KEGG enriquecida para todos os DEGs.\n"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Nenhuma via KEGG enriquecida para gerar o barplot.\n"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
@@ -822,166 +817,162 @@ C1_00060W_A Not significant</code></pre>
 </div>
 </div>
 </div>
-</section><section id="como-interpretar-os-gráficos" class="level3" data-number="7.7.6"><h3 data-number="7.7.6" class="anchored" data-anchor-id="como-interpretar-os-gráficos">
-<span class="header-section-number">7.7.6</span> Como interpretar os gráficos:</h3>
+</section><section id="como-interpretar-os-gráficos" class="level3" data-number="7.7.7"><h3 data-number="7.7.7" class="anchored" data-anchor-id="como-interpretar-os-gráficos">
+<span class="header-section-number">7.7.7</span> Como interpretar os gráficos:</h3>
 <ul>
 <li>
-<strong>Dotplot</strong>: cada ponto representa uma via enriquecida. O <strong>tamanho</strong> indica quantos DEGs pertencem àquela via (Count); a <strong>cor</strong> indica o p-valor ajustado.</li>
+<strong>Dotplot</strong>: cada ponto é uma via enriquecida, separada nos painéis <code>activated</code> (NES &gt; 0) e <code>suppressed</code> (NES &lt; 0). O <strong>tamanho</strong> indica o número de genes da via (<code>setSize</code>); a <strong>cor</strong> indica o p-valor ajustado.</li>
 <li>
-<strong>Barplot bidirecional</strong>: permite comparar diretamente as vias UP (vermelho, à direita) e DOWN (azul, à esquerda) em um único gráfico.</li>
+<strong>Ridgeplot</strong>: a curva de densidade mostra como os <code>log2FC</code> dos genes daquela via estão distribuídos — concentração à direita = UP, à esquerda = DOWN.</li>
 <li>
-<strong>Barplot (ALL)</strong>: mostra as vias enriquecidas considerando todos os DEGs juntos, com a cor indicando o p-valor ajustado.</li>
+<strong>Running ES</strong>: a curva clássica do GSEA. Picos no topo do ranking (esquerda) indicam vias UP; vales na base (direita), vias DOWN. As marcas (<code>|</code>) mostram onde os genes da via caem no ranking.</li>
+<li>
+<strong>Barplot bidirecional (NES)</strong>: análogo direto do barplot do ORA, mas usando NES como métrica de direção e magnitude — barras vermelhas (UP) à direita, azuis (DOWN) à esquerda.</li>
 </ul>
-<hr></section></section><section id="obtendo-anotações-go-do-candida-genome-database-cgd" class="level2" data-number="7.8"><h2 data-number="7.8" class="anchored" data-anchor-id="obtendo-anotações-go-do-candida-genome-database-cgd">
-<span class="header-section-number">7.8</span> 6. Obtendo Anotações GO do Candida Genome Database (CGD)</h2>
-<p>O <strong>Candida Genome Database (CGD)</strong> disponibiliza um arquivo GAF (<em>Gene Association File</em>) com anotações de Gene Ontology curadas manualmente e computacionalmente, específicas para <em>C. albicans</em> SC5314. Esse arquivo contém mais de 33 mil anotações — significativamente mais completo do que o disponível via Ensembl Fungi.</p>
+<hr></section></section><section id="enriquecimento-go-com-gprofiler" class="level2" data-number="7.8"><h2 data-number="7.8" class="anchored" data-anchor-id="enriquecimento-go-com-gprofiler">
+<span class="header-section-number">7.8</span> 6. Enriquecimento GO com g:Profiler</h2>
+<p>Vamos rodar a ORA com Gene Ontology (Biological Process) separadamente para cada conjunto de genes (upregulados, downregulados e todos os DEGs), usando o <strong>corte didático</strong> de p-valor ajustado <strong>≤ 0.5</strong> com correção <strong>FDR</strong> (Benjamini-Hochberg). Observe que diferentemente do <code><a href="https://rdrr.io/pkg/clusterProfiler/man/enrichKEGG.html">enrichKEGG()</a></code>, aqui passamos os identificadores no formato original do Ensembl Fungi (ex: <code>C1_00210C_A</code>) — o g:Profiler reconhece e mapeia internamente, sem precisar de dicionário de conversão.</p>
+</section><section id="sobre-o-pacote-gprofiler" class="level2" data-number="7.9"><h2 data-number="7.9" class="anchored" data-anchor-id="sobre-o-pacote-gprofiler">
+<span class="header-section-number">7.9</span> 7. Sobre o pacote g:Profiler</h2>
+<p>Uma alternativa para o enriquecimento usando o Gene Ontology é o <strong>g:Profiler</strong>, uma ferramenta mantida pela Universidade de Tartu que indexa anotações funcionais do <strong>Ensembl</strong> e do <strong>Ensembl Genomes</strong> (incluindo o Ensembl Fungi) e oferece uma API REST consultável a partir do R via o pacote <code>gprofiler2</code>. A função central do pacote é <code><a href="https://rdrr.io/pkg/gprofiler2/man/gost.html">gost()</a></code>, que envia uma lista de genes ao servidor, executa o teste hipergeométrico contra cada termo da ontologia e retorna uma tabela com os resultados.</p>
+<p>A principal vantagem do g:Profiler é a <strong>reprodutibilidade por release</strong>: cada versão do banco recebe um identificador citável (ex: <code>e114_eg62_p19</code>) e fica permanentemente arquivada, o que permite que análises sejam refeitas exatamente como na data original.</p>
 <div class="callout callout-style-simple callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Ponto Importante
+<span class="screen-reader-only">Note</span>Ponto Importante — g:Profiler e Organismos Não-Modelo
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>O arquivo GAF pode ser baixado diretamente de: <a href="http://www.candidagenome.org/download/go/">candidagenome.org/download/go/</a>. Nós já o baixamos e descompactamos em <code>data/cgd/</code>.</p>
+<p>O g:Profiler suporta <strong>mais de 200 organismos</strong> via Ensembl e Ensembl Genomes, incluindo <em>C. albicans</em> SC5314 (código de organismo: <code>calbicans</code>). No entanto, a integração com <strong>KEGG, Reactome e WikiPathways</strong> está disponível apenas para organismos-modelo (humano, camundongo, rato, levedura, etc.). Para <em>C. albicans</em>, somente as três sub-ontologias do Gene Ontology (<strong>Biological Process</strong>, <strong>Molecular Function</strong> e <strong>Cellular Component</strong>) estão indexadas. Por isso, mantemos a análise KEGG da seção anterior e usamos o g:Profiler aqui apenas para GO (Biological Process).</p>
 </div>
 </div>
-<section id="parsear-o-arquivo-gaf" class="level3" data-number="7.8.1"><h3 data-number="7.8.1" class="anchored" data-anchor-id="parsear-o-arquivo-gaf">
-<span class="header-section-number">7.8.1</span> Parsear o arquivo GAF</h3>
+<section id="carregando-o-pacote-gprofiler2" class="level3" data-number="7.9.1"><h3 data-number="7.9.1" class="anchored" data-anchor-id="carregando-o-pacote-gprofiler2">
+<span class="header-section-number">7.9.1</span> Carregando o pacote gprofiler2</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Ler o arquivo GAF (pulando linhas de comentário)</span></span>
-<span><span class="va">gaf_raw</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.delim</a></span><span class="op">(</span></span>
-<span>  <span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html">here</a></span><span class="op">(</span><span class="st">"data/cgd/cgd_C_albicans_SC5314.gaf"</span><span class="op">)</span>,</span>
-<span>  header <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  comment.char <span class="op">=</span> <span class="st">"!"</span>,</span>
-<span>  quote <span class="op">=</span> <span class="st">""</span>,</span>
-<span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">gprofiler2</span><span class="op">)</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://stringr.tidyverse.org">stringr</a></span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gost_up</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/gprofiler2/man/gost.html">gost</a></span><span class="op">(</span></span>
+<span>  query             <span class="op">=</span> <span class="va">genes_up</span>,</span>
+<span>  organism          <span class="op">=</span> <span class="st">"calbicans"</span>,</span>
+<span>  sources           <span class="op">=</span> <span class="st">"GO:BP"</span>,</span>
+<span>  user_threshold    <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  correction_method <span class="op">=</span> <span class="st">"fdr"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Nomear as colunas relevantes do GAF 2.2</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">colnames</a></span><span class="op">(</span><span class="va">gaf_raw</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">7</span>, <span class="fl">9</span>, <span class="fl">11</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"DB"</span>, <span class="st">"DB_Object_ID"</span>, <span class="st">"Gene_Symbol"</span>, <span class="st">"Qualifier"</span>, <span class="st">"GO_ID"</span>,</span>
-<span>  <span class="st">"Evidence_Code"</span>, <span class="st">"Aspect"</span>, <span class="st">"Synonyms"</span></span>
+<span><span class="va">gost_down</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/gprofiler2/man/gost.html">gost</a></span><span class="op">(</span></span>
+<span>  query             <span class="op">=</span> <span class="va">genes_down</span>,</span>
+<span>  organism          <span class="op">=</span> <span class="st">"calbicans"</span>,</span>
+<span>  sources           <span class="op">=</span> <span class="st">"GO:BP"</span>,</span>
+<span>  user_threshold    <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  correction_method <span class="op">=</span> <span class="st">"fdr"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Total de anotações no GAF:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">gaf_raw</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Total de anotações no GAF: 33286 </code></pre>
-</div>
-</div>
-</section><section id="extrair-ids-ensembl-dos-sinônimos" class="level3" data-number="7.8.2"><h3 data-number="7.8.2" class="anchored" data-anchor-id="extrair-ids-ensembl-dos-sinônimos">
-<span class="header-section-number">7.8.2</span> Extrair IDs Ensembl dos Sinônimos</h3>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Função para extrair o ID Ensembl (_A) dos sinônimos</span></span>
-<span><span class="va">extract_ensembl_id</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">synonyms</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">syns</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strsplit.html">strsplit</a></span><span class="op">(</span><span class="va">synonyms</span>, <span class="st">"\\|"</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="va">match</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">grep</a></span><span class="op">(</span><span class="st">"^C[0-9R]+_\\d{5}[WC]_A$"</span>, <span class="va">syns</span>, value <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">match</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">match</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="cn">NA_character_</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># Aplicar a extração</span></span>
-<span><span class="va">gaf_raw</span><span class="op">$</span><span class="va">ensembl_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">gaf_raw</span><span class="op">$</span><span class="va">Synonyms</span>, <span class="va">extract_ensembl_id</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Verificar taxa de mapeamento</span></span>
-<span><span class="va">mapped</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">gaf_raw</span><span class="op">$</span><span class="va">ensembl_id</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Anotações com ID Ensembl mapeado:"</span>, <span class="va">mapped</span>, <span class="st">"de"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">gaf_raw</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Anotações com ID Ensembl mapeado: 33028 de 33286 </code></pre>
-</div>
-</div>
-</section><section id="construir-term2gene-e-term2name" class="level3" data-number="7.8.3"><h3 data-number="7.8.3" class="anchored" data-anchor-id="construir-term2gene-e-term2name">
-<span class="header-section-number">7.8.3</span> Construir TERM2GENE e TERM2NAME</h3>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Filtrar anotações válidas</span></span>
-<span><span class="va">gaf_mapped</span> <span class="op">&lt;-</span> <span class="va">gaf_raw</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">ensembl_id</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">ensembl_id</span>, <span class="va">GO_ID</span>, <span class="va">Gene_Symbol</span>, <span class="va">Aspect</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># TERM2GENE: GO_ID → ensembl_id</span></span>
-<span><span class="va">term2gene_cgd</span> <span class="op">&lt;-</span> <span class="va">gaf_mapped</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">GO_ID</span>, <span class="va">ensembl_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Obter nomes dos termos GO via GO.db</span></span>
-<span><span class="va">go_terms</span> <span class="op">&lt;-</span> <span class="fu">AnnotationDbi</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/AnnotationDbi/man/AnnotationDb-class.html">select</a></span><span class="op">(</span><span class="va">GO.db</span>, </span>
-<span>                                   keys <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">term2gene_cgd</span><span class="op">$</span><span class="va">GO_ID</span><span class="op">)</span>, </span>
-<span>                                   columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"GOID"</span>, <span class="st">"TERM"</span>, <span class="st">"ONTOLOGY"</span><span class="op">)</span>, </span>
-<span>                                   keytype <span class="op">=</span> <span class="st">"GOID"</span><span class="op">)</span></span>
-<span><span class="va">go_terms</span> <span class="op">&lt;-</span> <span class="va">go_terms</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">go_terms</span><span class="op">$</span><span class="va">TERM</span><span class="op">)</span>, <span class="op">]</span></span>
-<span></span>
-<span><span class="va">term2name_cgd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span></span>
-<span>  GO_ID <span class="op">=</span> <span class="va">go_terms</span><span class="op">$</span><span class="va">GOID</span>,</span>
-<span>  Name <span class="op">=</span> <span class="va">go_terms</span><span class="op">$</span><span class="va">TERM</span></span>
+<span><span class="va">gost_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/gprofiler2/man/gost.html">gost</a></span><span class="op">(</span></span>
+<span>  query             <span class="op">=</span> <span class="va">genes_all</span>,</span>
+<span>  organism          <span class="op">=</span> <span class="st">"calbicans"</span>,</span>
+<span>  sources           <span class="op">=</span> <span class="st">"GO:BP"</span>,</span>
+<span>  user_threshold    <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  correction_method <span class="op">=</span> <span class="st">"fdr"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Total de mapeamentos gene-GO:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">term2gene_cgd</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span><span class="co"># Versão do banco consultado (citável nos métodos)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Versão do g:Profiler:"</span>, <span class="va">gost_all</span><span class="op">$</span><span class="va">meta</span><span class="op">$</span><span class="va">version</span>, <span class="st">"\n\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Total de mapeamentos gene-GO: 29905 </code></pre>
+<pre><code>Versão do g:Profiler: e114_eg62_p19_27110d83 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Termos GO únicos:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">term2gene_cgd</span><span class="op">$</span><span class="va">GO_ID</span><span class="op">)</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Termos GO BP enriquecidos:\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Termos GO únicos: 3277 </code></pre>
+<pre><code>Termos GO BP enriquecidos:</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Genes únicos com GO:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">term2gene_cgd</span><span class="op">$</span><span class="va">ensembl_id</span><span class="op">)</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"  UP   :"</span>, <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">gost_up</span><span class="op">)</span><span class="op">)</span>   <span class="fl">0</span> <span class="kw">else</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">gost_up</span><span class="op">$</span><span class="va">result</span><span class="op">)</span>,   <span class="st">"\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Genes únicos com GO: 6261 </code></pre>
+<pre><code>  UP   : 149 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"  DOWN :"</span>, <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">gost_down</span><span class="op">)</span><span class="op">)</span> <span class="fl">0</span> <span class="kw">else</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">gost_down</span><span class="op">$</span><span class="va">result</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  DOWN : 143 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"  ALL  :"</span>, <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">gost_all</span><span class="op">)</span><span class="op">)</span>  <span class="fl">0</span> <span class="kw">else</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">gost_all</span><span class="op">$</span><span class="va">result</span><span class="op">)</span>,  <span class="st">"\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  ALL  : 240 </code></pre>
 </div>
 </div>
+<p>Como o objeto retornado pelo <code><a href="https://rdrr.io/pkg/gprofiler2/man/gost.html">gost()</a></code> é uma lista (não um <code>enrichResult</code> do <code>clusterProfiler</code>), as funções <code><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot()</a></code> e <code><a href="https://rdrr.io/r/graphics/barplot.html">barplot()</a></code> do <code>enrichplot</code> não funcionam diretamente. Definimos abaixo uma pequena função auxiliar que monta dotplots no mesmo estilo dos da seção KEGG: o eixo X traz o <strong>GeneRatio</strong> (proporção de DEGs caindo no termo), a <strong>cor</strong> representa o p-valor ajustado e o <strong>tamanho do ponto</strong> indica quantos DEGs pertencem ao termo (<code>Count</code>).</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Separar por ontologia</span></span>
-<span><span class="va">bp_terms</span> <span class="op">&lt;-</span> <span class="va">go_terms</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">ONTOLOGY</span> <span class="op">==</span> <span class="st">"BP"</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Função para criar o gráfico</span></span>
+<span><span class="va">dotplot_gost</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">gost_res</span>, <span class="va">titulo</span>, <span class="va">cor_low</span>, <span class="va">cor_high</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">df</span> <span class="op">&lt;-</span> <span class="va">gost_res</span><span class="op">$</span><span class="va">result</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span></span>
+<span>      GeneRatio <span class="op">=</span> <span class="va">intersection_size</span> <span class="op">/</span> <span class="va">query_size</span>,</span>
+<span>      term_lbl  <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_wrap.html">str_wrap</a></span><span class="op">(</span><span class="va">term_name</span>, <span class="fl">45</span><span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">p_value</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>term_lbl <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">term_lbl</span>,</span>
+<span>                             levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">term_lbl</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span><span class="op">(</span><span class="va">GeneRatio</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">term2gene_cgd_bp</span> <span class="op">&lt;-</span> <span class="va">term2gene_cgd</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">GO_ID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va">bp_terms</span><span class="op">$</span><span class="va">GOID</span><span class="op">)</span></span>
-<span><span class="va">term2name_cgd_bp</span> <span class="op">&lt;-</span> <span class="va">term2name_cgd</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">GO_ID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va">bp_terms</span><span class="op">$</span><span class="va">GOID</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Termos BP:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">term2gene_cgd_bp</span><span class="op">$</span><span class="va">GO_ID</span><span class="op">)</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Termos BP: 1661 </code></pre>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">df</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">GeneRatio</span>, y <span class="op">=</span> <span class="va">term_lbl</span>,</span>
+<span>                 color <span class="op">=</span> <span class="va">p_value</span>, size <span class="op">=</span> <span class="va">intersection_size</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html">scale_color_gradient</a></span><span class="op">(</span>low <span class="op">=</span> <span class="va">cor_low</span>, high <span class="op">=</span> <span class="va">cor_high</span>,</span>
+<span>                         name <span class="op">=</span> <span class="st">"p-valor\najustado"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_size.html">scale_size_continuous</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Count"</span>, range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">8</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="va">titulo</span>, x <span class="op">=</span> <span class="st">"GeneRatio"</span>, y <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">11</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>plot.title  <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>face <span class="op">=</span> <span class="st">"bold"</span>, hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>,</span>
+<span>          axis.text.y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">9</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</div>
-<hr></section></section><section id="enriquecimento-go-ora-cgd" class="level2" data-number="7.9"><h2 data-number="7.9" class="anchored" data-anchor-id="enriquecimento-go-ora-cgd">
-<span class="header-section-number">7.9</span> 7. Enriquecimento GO — ORA (CGD)</h2>
-<p>Vamos rodar a ORA com Gene Ontology (Biological Process) separadamente para cada conjunto:</p>
+</section><section id="dotplot-go-bp-upregulados" class="level3" data-number="7.9.2"><h3 data-number="7.9.2" class="anchored" data-anchor-id="dotplot-go-bp-upregulados">
+<span class="header-section-number">7.9.2</span> Dotplot — GO BP Upregulados</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># GO ORA — Upregulados</span></span>
-<span><span class="va">go_up</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/enricher.html">enricher</a></span><span class="op">(</span></span>
-<span>  gene <span class="op">=</span> <span class="va">genes_up</span>,</span>
-<span>  TERM2GENE <span class="op">=</span> <span class="va">term2gene_cgd_bp</span>,</span>
-<span>  TERM2NAME <span class="op">=</span> <span class="va">term2name_cgd_bp</span>,</span>
-<span>  pvalueCutoff <span class="op">=</span> <span class="fl">0.5</span>, qvalueCutoff <span class="op">=</span> <span class="fl">0.5</span>, pAdjustMethod <span class="op">=</span> <span class="st">"BH"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># GO ORA — Downregulados</span></span>
-<span><span class="va">go_down</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/enricher.html">enricher</a></span><span class="op">(</span></span>
-<span>  gene <span class="op">=</span> <span class="va">genes_down</span>,</span>
-<span>  TERM2GENE <span class="op">=</span> <span class="va">term2gene_cgd_bp</span>,</span>
-<span>  TERM2NAME <span class="op">=</span> <span class="va">term2name_cgd_bp</span>,</span>
-<span>  pvalueCutoff <span class="op">=</span> <span class="fl">0.5</span>, qvalueCutoff <span class="op">=</span> <span class="fl">0.5</span>, pAdjustMethod <span class="op">=</span> <span class="st">"BH"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># GO ORA — Todos os DEGs</span></span>
-<span><span class="va">go_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/enricher.html">enricher</a></span><span class="op">(</span></span>
-<span>  gene <span class="op">=</span> <span class="va">genes_all</span>,</span>
-<span>  TERM2GENE <span class="op">=</span> <span class="va">term2gene_cgd_bp</span>,</span>
-<span>  TERM2NAME <span class="op">=</span> <span class="va">term2name_cgd_bp</span>,</span>
-<span>  pvalueCutoff <span class="op">=</span> <span class="fl">0.5</span>, qvalueCutoff <span class="op">=</span> <span class="fl">0.5</span>, pAdjustMethod <span class="op">=</span> <span class="st">"BH"</span></span>
-<span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<section id="dotplot-go-bp-upregulados" class="level3" data-number="7.9.1"><h3 data-number="7.9.1" class="anchored" data-anchor-id="dotplot-go-bp-upregulados">
-<span class="header-section-number">7.9.1</span> Dotplot — GO BP Upregulados</h3>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">go_up</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">go_up</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot</a></span><span class="op">(</span><span class="va">go_up</span>,</span>
-<span>          showCategory <span class="op">=</span> <span class="fl">15</span>,</span>
-<span>          title <span class="op">=</span> <span class="st">"GO Biological Process — Genes Upregulados (CGD)"</span>,</span>
-<span>          color <span class="op">=</span> <span class="st">"p.adjust"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>axis.text.y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">9</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html">scale_color_gradient</a></span><span class="op">(</span>low <span class="op">=</span> <span class="st">"#E31A1C"</span>, high <span class="op">=</span> <span class="st">"#FCBBA1"</span>, name <span class="op">=</span> <span class="st">"p-valor\najustado"</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">gost_up</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">gost_up</span><span class="op">$</span><span class="va">result</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">dotplot_gost</span><span class="op">(</span><span class="va">gost_up</span>,</span>
+<span>               <span class="st">"GO Biological Process — Genes Upregulados (g:Profiler)"</span>,</span>
+<span>               cor_low <span class="op">=</span> <span class="st">"#E31A1C"</span>, cor_high <span class="op">=</span> <span class="st">"#FCBBA1"</span><span class="op">)</span></span>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Nenhum processo biológico enriquecido para genes upregulados.\n"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="04_downstream_analyses_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="dotplot-go-bp-downregulados" class="level3" data-number="7.9.3"><h3 data-number="7.9.3" class="anchored" data-anchor-id="dotplot-go-bp-downregulados">
+<span class="header-section-number">7.9.3</span> Dotplot — GO BP Downregulados</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">gost_down</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">gost_down</span><span class="op">$</span><span class="va">result</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">dotplot_gost</span><span class="op">(</span><span class="va">gost_down</span>,</span>
+<span>               <span class="st">"GO Biological Process — Genes Downregulados (g:Profiler)"</span>,</span>
+<span>               cor_low <span class="op">=</span> <span class="st">"#1F78B4"</span>, cor_high <span class="op">=</span> <span class="st">"#C6DBEF"</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Nenhum processo biológico enriquecido para genes downregulados.\n"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="04_downstream_analyses_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="dotplot-go-bp-todos-os-degs" class="level3" data-number="7.9.4"><h3 data-number="7.9.4" class="anchored" data-anchor-id="dotplot-go-bp-todos-os-degs">
+<span class="header-section-number">7.9.4</span> Dotplot — GO BP Todos os DEGs</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">gost_all</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">gost_all</span><span class="op">$</span><span class="va">result</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">dotplot_gost</span><span class="op">(</span><span class="va">gost_all</span>,</span>
+<span>               <span class="st">"GO Biological Process — Todos os DEGs (g:Profiler)"</span>,</span>
+<span>               cor_low <span class="op">=</span> <span class="st">"pink"</span>, cor_high <span class="op">=</span> <span class="st">"purple"</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Nenhum processo biológico enriquecido para todos os DEGs.\n"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
@@ -990,36 +981,66 @@ C1_00060W_A Not significant</code></pre>
 </div>
 </div>
 </div>
-</section><section id="dotplot-go-bp-downregulados" class="level3" data-number="7.9.2"><h3 data-number="7.9.2" class="anchored" data-anchor-id="dotplot-go-bp-downregulados">
-<span class="header-section-number">7.9.2</span> Dotplot — GO BP Downregulados</h3>
+</section><section id="barplot-bidirecional-go-bp-up-vs.-down" class="level3" data-number="7.9.5"><h3 data-number="7.9.5" class="anchored" data-anchor-id="barplot-bidirecional-go-bp-up-vs.-down">
+<span class="header-section-number">7.9.5</span> Barplot Bidirecional — GO BP UP vs.&nbsp;DOWN</h3>
+<p>Como fizemos na seção KEGG, podemos comparar diretamente os termos enriquecidos em UP e DOWN num único gráfico bidirecional — as barras vermelhas (UP) crescem para a direita e as azuis (DOWN) para a esquerda, compartilhando o mesmo eixo Y:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">go_down</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">go_down</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot</a></span><span class="op">(</span><span class="va">go_down</span>,</span>
-<span>          showCategory <span class="op">=</span> <span class="fl">15</span>,</span>
-<span>          title <span class="op">=</span> <span class="st">"GO Biological Process — Genes Downregulados (CGD)"</span>,</span>
-<span>          color <span class="op">=</span> <span class="st">"p.adjust"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>axis.text.y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">9</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html">scale_color_gradient</a></span><span class="op">(</span>low <span class="op">=</span> <span class="st">"#1F78B4"</span>, high <span class="op">=</span> <span class="st">"#C6DBEF"</span>, name <span class="op">=</span> <span class="st">"p-valor\najustado"</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df_gost_up</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">gost_up</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">gost_up</span><span class="op">$</span><span class="va">result</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">gost_up</span><span class="op">$</span><span class="va">result</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Direction <span class="op">=</span> <span class="st">"Upregulated"</span>, Count_dir <span class="op">=</span> <span class="va">intersection_size</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">}</span></span>
+<span></span>
+<span><span class="va">df_gost_down</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">gost_down</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">gost_down</span><span class="op">$</span><span class="va">result</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">gost_down</span><span class="op">$</span><span class="va">result</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Direction <span class="op">=</span> <span class="st">"Downregulated"</span>, Count_dir <span class="op">=</span> <span class="op">-</span><span class="va">intersection_size</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">}</span></span>
+<span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">df_gost_up</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span> <span class="op">||</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">df_gost_down</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">df_gost_bidir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html">bind_rows</a></span><span class="op">(</span></span>
+<span>    <span class="va">df_gost_up</span>   <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">p_value</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>,</span>
+<span>    <span class="va">df_gost_down</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">p_value</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>term_lbl <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_wrap.html">str_wrap</a></span><span class="op">(</span><span class="va">term_name</span>, <span class="fl">45</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">df_gost_bidir</span>,</span>
+<span>         <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Count_dir</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/reorder.factor.html">reorder</a></span><span class="op">(</span><span class="va">term_lbl</span>, <span class="va">Count_dir</span><span class="op">)</span>, fill <span class="op">=</span> <span class="va">Direction</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_col</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Upregulated"</span>   <span class="op">=</span> <span class="st">"#E31A1C"</span>,</span>
+<span>                                 <span class="st">"Downregulated"</span> <span class="op">=</span> <span class="st">"#1F78B4"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">0</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"GO Biological Process — UP vs. DOWN (g:Profiler)"</span>,</span>
+<span>         x <span class="op">=</span> <span class="st">"Número de Genes"</span>, y <span class="op">=</span> <span class="cn">NULL</span>, fill <span class="op">=</span> <span class="st">"Regulação"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">13</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>plot.title  <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span>, face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
+<span>          axis.text.y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">9</span><span class="op">)</span>,</span>
+<span>          legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Nenhum processo biológico enriquecido para genes downregulados.\n"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Nenhum processo biológico enriquecido para gerar o barplot bidirecional.\n"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="04_downstream_analyses_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="960"></p>
+<figure class="figure"><p><img src="04_downstream_analyses_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="1056"></p>
 </figure>
 </div>
 </div>
 </div>
-</section><section id="dotplot-go-bp-todos-os-degs" class="level3" data-number="7.9.3"><h3 data-number="7.9.3" class="anchored" data-anchor-id="dotplot-go-bp-todos-os-degs">
-<span class="header-section-number">7.9.3</span> Dotplot — GO BP Todos os DEGs</h3>
+</section><section id="barplot-go-bp-todos-os-degs" class="level3" data-number="7.9.6"><h3 data-number="7.9.6" class="anchored" data-anchor-id="barplot-go-bp-todos-os-degs">
+<span class="header-section-number">7.9.6</span> Barplot — GO BP Todos os DEGs</h3>
+<p>Finalmente, o barplot considerando todos os DEGs juntos, em tom roxo para diferenciá-lo do par UP/DOWN:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">go_all</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">go_all</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot</a></span><span class="op">(</span><span class="va">go_all</span>,</span>
-<span>          showCategory <span class="op">=</span> <span class="fl">15</span>,</span>
-<span>          title <span class="op">=</span> <span class="st">"GO Biological Process — Todos os DEGs (CGD)"</span>,</span>
-<span>          color <span class="op">=</span> <span class="st">"p.adjust"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>axis.text.y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">9</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html">scale_color_gradient</a></span><span class="op">(</span>low <span class="op">=</span> <span class="st">"grey20"</span>, high <span class="op">=</span> <span class="st">"grey70"</span>, name <span class="op">=</span> <span class="st">"p-valor\najustado"</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">gost_all</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">gost_all</span><span class="op">$</span><span class="va">result</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">gost_all</span><span class="op">$</span><span class="va">result</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">p_value</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>term_lbl <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_wrap.html">str_wrap</a></span><span class="op">(</span><span class="va">term_name</span>, <span class="fl">45</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">intersection_size</span>,</span>
+<span>               y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/reorder.factor.html">reorder</a></span><span class="op">(</span><span class="va">term_lbl</span>, <span class="va">intersection_size</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_col</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"#6A3D9A"</span>, width <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"GO Biological Process — Todos os DEGs (g:Profiler)"</span>,</span>
+<span>         x <span class="op">=</span> <span class="st">"Número de Genes"</span>, y <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">13</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>plot.title  <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span>, face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
+<span>          axis.text.y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">9</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Nenhum processo biológico enriquecido para todos os DEGs.\n"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1030,64 +1051,16 @@ C1_00060W_A Not significant</code></pre>
 </div>
 </div>
 </div>
-</section><section id="barplot-bidirecional-go-bp-up-vs.-down" class="level3" data-number="7.9.4"><h3 data-number="7.9.4" class="anchored" data-anchor-id="barplot-bidirecional-go-bp-up-vs.-down">
-<span class="header-section-number">7.9.4</span> Barplot Bidirecional — GO BP UP vs.&nbsp;DOWN</h3>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Extrair resultados de UP e DOWN</span></span>
-<span><span class="va">df_go_up</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">go_up</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">go_up</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">go_up</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Direction <span class="op">=</span> <span class="st">"Upregulated"</span>, Count_dir <span class="op">=</span> <span class="va">Count</span><span class="op">)</span></span>
-<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">}</span></span>
-<span></span>
-<span><span class="va">df_go_down</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">go_down</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">go_down</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">go_down</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Direction <span class="op">=</span> <span class="st">"Downregulated"</span>, Count_dir <span class="op">=</span> <span class="op">-</span><span class="va">Count</span><span class="op">)</span></span>
-<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">}</span></span>
-<span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">df_go_up</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span> <span class="op">||</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">df_go_down</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">df_go_bidir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html">bind_rows</a></span><span class="op">(</span></span>
-<span>    <span class="va">df_go_up</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>,</span>
-<span>    <span class="va">df_go_down</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">df_go_bidir</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Count_dir</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/reorder.factor.html">reorder</a></span><span class="op">(</span><span class="va">Description</span>, <span class="va">Count_dir</span><span class="op">)</span>, fill <span class="op">=</span> <span class="va">Direction</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_col</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Upregulated"</span> <span class="op">=</span> <span class="st">"#E31A1C"</span>, <span class="st">"Downregulated"</span> <span class="op">=</span> <span class="st">"#1F78B4"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">0</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"GO Biological Process — UP vs. DOWN (CGD)"</span>,</span>
-<span>         x <span class="op">=</span> <span class="st">"Número de Genes"</span>, y <span class="op">=</span> <span class="cn">NULL</span>, fill <span class="op">=</span> <span class="st">"Regulação"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">13</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span>, face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
-<span>          axis.text.y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">9</span><span class="op">)</span>,</span>
-<span>          legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span>
-<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Nenhum processo biológico enriquecido para gerar o barplot bidirecional.\n"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><img src="04_downstream_analyses_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="1056"></p>
-</figure>
-</div>
-</div>
-</div>
-</section><section id="barplot-go-bp-todos-os-degs" class="level3" data-number="7.9.5"><h3 data-number="7.9.5" class="anchored" data-anchor-id="barplot-go-bp-todos-os-degs">
-<span class="header-section-number">7.9.5</span> Barplot — GO BP Todos os DEGs</h3>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">go_all</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">go_all</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html">barplot</a></span><span class="op">(</span><span class="va">go_all</span>,</span>
-<span>          showCategory <span class="op">=</span> <span class="fl">15</span>,</span>
-<span>          title <span class="op">=</span> <span class="st">"GO Biological Process — Todos os DEGs (CGD)"</span>,</span>
-<span>          color <span class="op">=</span> <span class="st">"p.adjust"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>axis.text.y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">9</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html">scale_fill_gradient</a></span><span class="op">(</span>low <span class="op">=</span> <span class="st">"grey20"</span>, high <span class="op">=</span> <span class="st">"grey70"</span>, name <span class="op">=</span> <span class="st">"p-valor\najustado"</span><span class="op">)</span></span>
-<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Nenhum processo biológico enriquecido para todos os DEGs.\n"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><img src="04_downstream_analyses_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
+</section><section id="como-interpretar-os-gráficos-1" class="level3" data-number="7.9.7"><h3 data-number="7.9.7" class="anchored" data-anchor-id="como-interpretar-os-gráficos-1">
+<span class="header-section-number">7.9.7</span> Como interpretar os gráficos:</h3>
+<ul>
+<li>
+<strong>Dotplot</strong>: cada ponto representa um termo GO BP enriquecido. O <strong>tamanho</strong> indica quantos DEGs pertencem ao termo (<code>Count</code>); a <strong>cor</strong> indica o p-valor ajustado (FDR).</li>
+<li>
+<strong>Barplot bidirecional</strong>: permite comparar diretamente os termos UP (vermelho, à direita) e DOWN (azul, à esquerda) em um único gráfico, com o eixo Y compartilhado.</li>
+<li>
+<strong>Barplot (ALL)</strong>: mostra os termos GO BP enriquecidos considerando todos os DEGs juntos, ordenados pelo número de genes que pertencem a cada termo.</li>
+</ul>
 <hr></section></section><section id="resumo-e-interpretação" class="level2" data-number="7.10"><h2 data-number="7.10" class="anchored" data-anchor-id="resumo-e-interpretação">
 <span class="header-section-number">7.10</span> 8. Resumo e Interpretação</h2>
 <div class="cell">
@@ -1100,74 +1073,57 @@ C1_00060W_A Not significant</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>Genes UP: 40 | DOWN: 35 | Total: 75 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"--- KEGG ---\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"--- KEGG (GSEA) ---\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>--- KEGG ---</code></pre>
+<pre><code>--- KEGG (GSEA) ---</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"  UP:   "</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">gsea_kegg</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">gsea_kegg</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">df_gsea_sum</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">gsea_kegg</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"  Activated (NES &gt; 0):"</span>, <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">df_gsea_sum</span><span class="op">$</span><span class="va">NES</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span>, <span class="st">"vias\n"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"  Suppressed (NES &lt; 0):"</span>, <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">df_gsea_sum</span><span class="op">$</span><span class="va">NES</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">)</span>, <span class="st">"vias\n"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"  Total              :"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">df_gsea_sum</span><span class="op">)</span>, <span class="st">"vias\n"</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"  nenhuma via enriquecida\n"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  UP:   </code></pre>
+<pre><code>  Activated (NES &gt; 0): 26 vias
+  Suppressed (NES &lt; 0): 36 vias
+  Total              : 62 vias</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">kegg_up</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">kegg_up</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">kegg_up</span><span class="op">)</span><span class="op">)</span>, <span class="st">"vias\n"</span><span class="op">)</span></span>
-<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"nenhuma via\n"</span><span class="op">)</span> <span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>22 vias</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"  DOWN: "</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  DOWN: </code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb54"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">kegg_down</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">kegg_down</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">kegg_down</span><span class="op">)</span><span class="op">)</span>, <span class="st">"vias\n"</span><span class="op">)</span></span>
-<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"nenhuma via\n"</span><span class="op">)</span> <span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>22 vias</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb56"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"  ALL:  "</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  ALL:  </code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb58"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">kegg_all</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">kegg_all</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">kegg_all</span><span class="op">)</span><span class="op">)</span>, <span class="st">"vias\n"</span><span class="op">)</span></span>
-<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"nenhuma via\n"</span><span class="op">)</span> <span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>28 vias</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb60"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"\n--- GO Biological Process (CGD) ---\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"\n--- GO Biological Process (g:Profiler) ---\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
---- GO Biological Process (CGD) ---</code></pre>
+--- GO Biological Process (g:Profiler) ---</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb62"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"  UP:   "</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"  UP:   "</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  UP:   </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb64"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">go_up</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">go_up</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">go_up</span><span class="op">)</span><span class="op">)</span>, <span class="st">"termos\n"</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb54"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">gost_up</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">gost_up</span><span class="op">$</span><span class="va">result</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">gost_up</span><span class="op">$</span><span class="va">result</span><span class="op">)</span>, <span class="st">"termos\n"</span><span class="op">)</span></span>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"nenhum termo\n"</span><span class="op">)</span> <span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>28 termos</code></pre>
+<pre><code>149 termos</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb66"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"  DOWN: "</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb56"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"  DOWN: "</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  DOWN: </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb68"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">go_down</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">go_down</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">go_down</span><span class="op">)</span><span class="op">)</span>, <span class="st">"termos\n"</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb58"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">gost_down</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">gost_down</span><span class="op">$</span><span class="va">result</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">gost_down</span><span class="op">$</span><span class="va">result</span><span class="op">)</span>, <span class="st">"termos\n"</span><span class="op">)</span></span>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"nenhum termo\n"</span><span class="op">)</span> <span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>19 termos</code></pre>
+<pre><code>143 termos</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb70"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"  ALL:  "</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb60"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"  ALL:  "</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  ALL:  </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb72"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">go_all</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">go_all</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">go_all</span><span class="op">)</span><span class="op">)</span>, <span class="st">"termos\n"</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb62"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">gost_all</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">gost_all</span><span class="op">$</span><span class="va">result</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">gost_all</span><span class="op">$</span><span class="va">result</span><span class="op">)</span>, <span class="st">"termos\n"</span><span class="op">)</span></span>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"nenhum termo\n"</span><span class="op">)</span> <span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>32 termos</code></pre>
+<pre><code>240 termos</code></pre>
 </div>
 </div>
 <p><strong>Identificamos quais vias biológicas estão enriquecidas entre os genes diferencialmente expressos da <em>Candida albicans</em>. Mas como esses genes se relacionam entre si? Será que as proteínas codificadas por eles interagem fisicamente ou funcionam nos mesmos processos? Para responder a essas perguntas, vamos construir uma rede de interação proteína-proteína (PPI).</strong></p>
@@ -1257,7 +1213,7 @@ C1_00060W_A Not significant</code></pre>
 </section><section id="carregando-os-pacotes-1" class="level2" data-number="8.2"><h2 data-number="8.2" class="anchored" data-anchor-id="carregando-os-pacotes-1">
 <span class="header-section-number">8.2</span> 10. Carregando os Pacotes</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb74"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="op">{</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb64"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">RCurl</span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r.igraph.org/">igraph</a></span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggraph.data-imaginist.com">ggraph</a></span><span class="op">)</span></span>
@@ -1272,7 +1228,7 @@ C1_00060W_A Not significant</code></pre>
 <span class="header-section-number">8.3</span> 11. Preparando a Lista de Genes</h2>
 <p>Vamos recuperar nossos resultados de expressão diferencial e preparar a lista de genes que será submetida ao STRING. O STRING não reconhece diretamente os identificadores do Ensembl Fungi (ex: <code>C1_00210C_A</code>). Para <em>C. albicans</em>, o STRING utiliza os identificadores no formato <code>CAALFM_</code> (ex: <code>CAALFM_C100210CA</code>), que são os mesmos usados pelo CGD e pelo KEGG. Felizmente, já construímos o dicionário de conversão (<code>ensembl_to_kegg</code>) na seção anterior:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb75"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Carregar resultados da expressão diferencial</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb65"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Carregar resultados da expressão diferencial</span></span>
 <span><span class="va">res_dge</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html">here</a></span><span class="op">(</span><span class="st">"data/DGE/res_dge.rds"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Selecionar apenas os genes significativos (DEGs)</span></span>
@@ -1291,7 +1247,7 @@ C1_00060W_A Not significant</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>Total de DEGs: 75 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb77"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"DEGs com ID CAALFM_ mapeado:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">genes_deg_caalfm</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb67"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"DEGs com ID CAALFM_ mapeado:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">genes_deg_caalfm</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>DEGs com ID CAALFM_ mapeado: 75 </code></pre>
 </div>
@@ -1316,7 +1272,7 @@ C1_00060W_A Not significant</code></pre>
 <section id="mapeando-os-identificadores" class="level3" data-number="8.4.1"><h3 data-number="8.4.1" class="anchored" data-anchor-id="mapeando-os-identificadores">
 <span class="header-section-number">8.4.1</span> Mapeando os identificadores</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb79"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Concatenar os genes no formato CAALFM_ para a requisição à API</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb69"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Concatenar os genes no formato CAALFM_ para a requisição à API</span></span>
 <span><span class="va">genes_concatenado</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">genes_deg_caalfm</span>, collapse <span class="op">=</span> <span class="st">"%0d"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Requisição para mapear nossos IDs para os IDs do STRING</span></span>
@@ -1337,7 +1293,7 @@ C1_00060W_A Not significant</code></pre>
 </section><section id="obtendo-a-rede-de-interações" class="level3" data-number="8.4.2"><h3 data-number="8.4.2" class="anchored" data-anchor-id="obtendo-a-rede-de-interações">
 <span class="header-section-number">8.4.2</span> Obtendo a rede de interações</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb81"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Concatenar os identificadores do STRING</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb71"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Concatenar os identificadores do STRING</span></span>
 <span><span class="va">genes_string_concatenado</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">map_ids</span><span class="op">$</span><span class="va">stringId</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">"%0d"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Requisição para o método 'network'</span></span>
@@ -1370,7 +1326,7 @@ C1_00060W_A Not significant</code></pre>
 </ol>
 <p>A função <code>combinescores</code> abaixo implementa exatamente esse procedimento. Ela recebe a tabela de interações, seleciona os canais desejados e calcula o escore combinado usando a fórmula: <span class="math inline">\(1 - \prod_{i}(1 - S_i)\)</span>, onde <span class="math inline">\(S_i\)</span> é o escore de cada canal. Essa abordagem probabilística garante que <strong>múltiplas fontes fracas de evidência possam se somar</strong> para produzir uma interação de alta confiança.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb83"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Função para combinar escores de acordo com o algoritmo do STRING</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb73"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Função para combinar escores de acordo com o algoritmo do STRING</span></span>
 <span><span class="va">combinescores</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span>, <span class="va">evidences</span> <span class="op">=</span> <span class="st">"all"</span>, <span class="va">confLevel</span> <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="va">evidences</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">==</span> <span class="st">"all"</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">edat</span> <span class="op">&lt;-</span> <span class="va">dat</span><span class="op">[</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
@@ -1395,7 +1351,7 @@ C1_00060W_A Not significant</code></pre>
 </div>
 <p>Vamos aplicar o filtro. Utilizaremos os canais de <strong>co-expressão</strong>, <strong>evidência experimental</strong> e <strong>bancos de dados curados</strong>. Aqui, por motivos didáticos, vamos estabelecer um escore combinado mínimo de <strong>0.15</strong> (baixa confiança):</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb84"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Aplicar o filtro por canais e confiança mínima</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb74"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Aplicar o filtro por canais e confiança mínima</span></span>
 <span><span class="va">int_network_filtered</span> <span class="op">&lt;-</span> <span class="fu">combinescores</span><span class="op">(</span></span>
 <span>  <span class="va">int_network</span>,</span>
 <span>  evidences <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ascore"</span>, <span class="st">"escore"</span>, <span class="st">"dscore"</span><span class="op">)</span>,</span>
@@ -1435,7 +1391,7 @@ C1_00060W_A Not significant</code></pre>
 <span class="header-section-number">8.6</span> 14. Construindo o Grafo com igraph</h2>
 <p>Agora vamos transformar a tabela de interações filtrada em um <strong>objeto igraph</strong> e anotar cada nó com as informações de expressão diferencial (log2FC e significância):</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb86"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Criar dataframe de anotação mapeando stringId → nomes preferenciais e IDs originais</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb76"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Criar dataframe de anotação mapeando stringId → nomes preferenciais e IDs originais</span></span>
 <span><span class="va">ann</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span></span>
 <span>  stringId <span class="op">=</span> <span class="va">map_ids</span><span class="op">$</span><span class="va">stringId</span>,</span>
 <span>  gene_name <span class="op">=</span> <span class="va">map_ids</span><span class="op">$</span><span class="va">preferredName</span>,</span>
@@ -1471,7 +1427,7 @@ C1_00060W_A Not significant</code></pre>
 <section id="anotando-os-nós-com-informações-de-expressão" class="level3" data-number="8.6.1"><h3 data-number="8.6.1" class="anchored" data-anchor-id="anotando-os-nós-com-informações-de-expressão">
 <span class="header-section-number">8.6.1</span> Anotando os nós com informações de expressão</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb88"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Criar dicionário gene_name → ensembl_id</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb78"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Criar dicionário gene_name → ensembl_id</span></span>
 <span><span class="va">name_to_ensembl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html">setNames</a></span><span class="op">(</span><span class="va">ann</span><span class="op">$</span><span class="va">ensembl_id</span>, <span class="va">ann</span><span class="op">$</span><span class="va">gene_name</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Para cada nó do grafo, buscar o Ensembl ID e depois as informações do DEG</span></span>
@@ -1517,7 +1473,7 @@ C1_00060W_A Not significant</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb89"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dalmolingroup.github.io/easylayout/">easylayout</a></span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb79"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dalmolingroup.github.io/easylayout/">easylayout</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Layout interativo(Descomente a linha para executar) — uma janela abrirá no RStudio</span></span>
 <span><span class="co"># layout_ppi &lt;- easylayout(g)</span></span>
@@ -1529,7 +1485,7 @@ C1_00060W_A Not significant</code></pre>
 <span class="header-section-number">8.8</span> 16. Visualização da Rede PPI com ggraph</h2>
 <p>Vamos plotar a rede utilizando ggraph, colorindo os nós de acordo com o <strong>log2 Fold Change</strong> (escala contínua: azul para downregulados, vermelho para upregulados) e ajustando o tamanho conforme a <strong>significância estatística</strong> (-log10 do p-valor ajustado):</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb90"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Carregar layout</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb80"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Carregar layout</span></span>
 <span></span>
 <span><span class="va">layout_ppi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html">here</a></span><span class="op">(</span><span class="st">"data/DGE/layout_ppi.rds"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -1579,7 +1535,7 @@ C1_00060W_A Not significant</code></pre>
 <span>  <span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="04_downstream_analyses_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid figure-img" width="1152"></p>
+<figure class="figure"><p><img src="04_downstream_analyses_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid figure-img" width="1152"></p>
 </figure>
 </div>
 </div>
@@ -1599,7 +1555,7 @@ C1_00060W_A Not significant</code></pre>
 <strong>Clusters visuais</strong>: grupos de nós densamente conectados sugerem módulos funcionais — conjuntos de proteínas que trabalham juntas em um processo biológico. Identifique se esses módulos correspondem às vias enriquecidas que encontramos anteriormente.</li>
 </ul>
 <hr>
-<p><strong>Concluímos a análise completa de RNA-seq da <em>Candida albicans</em> em resposta à vancomicina. Desde a descontaminação das leituras do hospedeiro com o nf-core/detaxizer, passando pela quantificação com o nf-core/rnaseq, a análise de expressão diferencial com DESeq2, o enriquecimento funcional com KEGG e GO, até a construção e visualização de redes de interação proteína-proteína com o STRING — percorremos um pipeline completo e reprodutível para transcriptômica de patógenos, enfrentando os desafios específicos de um organismo não-modelo.</strong></p>
+<p><em>Concluímos a análise completa de RNA-seq da </em>Candida albicans* em resposta à vancomicina. Desde a descontaminação das leituras do hospedeiro com o nf-core/detaxizer, passando pela quantificação com o nf-core/rnaseq, a análise de expressão diferencial com DESeq2, o enriquecimento funcional com KEGG e GO, até a construção e visualização de redes de interação proteína-proteína com o STRING — percorremos um pipeline completo e reprodutível para transcriptômica de patógenos, enfrentando os desafios específicos de um organismo não-modelo.*</p>
 
 
 </section></section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
