@@ -16,3 +16,5 @@ RCurl
 igraph
 ggraph
 scales
+stringr
+gprofiler2
