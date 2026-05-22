@@ -56,3 +56,7 @@ devtools::install_github("dalmolingroup/easylayout")
 * Dalmolin Systems Biology Group
 * Bioinformática Multidisciplinar (BioME - IMD/UFRN)
 * Programa de Pós-Graduação em Bioinformática (PPg-Bioinfo - UFRN)
+
+📱 **Acesse este repositório:**
+
+![QR code do repositório](content/images/repo_qrcode.png)
